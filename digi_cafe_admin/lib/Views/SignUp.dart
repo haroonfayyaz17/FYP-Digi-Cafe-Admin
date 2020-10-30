@@ -4,8 +4,6 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../login.dart';
-
 class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

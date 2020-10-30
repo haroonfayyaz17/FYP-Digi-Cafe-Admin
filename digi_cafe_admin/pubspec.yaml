@@ -47,6 +47,13 @@ flutter:
   uses-material-design: true
   assets:
      - images/logo.png
+     - images/manage_employee.png
+     - images/manage_menu.png
+     - images/sales.png
+     - images/nominate.png
+     - images/review.png
+     - images/complaints.png
+     - images/profile_pic.png
 
   fonts:
      - family: Josefin Sans
