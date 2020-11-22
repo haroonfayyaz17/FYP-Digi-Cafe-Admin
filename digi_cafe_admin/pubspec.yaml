@@ -24,21 +24,18 @@ dependencies:
   firebase_analytics: ^5.0.2
   image_picker: ^0.6.7+4
   splashscreen: ^1.2.0
-
-
+  path_provider: ^1.6.24
+  country_code_picker: ^1.6.0
+  flutter_icons: ^1.1.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.3
+  cupertino_icons: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter.
 flutter:
 
   # The following line ensures that the Material Icons font is
@@ -54,6 +51,11 @@ flutter:
      - images/review.png
      - images/complaints.png
      - images/profile_pic.png
+     - images/innerImages/spoon.jpg
+     - images/innerImages/chef.png
+     - images/innerImages/cook_img.jpg
+
+
 
   fonts:
      - family: Josefin Sans
@@ -61,3 +63,19 @@ flutter:
          - asset: fonts/JosefinSans-Regular.ttf
          - asset: fonts/JosefinSans-Bold.ttf
            weight: 700
+
+     - family:  GenderIcon
+       fonts:
+         - asset: customIcons/GenderIcon.ttf
+
+     - family:  FoodIcon
+       fonts:
+         - asset: customIcons/FoodIcon.ttf
+
+     - family:  CookIcon
+       fonts:
+         - asset: customIcons/CookIcon.ttf
+
+     - family:  PasswordCross
+       fonts:
+         - asset: customIcons/PasswordCross.ttf

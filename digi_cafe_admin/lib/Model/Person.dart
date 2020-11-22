@@ -1,5 +1,5 @@
 class Person {
-  String _name, _emailAddress, _gender, _dob, _password, _phoneNo, _imgURL;
+  String _name, _emailAddress, _gender, _dob, _password, _phoneNo;
 
   String get Name {
     return _name;
@@ -49,22 +49,13 @@ class Person {
     this._phoneNo = _phoneNo;
   }
 
-  String get ImgURL {
-    return _imgURL;
-  }
-
-  set imgURL(String _imgURL) {
-    this._imgURL = _imgURL;
-  }
-
-  Person(String _name, String _emailAddress, String _gender, String _dob,
-      String _password, String _phoneNo, String _imgURL) {
+  Person(this._name, String _emailAddress, String _gender, String _dob,
+      String _password, String _phoneNo) {
     this._name = _name;
     this._emailAddress = _emailAddress;
     this._gender = _gender;
     this._dob = _dob;
     this._password = _password;
     this._phoneNo = _phoneNo;
-    this._imgURL = _imgURL;
   }
 }

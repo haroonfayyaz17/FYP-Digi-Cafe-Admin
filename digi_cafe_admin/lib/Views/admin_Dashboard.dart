@@ -1,23 +1,33 @@
+import 'package:digi_cafe_admin/Views/ViewEmployees.dart';
+import 'package:digi_cafe_admin/Views/AddFoodMenu.dart';
+import 'package:digi_cafe_admin/Views/AddCategory.dart';
+import 'package:digi_cafe_admin/Views/AddVoucher.dart';
+import 'package:digi_cafe_admin/Views/EmptyCartScreen.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:digi_cafe_admin/Views/NominateItemsScreen.dart';
 import '../style/fonts_style.dart';
+import 'NoIternetScreen.dart';
 
 class dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return MaterialApp(
-      theme: ThemeData(
-        primaryColor: colors.buttonColor,
-        cursorColor: colors.cursorColor,
-      ),
-      home: Scaffold(
-        body: _dashboard(),
-      ),
+    // return MaterialApp(
+    //   theme: ThemeData(
+    //     primaryColor: colors.buttonColor,
+    //     cursorColor: colors.cursorColor,
+    //   ),
+    //   home:
+    return WillPopScope(
+      onWillPop: () {
+        //exit(0);
+        Navigator.pop(context);
+      },
+      child: _dashboard(),
     );
+    // );
   }
 }
 
@@ -93,6 +103,11 @@ class __dashboard extends State<_dashboard> {
                 child: InkWell(
                   onTap: () {
                     //TODO: Manage Employee click
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                ViewEmployees()));
                   },
                   child: Card(
                     child: Column(children: <Widget>[
@@ -124,6 +139,16 @@ class __dashboard extends State<_dashboard> {
                 child: InkWell(
                   onTap: () {
                     //TODO: Manage Menu clicked
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (BuildContext context) =>
+                    //             new AddFoodMenuScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                new AddCategoryScreen()));
                   },
                   child: Card(
                     child: Column(children: <Widget>[
@@ -155,6 +180,11 @@ class __dashboard extends State<_dashboard> {
                 child: InkWell(
                   onTap: () {
                     //TODO: Nominate Items
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                new NominateItemsScreen()));
                   },
                   child: Card(
                     child: Column(children: <Widget>[
@@ -184,6 +214,14 @@ class __dashboard extends State<_dashboard> {
                 height: MediaQuery.of(context).size.width *
                     Fonts.dashboardItem_heightFactor,
                 child: InkWell(
+                  onTap: () {
+                    //TODO: ViewSales
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                new NoInternetScreen()));
+                  },
                   child: Card(
                     child: Column(children: <Widget>[
                       Container(
@@ -213,7 +251,12 @@ class __dashboard extends State<_dashboard> {
                     Fonts.dashboardItem_heightFactor,
                 child: InkWell(
                   onTap: () {
-                    //TODO: Manage Employee click
+                    //TODO: Check Review click
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                new EmptyCartScreen()));
                   },
                   child: Card(
                     child: Column(children: <Widget>[
@@ -261,6 +304,13 @@ class __dashboard extends State<_dashboard> {
                       ),
                     ]),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                new AddVoucherScreen()));
+                  },
                 ),
               ),
             ]),
@@ -282,6 +332,7 @@ class __dashboard extends State<_dashboard> {
                     color: Colors.white,
                   ),
                 ),
+                onPressed: () {},
               ),
             ),
           ],

@@ -1,14 +1,14 @@
 class FoodItem {
   String _id, _name, _description, _imgURL;
-  double _priceLeft, _stockLeft;
+  double _price, _stockLeft;
 
   FoodItem(String _id, String _name, String _description, String _imgURL,
-      double _priceLeft, double _stockLeft) {
+      double _price, double _stockLeft) {
     this._id = _id;
     this._name = _name;
     this._description = _description;
     this._imgURL = _imgURL;
-    this._priceLeft = _priceLeft;
+    this._price = _price;
     this._stockLeft = _stockLeft;
   }
 
@@ -44,12 +44,12 @@ class FoodItem {
     this._imgURL = _imgURL;
   }
 
-  double get priceLeft {
-    return _priceLeft;
+  double get price {
+    return _price;
   }
 
-  set priceLeft(double _priceLeft) {
-    this._priceLeft = _priceLeft;
+  set price(double _price) {
+    this._price = _price;
   }
 
   double get stockLeft {

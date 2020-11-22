@@ -1,4 +1,3 @@
-import 'package:digi_cafe_admin/Controllers/LoginController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +21,6 @@ class _SignUpScreenState extends State<_SignUpScreen> {
   bool _buttonPressed = false;
 
   TextEditingController edtControllerEmail = new TextEditingController();
-  LoginController _loginController;
   TextEditingController edtControllerPassword = new TextEditingController();
 
   @override
@@ -32,7 +30,6 @@ class _SignUpScreenState extends State<_SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _loginController = new LoginController();
     return WillPopScope(
       onWillPop: () {
         Navigator.pop(context);
@@ -124,8 +121,8 @@ class _SignUpScreenState extends State<_SignUpScreen> {
                     onPressed: () {
                       setState(() {
                         _buttonPressed = true;
-                        _loginController.CreateNewUser(edtControllerEmail.text,
-                            edtControllerPassword.text);
+                        // _loginController.CreateNewUser(edtControllerEmail.text,
+                        //     edtControllerPassword.text);
                       });
                     },
                   ),
