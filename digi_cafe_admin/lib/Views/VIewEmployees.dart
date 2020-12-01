@@ -59,7 +59,7 @@ class ViewEmployees extends StatelessWidget {
                 Icons.fastfood,
                 color: colors.buttonTextColor,
               ),
-              label: 'Add Food Item',
+              label: 'Add Employee',
               labelStyle: TextStyle(
                 color: colors.buttonTextColor,
                 fontFamily: Fonts.default_font,

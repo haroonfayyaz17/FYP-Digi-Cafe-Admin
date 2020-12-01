@@ -51,6 +51,8 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
 
   String _imageP;
 
+  var _displayLoadingWidget = false;
+
   _AddFoodMenuScreen3State({this.foodItem, this.actionType});
   FoodMenu foodItem;
   String actionType;
@@ -109,439 +111,479 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: querySnapshot,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<String> listItems = new List();
-            for (int count = 0;
-                count < snapshot.data.documents.length;
-                count++) {
-              DocumentSnapshot dish = snapshot.data.documents[count];
+    return Stack(
+      children: [
+        _displayLoadingWidget
+            ? LoadingWidget()
+            : StreamBuilder<QuerySnapshot>(
+                stream: querySnapshot,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<String> listItems = new List();
+                    for (int count = 0;
+                        count < snapshot.data.documents.length;
+                        count++) {
+                      DocumentSnapshot dish = snapshot.data.documents[count];
 
-              listItems.add(dish.data['name']);
-            }
-            categoryOptionList = listItems;
-            // setState(() {
-            //   categoryOptionList = listItems;
-            // });
-            return Column(
-              children: [
-                Expanded(
-                  child: PageView(
-                    physics: NeverScrollableScrollPhysics(),
-                    onPageChanged: onChangedFunction,
-                    controller: controller,
-                    children: [
-                      SingleChildScrollView(
-                        // physics: NeverScrollableScrollPhysics(),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                              minHeight: MediaQuery.of(context).size.height),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      listItems.add(dish.data['name']);
+                    }
+                    categoryOptionList = listItems;
+                    // setState(() {
+                    //   categoryOptionList = listItems;
+                    // });
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: PageView(
+                            physics: NeverScrollableScrollPhysics(),
+                            onPageChanged: onChangedFunction,
+                            controller: controller,
                             children: [
-                              // SizedBox(
-                              //   height: 35,
-                              // ),
-                              Text(
-                                '$screenHeader',
-                                style: TextStyle(
-                                  fontSize: Fonts.heading1_size,
-                                  fontFamily: Fonts.default_font,
-                                ),
-                              ),
-
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                child: Container(
-                                  height: 150,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.70,
-                                  child: Image.asset(
-                                    'images/innerImages/spoon.jpg',
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              ),
-                              //                     this._id = _id;
-                              // this._name = _name;
-                              // this._description = _description;
-                              // this._imgURL = _imgURL;
-                              // this._price = _price;
-                              // this._stockLeft = _stockLeft;
-                              // SizedBox(
-                              //   // height: 50,
-                              //   height: 30,
-                              // ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: Text(
-                                    'Food Details',
-                                    style: TextStyle(
-                                      fontSize: Fonts.heading_SampleText_size,
-                                      fontFamily: Fonts.default_font,
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
-                                child: TextFormField(
-                                  autofocus: true,
-                                  textInputAction: TextInputAction.next,
-                                  onFieldSubmitted: (_) =>
-                                      FocusScope.of(context).nextFocus(),
-                                  onChanged: (text) {
-                                    _itemName = text;
-                                  },
-                                  controller: edtControllerItemName,
-                                  textCapitalization: TextCapitalization.words,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    hintText: 'Item Name',
-                                    filled: true,
-                                    fillColor: colors.backgroundColor,
-                                    labelText: 'Item Name',
-                                    icon: Icon(Icons.fastfood),
-                                  ),
-                                ),
-                              ),
-
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                child: TextFormField(
-                                  controller: _itemDescriptionController,
-                                  autofocus: true,
-                                  maxLines: 2,
-                                  maxLength: 100,
-                                  textInputAction: TextInputAction.next,
-                                  onFieldSubmitted: (_) =>
-                                      FocusScope.of(context).nextFocus(),
-                                  textCapitalization: TextCapitalization.words,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    hintText: 'Item Description',
-                                    filled: true,
-                                    fillColor: colors.backgroundColor,
-                                    labelText: 'Item Description',
-                                    icon: Icon(
-                                      Icons.description,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 0, 20, 5),
-                                child: DropdownButtonFormField<String>(
-                                  value: chosencategory,
-                                  autofocus: true,
-                                  icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 24,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    hintText: 'Category',
-                                    filled: true,
-                                    fillColor: colors.backgroundColor,
-                                    labelText: 'Category',
-                                    icon: Icon(Icons.category_sharp),
-                                  ),
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      chosencategory = newValue;
-                                    });
-                                  },
-                                  items: categoryOptionList
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: Center(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: Text(
-                                    'Set Price',
-                                    style: TextStyle(
-                                      fontSize: Fonts.heading_SampleText_size,
-                                      fontFamily: Fonts.default_font,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 50, 20, 5),
-                                child: TextFormField(
-                                  autofocus: true,
-                                  inputFormatters: [
-                                    DecimalTextInputFormatter(decimalRange: 0)
-                                  ],
-                                  keyboardType: TextInputType.number,
-                                  textInputAction: TextInputAction.next,
-                                  onFieldSubmitted: (_) =>
-                                      FocusScope.of(context).nextFocus(),
-                                  onChanged: (text) {
-                                    _itemName = text;
-                                  },
-                                  controller: edtControllerItemPrice,
-                                  textCapitalization: TextCapitalization.words,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    hintText: 'Price',
-                                    filled: true,
-                                    fillColor: colors.backgroundColor,
-                                    labelText: 'Price',
-                                    icon: Icon(Icons.money),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        physics: NeverScrollableScrollPhysics(),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                              minHeight: MediaQuery.of(context).size.height),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 20),
-                                    child: Text(
-                                      'Upload Your Food Image',
-                                      style: TextStyle(
-                                        fontSize: Fonts.heading_SampleText_size,
-                                        fontFamily: Fonts.default_font,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                // SizedBox(
-                                //   height: 50,
-                                // ),
-                                SizedBox(
-                                  height: 50,
-                                ),
-                                _imageURL != null
-                                    ? Image.network(
-                                        _imageURL,
-                                        width: 175,
-                                        height: 175,
-                                      )
-                                    : Container(),
-                                _image != null
-                                    ? Image.asset(
-                                        _image.path,
-                                        width: 175,
-                                        height: 175,
-                                      )
-                                    : Container(),
-                                // SizedBox(
-                                //   height: 50,
-                                // ),
-                                _image == null && _imageURL == null
-                                    ? Padding(
-                                        padding: EdgeInsets.only(top: 50),
-                                        child: InkWell(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50)),
-                                              color: colors.buttonColor,
-                                            ),
-                                            width: 150,
-                                            height: 50,
-                                            child: Center(
-                                              child: Text(
-                                                'Choose Food Pic',
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      Fonts.default_font,
-                                                  color: colors.buttonTextColor,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          onTap: chooseFile,
+                              SingleChildScrollView(
+                                // physics: NeverScrollableScrollPhysics(),
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                      minHeight:
+                                          MediaQuery.of(context).size.height),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      // SizedBox(
+                                      //   height: 35,
+                                      // ),
+                                      Text(
+                                        '$screenHeader',
+                                        style: TextStyle(
+                                          fontSize: Fonts.heading1_size,
+                                          fontFamily: Fonts.default_font,
                                         ),
-                                      )
-                                    : Container(),
-                                SizedBox(
-                                  height: 50,
-                                ),
-                                _image != null || _imageURL != null
-                                    ? InkWell(
+                                      ),
+
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(20, 0, 20, 0),
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(50)),
-                                            color: Colors.red[400],
+                                          height: 150,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.70,
+                                          child: Image.asset(
+                                            'images/innerImages/spoon.jpg',
+                                            fit: BoxFit.fill,
                                           ),
-                                          width: 150,
-                                          height: 50,
-                                          child: Center(
+                                        ),
+                                      ),
+                                      //                     this._id = _id;
+                                      // this._name = _name;
+                                      // this._description = _description;
+                                      // this._imgURL = _imgURL;
+                                      // this._price = _price;
+                                      // this._stockLeft = _stockLeft;
+                                      // SizedBox(
+                                      //   // height: 50,
+                                      //   height: 30,
+                                      // ),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 20),
+                                          child: Text(
+                                            'Food Details',
+                                            style: TextStyle(
+                                              fontSize:
+                                                  Fonts.heading_SampleText_size,
+                                              fontFamily: Fonts.default_font,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(20, 10, 20, 5),
+                                        child: TextFormField(
+                                          autofocus: true,
+                                          textInputAction: TextInputAction.next,
+                                          onFieldSubmitted: (_) =>
+                                              FocusScope.of(context)
+                                                  .nextFocus(),
+                                          onChanged: (text) {
+                                            _itemName = text;
+                                          },
+                                          controller: edtControllerItemName,
+                                          textCapitalization:
+                                              TextCapitalization.words,
+                                          decoration: InputDecoration(
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: colors.buttonColor,
+                                                  width: 1.3),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: colors.buttonColor,
+                                                  width: 1.3),
+                                            ),
+                                            hintText: 'Item Name',
+                                            filled: true,
+                                            fillColor: colors.backgroundColor,
+                                            labelText: 'Item Name',
+                                            icon: Icon(Icons.fastfood),
+                                          ),
+                                        ),
+                                      ),
+
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(20, 5, 20, 5),
+                                        child: TextFormField(
+                                          controller:
+                                              _itemDescriptionController,
+                                          autofocus: true,
+                                          maxLines: 2,
+                                          maxLength: 100,
+                                          textInputAction: TextInputAction.next,
+                                          onFieldSubmitted: (_) =>
+                                              FocusScope.of(context)
+                                                  .nextFocus(),
+                                          textCapitalization:
+                                              TextCapitalization.words,
+                                          decoration: InputDecoration(
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: colors.buttonColor,
+                                                  width: 1.3),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: colors.buttonColor,
+                                                  width: 1.3),
+                                            ),
+                                            hintText: 'Item Description',
+                                            filled: true,
+                                            fillColor: colors.backgroundColor,
+                                            labelText: 'Item Description',
+                                            icon: Icon(
+                                              Icons.description,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(20, 0, 20, 5),
+                                        child: DropdownButtonFormField<String>(
+                                          value: chosencategory,
+                                          autofocus: true,
+                                          icon: Icon(Icons.arrow_drop_down),
+                                          iconSize: 24,
+                                          decoration: InputDecoration(
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: colors.buttonColor,
+                                                  width: 1.3),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: colors.buttonColor,
+                                                  width: 1.3),
+                                            ),
+                                            hintText: 'Category',
+                                            filled: true,
+                                            fillColor: colors.backgroundColor,
+                                            labelText: 'Category',
+                                            icon: Icon(Icons.category_sharp),
+                                          ),
+                                          onChanged: (String newValue) {
+                                            setState(() {
+                                              chosencategory = newValue;
+                                            });
+                                          },
+                                          items: categoryOptionList
+                                              .map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(
+                                                value,
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Center(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 20),
+                                          child: Text(
+                                            'Set Price',
+                                            style: TextStyle(
+                                              fontSize:
+                                                  Fonts.heading_SampleText_size,
+                                              fontFamily: Fonts.default_font,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(20, 50, 20, 5),
+                                        child: TextFormField(
+                                          autofocus: true,
+                                          inputFormatters: [
+                                            DecimalTextInputFormatter(
+                                                decimalRange: 0)
+                                          ],
+                                          keyboardType: TextInputType.number,
+                                          textInputAction: TextInputAction.next,
+                                          onFieldSubmitted: (_) =>
+                                              FocusScope.of(context)
+                                                  .nextFocus(),
+                                          onChanged: (text) {
+                                            _itemName = text;
+                                          },
+                                          controller: edtControllerItemPrice,
+                                          textCapitalization:
+                                              TextCapitalization.words,
+                                          decoration: InputDecoration(
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: colors.buttonColor,
+                                                  width: 1.3),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: colors.buttonColor,
+                                                  width: 1.3),
+                                            ),
+                                            hintText: 'Price',
+                                            filled: true,
+                                            fillColor: colors.backgroundColor,
+                                            labelText: 'Price',
+                                            icon: Icon(Icons.money),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SingleChildScrollView(
+                                physics: NeverScrollableScrollPhysics(),
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                      minHeight:
+                                          MediaQuery.of(context).size.height),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: EdgeInsets.only(left: 20),
                                             child: Text(
-                                              'Remove',
+                                              'Upload Your Food Image',
                                               style: TextStyle(
+                                                fontSize: Fonts
+                                                    .heading_SampleText_size,
                                                 fontFamily: Fonts.default_font,
-                                                color: colors.buttonTextColor,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        onTap: clearSelection,
-                                      )
-                                    : Container(),
+                                        // SizedBox(
+                                        //   height: 50,
+                                        // ),
+                                        SizedBox(
+                                          height: 50,
+                                        ),
+                                        _imageURL != null
+                                            ? Image.network(
+                                                _imageURL,
+                                                width: 175,
+                                                height: 175,
+                                              )
+                                            : Container(),
+                                        _image != null
+                                            ? Image.asset(
+                                                _image.path,
+                                                width: 175,
+                                                height: 175,
+                                              )
+                                            : Container(),
+                                        // SizedBox(
+                                        //   height: 50,
+                                        // ),
+                                        _image == null && _imageURL == null
+                                            ? Padding(
+                                                padding:
+                                                    EdgeInsets.only(top: 50),
+                                                child: InkWell(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  50)),
+                                                      color: colors.buttonColor,
+                                                    ),
+                                                    width: 150,
+                                                    height: 50,
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Choose Food Pic',
+                                                        style: TextStyle(
+                                                          fontFamily: Fonts
+                                                              .default_font,
+                                                          color: colors
+                                                              .buttonTextColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onTap: chooseFile,
+                                                ),
+                                              )
+                                            : Container(),
+                                        SizedBox(
+                                          height: 50,
+                                        ),
+                                        _image != null || _imageURL != null
+                                            ? InkWell(
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                50)),
+                                                    color: Colors.red[400],
+                                                  ),
+                                                  width: 150,
+                                                  height: 50,
+                                                  child: Center(
+                                                    child: Text(
+                                                      'Remove',
+                                                      style: TextStyle(
+                                                        fontFamily:
+                                                            Fonts.default_font,
+                                                        color: colors
+                                                            .buttonTextColor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                onTap: clearSelection,
+                                              )
+                                            : Container(),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Indicator(
+                                positionIndex: 0,
+                                currentIndex: currentIndex,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Indicator(
+                                positionIndex: 1,
+                                currentIndex: currentIndex,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Indicator(
+                                positionIndex: 2,
+                                currentIndex: currentIndex,
+                              ),
+                              // SizedBox(
+                              //   width: 10,
+                              // ),
+                              // Indicator(
+                              //   positionIndex: 3,
+                              //   currentIndex: currentIndex,
+                              // ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 50.0),
+                          child: Container(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                InkWell(
+                                  onTap: () => previousFunction(),
+                                  child: Text(
+                                    '<Previous',
+                                    style: TextStyle(
+                                      fontSize: Fonts.heading2_size,
+                                      color: colors.buttonColor,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 50,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    nextFunction();
+                                  },
+                                  child: Text(
+                                    '$_nextLabel',
+                                    style: TextStyle(
+                                      fontSize: Fonts.heading2_size,
+                                      color: colors.buttonColor,
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Indicator(
-                        positionIndex: 0,
-                        currentIndex: currentIndex,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Indicator(
-                        positionIndex: 1,
-                        currentIndex: currentIndex,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Indicator(
-                        positionIndex: 2,
-                        currentIndex: currentIndex,
-                      ),
-                      // SizedBox(
-                      //   width: 10,
-                      // ),
-                      // Indicator(
-                      //   positionIndex: 3,
-                      //   currentIndex: currentIndex,
-                      // ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 50.0),
-                  child: Container(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () => previousFunction(),
-                          child: Text(
-                            '<Previous',
-                            style: TextStyle(
-                              fontSize: Fonts.heading2_size,
-                              color: colors.buttonColor,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 50,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            nextFunction();
-                          },
-                          child: Text(
-                            '$_nextLabel',
-                            style: TextStyle(
-                              fontSize: Fonts.heading2_size,
-                              color: colors.buttonColor,
-                            ),
-                          ),
-                        ),
                       ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          } else {
-            return LoadingWidget();
-          }
-        });
+                    );
+                  } else {
+                    return Stack(
+                      children: [
+                        LoadingWidget(),
+                      ],
+                    );
+                  }
+                }),
+      ],
+    );
   }
 
   nextFunction() async {
@@ -631,17 +673,26 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
   }
 
   Future<void> _addFoodRecord() async {
+    setState(() {
+      _displayLoadingWidget = true;
+    });
     String itemName = edtControllerItemName.text;
     String description = _itemDescriptionController.text;
     String price = edtControllerItemPrice.text;
 
     await _foodMenuUIController.addFoodMenu(
         itemName, description, chosencategory, price, _image);
+    setState(() {
+      _displayLoadingWidget = false;
+    });
     _showToast(context, 'Data added successfully');
     Navigator.pop(context);
   }
 
   Future<void> _updateFoodRecord() async {
+    setState(() {
+      _displayLoadingWidget = true;
+    });
     String itemName = edtControllerItemName.text;
     String description = _itemDescriptionController.text;
     String price = edtControllerItemPrice.text;
@@ -658,6 +709,9 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
       result = await _foodMenuUIController.updateFoodMenu(
           itemID, itemName, description, chosencategory, price, _imageP);
     }
+    setState(() {
+      _displayLoadingWidget = false;
+    });
     if (result == true) {
       _showToast(context, 'Data updated successfully');
       Navigator.pop(context);

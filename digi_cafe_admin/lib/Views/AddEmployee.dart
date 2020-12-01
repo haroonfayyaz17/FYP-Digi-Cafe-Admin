@@ -51,14 +51,13 @@ class _AddEmployeeScreen extends StatefulWidget {
 class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   var screenHeader;
 
-  var _displayWidget = false;
-
   _AddEmployeeScreen3State({this.employee, this.actionType});
   CafeEmployee employee;
   String actionType;
   bool _buttonPressed = false;
   File _image;
   var edtPhoneController = new TextEditingController();
+  var _displayLoadingWidget = false;
 
   TextEditingController _dateControllerText = new TextEditingController();
   PageController controller = PageController();
@@ -159,355 +158,359 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       screenHeader = 'Add Employee';
     }
 
-    Widget widget = Column(
-      children: [
-        _displayWidget
-            ? LoadingWidget()
-            : Expanded(
-                child: PageView(
-                  physics: NeverScrollableScrollPhysics(),
-                  onPageChanged: onChangedFunction,
-                  controller: controller,
-                  children: [
-                    SingleChildScrollView(
-                      // physics: NeverScrollableScrollPhysics(),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                            minHeight: MediaQuery.of(context).size.height),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  '${screenHeader}',
-                                  style: TextStyle(
-                                    fontSize: Fonts.heading1_size,
-                                    fontFamily: Fonts.default_font,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                child: Container(
-                                  height: 150,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.73,
-                                  child: Image.asset(
-                                    'images/innerImages/cook_img.jpg',
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 20),
+    Widget widget = Stack(children: [
+      _displayLoadingWidget
+          ? LoadingWidget()
+          : Column(
+              children: [
+                Expanded(
+                  child: PageView(
+                    physics: NeverScrollableScrollPhysics(),
+                    onPageChanged: onChangedFunction,
+                    controller: controller,
+                    children: [
+                      SingleChildScrollView(
+                        // physics: NeverScrollableScrollPhysics(),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                              minHeight: MediaQuery.of(context).size.height),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: 10),
                                   child: Text(
-                                    'Personal Information',
+                                    '${screenHeader}',
                                     style: TextStyle(
-                                      fontSize: Fonts.heading_SampleText_size,
+                                      fontSize: Fonts.heading1_size,
                                       fontFamily: Fonts.default_font,
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                child: TextFormField(
-                                  autofocus: true,
-                                  textInputAction: TextInputAction.next,
-                                  onFieldSubmitted: (_) =>
-                                      FocusScope.of(context).nextFocus(),
-                                  onChanged: (text) {
-                                    _name = text;
-                                  },
-                                  controller: edtControllerName,
-                                  textCapitalization: TextCapitalization.words,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    hintText: 'Full Name',
-                                    filled: true,
-                                    fillColor: colors.backgroundColor,
-                                    labelText: 'Full Name',
-                                    icon: Icon(
-                                      Icons.person_add,
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                  child: Container(
+                                    height: 150,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.73,
+                                    child: Image.asset(
+                                      'images/innerImages/cook_img.jpg',
+                                      fit: BoxFit.fill,
                                     ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                child: TextFormField(
-                                  controller: _dateControllerText,
-                                  readOnly: true,
-                                  autofocus: true,
-                                  textInputAction: TextInputAction.next,
-                                  onFieldSubmitted: (_) =>
-                                      FocusScope.of(context).nextFocus(),
-                                  textCapitalization: TextCapitalization.words,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    hintText: 'Date Of Birth',
-                                    filled: true,
-                                    fillColor: colors.backgroundColor,
-                                    labelText: 'Date Of Birth',
-                                    icon: Icon(
-                                      Icons.calendar_today,
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 20),
+                                    child: Text(
+                                      'Personal Information',
+                                      style: TextStyle(
+                                        fontSize: Fonts.heading_SampleText_size,
+                                        fontFamily: Fonts.default_font,
+                                      ),
                                     ),
                                   ),
-                                  onTap: () {
-                                    showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2100),
-                                    ).then((value) {
-                                      String day = value.day.toString();
-                                      String month = value.month.toString();
-                                      String year = value.year.toString();
-                                      String date = '${day}-${month}-${year}';
-                                      _dateControllerText.text = date;
-
-                                      setState(() {
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                  child: TextFormField(
+                                    autofocus: true,
+                                    textInputAction: TextInputAction.next,
+                                    onFieldSubmitted: (_) =>
+                                        FocusScope.of(context).nextFocus(),
+                                    onChanged: (text) {
+                                      _name = text;
+                                    },
+                                    controller: edtControllerName,
+                                    textCapitalization:
+                                        TextCapitalization.words,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: colors.buttonColor,
+                                            width: 1.3),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: colors.buttonColor,
+                                            width: 1.3),
+                                      ),
+                                      hintText: 'Full Name',
+                                      filled: true,
+                                      fillColor: colors.backgroundColor,
+                                      labelText: 'Full Name',
+                                      icon: Icon(
+                                        Icons.person_add,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                  child: TextFormField(
+                                    controller: _dateControllerText,
+                                    readOnly: true,
+                                    autofocus: true,
+                                    textInputAction: TextInputAction.next,
+                                    onFieldSubmitted: (_) =>
+                                        FocusScope.of(context).nextFocus(),
+                                    textCapitalization:
+                                        TextCapitalization.words,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: colors.buttonColor,
+                                            width: 1.3),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: colors.buttonColor,
+                                            width: 1.3),
+                                      ),
+                                      hintText: 'Date Of Birth',
+                                      filled: true,
+                                      fillColor: colors.backgroundColor,
+                                      labelText: 'Date Of Birth',
+                                      icon: Icon(
+                                        Icons.calendar_today,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2000),
+                                        lastDate: DateTime(2100),
+                                      ).then((value) {
+                                        String day = value.day.toString();
+                                        String month = value.month.toString();
+                                        String year = value.year.toString();
+                                        String date = '${day}-${month}-${year}';
                                         _dateControllerText.text = date;
+
+                                        setState(() {
+                                          _dateControllerText.text = date;
+                                        });
                                       });
-                                    });
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                child: DropdownButtonFormField<String>(
-                                  value: chosenGender,
-                                  autofocus: true,
-                                  icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 24,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    hintText: 'Gender',
-                                    filled: true,
-                                    fillColor: colors.backgroundColor,
-                                    labelText: 'Gender',
-                                    icon: Icon(
-                                      Icons.person_outline,
-                                    ),
+                                    },
                                   ),
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      chosenGender = newValue;
-                                    });
-                                  },
-                                  items: genderOptionList
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                      ),
-                                    );
-                                  }).toList(),
                                 ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                child: DropdownButtonFormField<String>(
-                                  value: choosenstaffType,
-                                  autofocus: true,
-                                  icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 24,
-                                  decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                  child: DropdownButtonFormField<String>(
+                                    value: chosenGender,
+                                    autofocus: true,
+                                    icon: Icon(Icons.arrow_drop_down),
+                                    iconSize: 24,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: colors.buttonColor,
+                                            width: 1.3),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: colors.buttonColor,
+                                            width: 1.3),
+                                      ),
+                                      hintText: 'Gender',
+                                      filled: true,
+                                      fillColor: colors.backgroundColor,
+                                      labelText: 'Gender',
+                                      icon: Icon(
+                                        Icons.person_outline,
+                                      ),
                                     ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colors.buttonColor,
-                                          width: 1.3),
-                                    ),
-                                    hintText: 'Staff Type',
-                                    filled: true,
-                                    fillColor: colors.backgroundColor,
-                                    labelText: 'Staff Type',
-                                    icon: Icon(
-                                      Icons.person,
-                                    ),
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        chosenGender = newValue;
+                                      });
+                                    },
+                                    items: genderOptionList
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                        ),
+                                      );
+                                    }).toList(),
                                   ),
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      choosenstaffType = newValue;
-                                    });
-                                  },
-                                  items: staffType
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                      ),
-                                    );
-                                  }).toList(),
                                 ),
-                              ),
-                            ],
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                  child: DropdownButtonFormField<String>(
+                                    value: choosenstaffType,
+                                    autofocus: true,
+                                    icon: Icon(Icons.arrow_drop_down),
+                                    iconSize: 24,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: colors.buttonColor,
+                                            width: 1.3),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: colors.buttonColor,
+                                            width: 1.3),
+                                      ),
+                                      hintText: 'Staff Type',
+                                      filled: true,
+                                      fillColor: colors.backgroundColor,
+                                      labelText: 'Staff Type',
+                                      icon: Icon(
+                                        Icons.person,
+                                      ),
+                                    ),
+                                    onChanged: (String newValue) {
+                                      setState(() {
+                                        choosenstaffType = newValue;
+                                      });
+                                    },
+                                    items: staffType
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    ContactDetailsWidget(),
-                    if (actionType != 'update') ImageWidget(),
-                    if (actionType != 'update') EmailDetails(),
+                      ContactDetailsWidget(),
+                      if (actionType != 'update') ImageWidget(),
+                      if (actionType != 'update') EmailDetails(),
 
-                    // Container(
-                    //   child: Center(
-                    //     child: Column(
-                    //       mainAxisSize: MainAxisSize.min,
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       children: [
-                    //         Text(
-                    //           'Just Finishing Up!',
-                    //           style: TextStyle(
-                    //             fontSize: Fonts.heading_SampleText_size,
-                    //             fontFamily: Fonts.default_font,
-                    //           ),
-                    //         ),
-                    //         SizedBox(
-                    //           height: 50,
-                    //         ),
-                    //         Text(
-                    //           'We have emailed you a link.\nClick on that link to verify your account',
-                    //           style: TextStyle(
-                    //             color: colors.buttonColor,
-                    //             fontSize: Fonts.heading2_size,
-                    //             fontFamily: Fonts.default_font,
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Indicator(
-                positionIndex: 0,
-                currentIndex: currentIndex,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Indicator(
-                positionIndex: 1,
-                currentIndex: currentIndex,
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              if (actionType != 'update')
-                Indicator(
-                  positionIndex: 2,
-                  currentIndex: currentIndex,
-                ),
-              SizedBox(
-                width: 10,
-              ),
-              if (actionType != 'update')
-                Indicator(
-                  positionIndex: 3,
-                  currentIndex: currentIndex,
-                )
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 50.0),
-          child: Container(
-            padding: EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                InkWell(
-                  onTap: () => previousFunction(),
-                  child: Text(
-                    '<Previous',
-                    style: TextStyle(
-                      fontSize: Fonts.heading2_size,
-                      color: colors.buttonColor,
-                    ),
+                      // Container(
+                      //   child: Center(
+                      //     child: Column(
+                      //       mainAxisSize: MainAxisSize.min,
+                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Text(
+                      //           'Just Finishing Up!',
+                      //           style: TextStyle(
+                      //             fontSize: Fonts.heading_SampleText_size,
+                      //             fontFamily: Fonts.default_font,
+                      //           ),
+                      //         ),
+                      //         SizedBox(
+                      //           height: 50,
+                      //         ),
+                      //         Text(
+                      //           'We have emailed you a link.\nClick on that link to verify your account',
+                      //           style: TextStyle(
+                      //             color: colors.buttonColor,
+                      //             fontSize: Fonts.heading2_size,
+                      //             fontFamily: Fonts.default_font,
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  width: 50,
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Indicator(
+                        positionIndex: 0,
+                        currentIndex: currentIndex,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Indicator(
+                        positionIndex: 1,
+                        currentIndex: currentIndex,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      if (actionType != 'update')
+                        Indicator(
+                          positionIndex: 2,
+                          currentIndex: currentIndex,
+                        ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      if (actionType != 'update')
+                        Indicator(
+                          positionIndex: 3,
+                          currentIndex: currentIndex,
+                        )
+                    ],
+                  ),
                 ),
-                InkWell(
-                  onTap: () {
-                    nextFunction();
-                    // print(code + ' ' + edtControllerPhoneNo.text);
-                  },
-                  child: Text(
-                    '$_nextLabel',
-                    style: TextStyle(
-                      fontSize: Fonts.heading2_size,
-                      color: colors.buttonColor,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 50.0),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () => previousFunction(),
+                          child: Text(
+                            '<Previous',
+                            style: TextStyle(
+                              fontSize: Fonts.heading2_size,
+                              color: colors.buttonColor,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 50,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            nextFunction();
+                            // print(code + ' ' + edtControllerPhoneNo.text);
+                          },
+                          child: Text(
+                            '$_nextLabel',
+                            style: TextStyle(
+                              fontSize: Fonts.heading2_size,
+                              color: colors.buttonColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ],
-            ),
-          ),
-        ),
-      ],
-    );
+            )
+    ]);
     // if (actionType == 'update') {
     //   setFieldsForUpdate();
     //   debugPrint('dfffd');
@@ -622,7 +625,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       //   //   MaterialPageRoute(builder: (context) => DentistSetupProfile('_email')),
       //   // );
       setState(() {
-        _displayWidget = true;
+        _displayLoadingWidget = true;
       });
       _email = _email.replaceAll(new RegExp(r"\s+"), "");
       _password = _password.trim();
@@ -641,23 +644,23 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
         print(result);
         if (result.toString() == "true") {
           print('sucessful');
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => LoginScreen()));
+          Navigator.pop(context);
         }
       } else {
         print('unsuccessful');
       }
-      setState(() {
-        _displayWidget = true;
-      });
     } catch (e) {
       print(e.toString());
     }
+    setState(() {
+      _displayLoadingWidget = false;
+    });
   }
 
   Future<void> updateEmployeeRecord() async {
+    setState(() {
+      _displayLoadingWidget = true;
+    });
     employee.Dob = _dateControllerText.text;
     employee.Gender = chosenGender;
     employee.PhoneNo = _phoneNo;
@@ -665,6 +668,9 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
     employee.userType = choosenstaffType;
     await _employeeUIController.updateEmployeeData(employee);
     _showToast(context, "Data updated Successfully");
+    setState(() {
+      _displayLoadingWidget = false;
+    });
     Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) => ViewEmployees()));
     // Navigator.pop(context);

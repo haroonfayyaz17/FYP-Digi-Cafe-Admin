@@ -22,7 +22,7 @@ dependencies:
   cloud_firestore: ^0.13.7
   firebase_storage: ^3.1.6
   firebase_analytics: ^5.0.2
-  image_picker: ^0.6.7+4
+  image_picker: 0.4.12+1
   splashscreen: ^1.2.0
   path_provider: ^1.6.24
   rflutter_alert: ^1.0.3

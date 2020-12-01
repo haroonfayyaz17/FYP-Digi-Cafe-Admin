@@ -44,7 +44,7 @@ class _NominateItemsState extends State<NominateItemsState> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   BuildContext _buildContext;
-
+  var _displayLoadingWidget = false;
   @override
   void initState() {
     super.initState();
@@ -58,93 +58,98 @@ class _NominateItemsState extends State<NominateItemsState> {
   Widget build(BuildContext context) {
     _buildContext = context;
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBarWidget.getAppBar(),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 120, right: 120, bottom: 5),
-        child: ClipPath(
-          clipper: ShapeBorderClipper(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)))),
-          child: Container(
-            decoration: BoxDecoration(
-              color: colors.buttonColor,
-            ),
-            width: 50,
-            height: 30,
-            child: FlatButton(
-              color: colors.buttonColor,
-              child: Text(
-                'Nominate Items',
-                style: TextStyle(
-                  fontSize: Fonts.button_size,
-                  fontFamily: Fonts.default_font,
-                  color: colors.buttonTextColor,
-                ),
+        key: _scaffoldKey,
+        appBar: AppBarWidget.getAppBar(),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(left: 120, right: 120, bottom: 5),
+          child: ClipPath(
+            clipper: ShapeBorderClipper(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(20)))),
+            child: Container(
+              decoration: BoxDecoration(
+                color: colors.buttonColor,
               ),
-              onPressed: () {
-                FutureBuilder<bool>(
-                  builder: (context, snapshot) {
-                    return Container();
-                  },
-                  future: _nominateSelectedItems(context),
-                );
-              },
+              width: 50,
+              height: 30,
+              child: FlatButton(
+                color: colors.buttonColor,
+                child: Text(
+                  'Nominate Items',
+                  style: TextStyle(
+                    fontSize: Fonts.button_size,
+                    fontFamily: Fonts.default_font,
+                    color: colors.buttonTextColor,
+                  ),
+                ),
+                onPressed: () {
+                  FutureBuilder<bool>(
+                    builder: (context, snapshot) {
+                      return Container();
+                    },
+                    future: _nominateSelectedItems(context),
+                  );
+                },
+              ),
             ),
           ),
         ),
-      ),
-      body: SafeArea(
-        child: StreamBuilder<QuerySnapshot>(
-            stream: querySnapshot,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<NominateItems> listItems = new List();
-                for (int count = 0;
-                    count < snapshot.data.documents.length;
-                    count++) {
-                  DocumentSnapshot dish = snapshot.data.documents[count];
-                  NominateItems items = new NominateItems(
-                      dish.documentID,
-                      dish.data['name'],
-                      dish.data['price'],
-                      dish.data['stockLeft']);
-                  listItems.add(items);
-                }
-                _ds = new NominateItemsDataSource(listItems);
-                // return Container(
-                //   color: colors.backgroundColor,
-                // );
-                return SingleChildScrollView(
-                  child: PaginatedDataTable(
-                    header: Center(
-                      child: Text(
-                        'Nominate Items',
-                        style: TextStyle(
-                          fontSize: Fonts.heading1_size,
-                          fontFamily: Fonts.default_font,
-                        ),
-                      ),
-                    ),
-                    dataRowHeight:
-                        MediaQuery.of(context).size.height * 0.7 / _rowsPerPage,
-                    rowsPerPage: _rowsPerPage,
-                    availableRowsPerPage: <int>[5, 10, 20],
-                    onRowsPerPageChanged: (int value) {
-                      setState(() {
-                        _rowsPerPage = value;
-                      });
-                    },
-                    columns: kTableColumns,
-                    source: _ds,
-                  ),
-                );
-              } else {
-                return LoadingWidget();
-              }
-            }),
-      ),
-    );
+        body: SafeArea(
+          child: Stack(children: [
+            _displayLoadingWidget
+                ? LoadingWidget()
+                : StreamBuilder<QuerySnapshot>(
+                    stream: querySnapshot,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<NominateItems> listItems = new List();
+                        for (int count = 0;
+                            count < snapshot.data.documents.length;
+                            count++) {
+                          DocumentSnapshot dish =
+                              snapshot.data.documents[count];
+                          NominateItems items = new NominateItems(
+                              dish.documentID,
+                              dish.data['name'],
+                              dish.data['price'],
+                              dish.data['stockLeft']);
+                          listItems.add(items);
+                        }
+                        _ds = new NominateItemsDataSource(listItems);
+                        // return Container(
+                        //   color: colors.backgroundColor,
+                        // );
+                        return SingleChildScrollView(
+                          child: PaginatedDataTable(
+                            header: Center(
+                              child: Text(
+                                'Nominate Items',
+                                style: TextStyle(
+                                  fontSize: Fonts.heading1_size,
+                                  fontFamily: Fonts.default_font,
+                                ),
+                              ),
+                            ),
+                            dataRowHeight: MediaQuery.of(context).size.height *
+                                0.7 /
+                                _rowsPerPage,
+                            rowsPerPage: _rowsPerPage,
+                            availableRowsPerPage: <int>[5, 10, 20],
+                            onRowsPerPageChanged: (int value) {
+                              setState(() {
+                                _rowsPerPage = value;
+                              });
+                            },
+                            columns: kTableColumns,
+                            source: _ds,
+                          ),
+                        );
+                      } else {
+                        return LoadingWidget();
+                      }
+                    }),
+          ]),
+        ));
 
     // _rowsPerPage = _rowsPerPage > _ds.nominateItems.length
     //     ? _ds.nominateItems.length
@@ -163,6 +168,9 @@ class _NominateItemsState extends State<NominateItemsState> {
   }
 
   Future<bool> _nominateSelectedItems(context) async {
+    setState(() {
+      _displayLoadingWidget = true;
+    });
     List<String> _itemsSelected = new List();
     for (int i = 0; i < _ds.nominateItems.length; i++) {
       if (_ds.nominateItems[i].selected) {
@@ -175,6 +183,9 @@ class _NominateItemsState extends State<NominateItemsState> {
       final String formatted = formatter.format(now);
       bool result = await _foodMenuUIController.addNominatedItems(
           _itemsSelected, formatted);
+      setState(() {
+        _displayLoadingWidget = false;
+      });
       if (result) {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           content: Text('Items Nominated Successfully'),
