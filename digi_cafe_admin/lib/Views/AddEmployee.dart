@@ -1,27 +1,35 @@
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-
+import 'package:digi_cafe_admin/Model/Cafe%20Employee.dart';
+import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
+import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 import 'package:digi_cafe_admin/Views/login.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/EmployeeUIController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:digi_cafe_admin/Views/VIewEmployees.dart';
 import '../style/colors.dart';
 
 class AddEmployeeScreen extends StatelessWidget {
+  AddEmployeeScreen({this.employee, this.actionType});
+
+  CafeEmployee employee;
+  String actionType;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBarWidget.getAppBar(),
       // backgroundColor: colors.buttonColor,
       backgroundColor: colors.backgroundColor,
-      body: _AddEmployeeScreen(),
+      body: _AddEmployeeScreen(
+        employee: employee,
+        actionType: actionType,
+      ),
     );
   }
 }
@@ -29,16 +37,29 @@ class AddEmployeeScreen extends StatelessWidget {
 _AddEmployeeScreen3State _addEmployeeScreen;
 
 class _AddEmployeeScreen extends StatefulWidget {
+  _AddEmployeeScreen({this.employee, this.actionType});
+  CafeEmployee employee;
+  String actionType;
   @override
   _AddEmployeeScreen3State createState() {
-    _addEmployeeScreen = _AddEmployeeScreen3State();
+    _addEmployeeScreen =
+        _AddEmployeeScreen3State(employee: employee, actionType: actionType);
     return _addEmployeeScreen;
   }
 }
 
 class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
+  var screenHeader;
+
+  var _displayWidget = false;
+
+  _AddEmployeeScreen3State({this.employee, this.actionType});
+  CafeEmployee employee;
+  String actionType;
   bool _buttonPressed = false;
   File _image;
+  var edtPhoneController = new TextEditingController();
+
   TextEditingController _dateControllerText = new TextEditingController();
   PageController controller = PageController();
   String date;
@@ -47,7 +68,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
 
   List<String> genderOptionList;
   List<String> staffType;
-
+  int count = 0;
   var _phoneNo = '';
   var _email = '';
   var _password = '';
@@ -69,11 +90,38 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
 
   String _confirmPassword;
 
+  void setFieldsForUpdate() {
+    setState(() {
+      _dateControllerText.text = employee.Dob;
+      edtControllerName.text = employee.Name;
+      chosenGender = employee.Gender;
+      choosenstaffType = employee.userType;
+    });
+    // debugPrint(__contactDetailsState.mounted.toString());
+  }
+
+  void setPhoneNo() {
+    setState(() {
+      if (employee != null) {
+        edtPhoneController.text = employee.PhoneNo;
+        _phoneNo = employee.PhoneNo;
+        _phoneNo = employee.PhoneNo;
+      }
+    });
+
+    count++;
+  }
+
   @override
   void initState() {
     super.initState();
-    // edtControllerEmail.addListener(_emailValue);
-    // edtControllerPassword.addListener(_passwordValue);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (actionType == 'update') {
+        setFieldsForUpdate();
+        setPhoneNo();
+      }
+    });
+
     _fillGendersDropDown();
     _fillPersonTypesDropDown();
   }
@@ -102,265 +150,287 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: PageView(
-            physics: NeverScrollableScrollPhysics(),
-            onPageChanged: onChangedFunction,
-            controller: controller,
-            children: [
-              SingleChildScrollView(
-                // physics: NeverScrollableScrollPhysics(),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                      minHeight: MediaQuery.of(context).size.height),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Text(
-                            'Add Employee',
-                            style: TextStyle(
-                              fontSize: Fonts.heading1_size,
-                              fontFamily: Fonts.default_font,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                          child: Container(
-                            height: 150,
-                            width: MediaQuery.of(context).size.width * 0.73,
-                            child: Image.asset(
-                              'images/innerImages/cook_img.jpg',
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20),
-                            child: Text(
-                              'Personal Information',
-                              style: TextStyle(
-                                fontSize: Fonts.heading_SampleText_size,
-                                fontFamily: Fonts.default_font,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                          child: TextFormField(
-                            autofocus: true,
-                            textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (_) =>
-                                FocusScope.of(context).nextFocus(),
-                            onChanged: (text) {
-                              _name = text;
-                            },
-                            controller: edtControllerName,
-                            textCapitalization: TextCapitalization.words,
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: colors.buttonColor, width: 1.3),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: colors.buttonColor, width: 1.3),
-                              ),
-                              hintText: 'Full Name',
-                              filled: true,
-                              fillColor: colors.backgroundColor,
-                              labelText: 'Full Name',
-                              icon: Icon(
-                                Icons.person_add,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                          child: TextFormField(
-                            controller: _dateControllerText,
-                            readOnly: true,
-                            autofocus: true,
-                            textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (_) =>
-                                FocusScope.of(context).nextFocus(),
-                            textCapitalization: TextCapitalization.words,
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: colors.buttonColor, width: 1.3),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: colors.buttonColor, width: 1.3),
-                              ),
-                              hintText: 'Date Of Birth',
-                              filled: true,
-                              fillColor: colors.backgroundColor,
-                              labelText: 'Date Of Birth',
-                              icon: Icon(
-                                Icons.calendar_today,
-                              ),
-                            ),
-                            onTap: () {
-                              showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2100),
-                              ).then((value) {
-                                String day = value.day.toString();
-                                String month = value.month.toString();
-                                String year = value.year.toString();
-                                String date = '${day}-${month}-${year}';
-                                _dateControllerText.text = date;
+    if (actionType == 'update' && count < 1) {
+      setFieldsForUpdate();
+      setState(() {
+        screenHeader = 'Update Employee';
+      });
+    } else {
+      screenHeader = 'Add Employee';
+    }
 
-                                setState(() {
-                                  _dateControllerText.text = date;
-                                });
-                              });
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                          child: DropdownButtonFormField<String>(
-                            value: chosenGender,
-                            autofocus: true,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 24,
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: colors.buttonColor, width: 1.3),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: colors.buttonColor, width: 1.3),
-                              ),
-                              hintText: 'Gender',
-                              filled: true,
-                              fillColor: colors.backgroundColor,
-                              labelText: 'Gender',
-                              icon: Icon(
-                                Icons.person_outline,
-                              ),
-                            ),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                chosenGender = newValue;
-                              });
-                            },
-                            items: genderOptionList
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
+    Widget widget = Column(
+      children: [
+        _displayWidget
+            ? LoadingWidget()
+            : Expanded(
+                child: PageView(
+                  physics: NeverScrollableScrollPhysics(),
+                  onPageChanged: onChangedFunction,
+                  controller: controller,
+                  children: [
+                    SingleChildScrollView(
+                      // physics: NeverScrollableScrollPhysics(),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            minHeight: MediaQuery.of(context).size.height),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: 10),
                                 child: Text(
-                                  value,
+                                  '${screenHeader}',
+                                  style: TextStyle(
+                                    fontSize: Fonts.heading1_size,
+                                    fontFamily: Fonts.default_font,
+                                  ),
                                 ),
-                              );
-                            }).toList(),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                child: Container(
+                                  height: 150,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.73,
+                                  child: Image.asset(
+                                    'images/innerImages/cook_img.jpg',
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    'Personal Information',
+                                    style: TextStyle(
+                                      fontSize: Fonts.heading_SampleText_size,
+                                      fontFamily: Fonts.default_font,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                child: TextFormField(
+                                  autofocus: true,
+                                  textInputAction: TextInputAction.next,
+                                  onFieldSubmitted: (_) =>
+                                      FocusScope.of(context).nextFocus(),
+                                  onChanged: (text) {
+                                    _name = text;
+                                  },
+                                  controller: edtControllerName,
+                                  textCapitalization: TextCapitalization.words,
+                                  decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: colors.buttonColor,
+                                          width: 1.3),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: colors.buttonColor,
+                                          width: 1.3),
+                                    ),
+                                    hintText: 'Full Name',
+                                    filled: true,
+                                    fillColor: colors.backgroundColor,
+                                    labelText: 'Full Name',
+                                    icon: Icon(
+                                      Icons.person_add,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                child: TextFormField(
+                                  controller: _dateControllerText,
+                                  readOnly: true,
+                                  autofocus: true,
+                                  textInputAction: TextInputAction.next,
+                                  onFieldSubmitted: (_) =>
+                                      FocusScope.of(context).nextFocus(),
+                                  textCapitalization: TextCapitalization.words,
+                                  decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: colors.buttonColor,
+                                          width: 1.3),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: colors.buttonColor,
+                                          width: 1.3),
+                                    ),
+                                    hintText: 'Date Of Birth',
+                                    filled: true,
+                                    fillColor: colors.backgroundColor,
+                                    labelText: 'Date Of Birth',
+                                    icon: Icon(
+                                      Icons.calendar_today,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(2000),
+                                      lastDate: DateTime(2100),
+                                    ).then((value) {
+                                      String day = value.day.toString();
+                                      String month = value.month.toString();
+                                      String year = value.year.toString();
+                                      String date = '${day}-${month}-${year}';
+                                      _dateControllerText.text = date;
+
+                                      setState(() {
+                                        _dateControllerText.text = date;
+                                      });
+                                    });
+                                  },
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                child: DropdownButtonFormField<String>(
+                                  value: chosenGender,
+                                  autofocus: true,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 24,
+                                  decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: colors.buttonColor,
+                                          width: 1.3),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: colors.buttonColor,
+                                          width: 1.3),
+                                    ),
+                                    hintText: 'Gender',
+                                    filled: true,
+                                    fillColor: colors.backgroundColor,
+                                    labelText: 'Gender',
+                                    icon: Icon(
+                                      Icons.person_outline,
+                                    ),
+                                  ),
+                                  onChanged: (String newValue) {
+                                    setState(() {
+                                      chosenGender = newValue;
+                                    });
+                                  },
+                                  items: genderOptionList
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                child: DropdownButtonFormField<String>(
+                                  value: choosenstaffType,
+                                  autofocus: true,
+                                  icon: Icon(Icons.arrow_drop_down),
+                                  iconSize: 24,
+                                  decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: colors.buttonColor,
+                                          width: 1.3),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: colors.buttonColor,
+                                          width: 1.3),
+                                    ),
+                                    hintText: 'Staff Type',
+                                    filled: true,
+                                    fillColor: colors.backgroundColor,
+                                    labelText: 'Staff Type',
+                                    icon: Icon(
+                                      Icons.person,
+                                    ),
+                                  ),
+                                  onChanged: (String newValue) {
+                                    setState(() {
+                                      choosenstaffType = newValue;
+                                    });
+                                  },
+                                  items: staffType
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                          child: DropdownButtonFormField<String>(
-                            value: choosenstaffType,
-                            autofocus: true,
-                            icon: Icon(Icons.arrow_drop_down),
-                            iconSize: 24,
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: colors.buttonColor, width: 1.3),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: colors.buttonColor, width: 1.3),
-                              ),
-                              hintText: 'Staff Type',
-                              filled: true,
-                              fillColor: colors.backgroundColor,
-                              labelText: 'Staff Type',
-                              icon: Icon(
-                                Icons.person,
-                              ),
-                            ),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                choosenstaffType = newValue;
-                              });
-                            },
-                            items: staffType
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    ContactDetailsWidget(),
+                    if (actionType != 'update') ImageWidget(),
+                    if (actionType != 'update') EmailDetails(),
+
+                    // Container(
+                    //   child: Center(
+                    //     child: Column(
+                    //       mainAxisSize: MainAxisSize.min,
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       mainAxisAlignment: MainAxisAlignment.center,
+                    //       children: [
+                    //         Text(
+                    //           'Just Finishing Up!',
+                    //           style: TextStyle(
+                    //             fontSize: Fonts.heading_SampleText_size,
+                    //             fontFamily: Fonts.default_font,
+                    //           ),
+                    //         ),
+                    //         SizedBox(
+                    //           height: 50,
+                    //         ),
+                    //         Text(
+                    //           'We have emailed you a link.\nClick on that link to verify your account',
+                    //           style: TextStyle(
+                    //             color: colors.buttonColor,
+                    //             fontSize: Fonts.heading2_size,
+                    //             fontFamily: Fonts.default_font,
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
                 ),
               ),
-              ContactDetails(),
-              ImageWidget(),
-              EmailDetails(),
-
-              // Container(
-              //   child: Center(
-              //     child: Column(
-              //       mainAxisSize: MainAxisSize.min,
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: [
-              //         Text(
-              //           'Just Finishing Up!',
-              //           style: TextStyle(
-              //             fontSize: Fonts.heading_SampleText_size,
-              //             fontFamily: Fonts.default_font,
-              //           ),
-              //         ),
-              //         SizedBox(
-              //           height: 50,
-              //         ),
-              //         Text(
-              //           'We have emailed you a link.\nClick on that link to verify your account',
-              //           style: TextStyle(
-              //             color: colors.buttonColor,
-              //             fontSize: Fonts.heading2_size,
-              //             fontFamily: Fonts.default_font,
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
-        ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Row(
@@ -382,17 +452,19 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
               SizedBox(
                 width: 10,
               ),
-              Indicator(
-                positionIndex: 2,
-                currentIndex: currentIndex,
-              ),
+              if (actionType != 'update')
+                Indicator(
+                  positionIndex: 2,
+                  currentIndex: currentIndex,
+                ),
               SizedBox(
                 width: 10,
               ),
-              Indicator(
-                positionIndex: 3,
-                currentIndex: currentIndex,
-              ),
+              if (actionType != 'update')
+                Indicator(
+                  positionIndex: 3,
+                  currentIndex: currentIndex,
+                )
             ],
           ),
         ),
@@ -436,7 +508,19 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
         ),
       ],
     );
+    // if (actionType == 'update') {
+    //   setFieldsForUpdate();
+    //   debugPrint('dfffd');
+    // }
+    return widget;
   }
+
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //
+  //   super.dispose();
+  // }
 
   void _textEditingControllerListener() {
     _dateControllerText.text = date;
@@ -444,6 +528,9 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
 
   nextFunction() {
     double personal = 0, phoneNo = 1, email = 3, image = 2;
+    if (count == 0) {
+      setPhoneNo();
+    }
     if (controller.page == personal) {
       if (edtControllerName.text == '') {
         _showToast(context, 'Enter full Name');
@@ -454,12 +541,20 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       } else if (choosenstaffType == null) {
         _showToast(context, 'Choose Person Type');
       } else {
+        if (actionType == 'update') {
+          setState(() {
+            _nextLabel = 'Add';
+          });
+        }
         controller.nextPage(duration: _kDuration, curve: _kCurve);
       }
     } else if (controller.page == phoneNo) {
       if (_phoneNo.toString().trim() == '') {
         _showToast(context, 'Enter Phone Number');
       } else {
+        if (actionType == 'update') {
+          updateEmployeeRecord();
+        }
         controller.nextPage(duration: _kDuration, curve: _kCurve);
       }
     } else if (controller.page == email) {
@@ -502,6 +597,12 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
 
   previousFunction() {
     double personal = 0, phoneNo = 1, email = 3, image = 2;
+
+    if (controller.page != phoneNo - 1 && actionType == 'update') {
+      setState(() {
+        _nextLabel = 'Next>';
+      });
+    }
     if (controller.page != email - 1) {
       setState(() {
         _nextLabel = 'Next>';
@@ -520,7 +621,9 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       //   //   context,
       //   //   MaterialPageRoute(builder: (context) => DentistSetupProfile('_email')),
       //   // );
-
+      setState(() {
+        _displayWidget = true;
+      });
       _email = _email.replaceAll(new RegExp(r"\s+"), "");
       _password = _password.trim();
       _emailDetailsState._validateInputs();
@@ -546,9 +649,25 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       } else {
         print('unsuccessful');
       }
+      setState(() {
+        _displayWidget = true;
+      });
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<void> updateEmployeeRecord() async {
+    employee.Dob = _dateControllerText.text;
+    employee.Gender = chosenGender;
+    employee.PhoneNo = _phoneNo;
+    employee.Name = edtControllerName.text;
+    employee.userType = choosenstaffType;
+    await _employeeUIController.updateEmployeeData(employee);
+    _showToast(context, "Data updated Successfully");
+    Navigator.push(context,
+        MaterialPageRoute(builder: (BuildContext context) => ViewEmployees()));
+    // Navigator.pop(context);
   }
 
   void _showToast(BuildContext context, var _message) {
@@ -561,29 +680,16 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       ),
     );
   }
-}
 
-class ContactDetails extends StatefulWidget {
-  @override
-  _ContactDetailsState createState() => _ContactDetailsState();
-}
-
-class _ContactDetailsState extends State<ContactDetails> {
-  String code = '+92';
-
-  var _phoneNo;
   void _valueChanged(String value) {
     setState(() {
       _phoneNo = value;
     });
-    _addEmployeeScreen.setState(() {
-      _addEmployeeScreen._phoneNo = _phoneNo;
-    });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
+  Widget ContactDetailsWidget() {
+    String code = '+92';
+
     return Container(
       child: Center(
         child: Column(
@@ -611,6 +717,7 @@ class _ContactDetailsState extends State<ContactDetails> {
               child: TextFormField(
                 autofocus: true,
                 onChanged: _valueChanged,
+                controller: edtPhoneController,
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
@@ -706,9 +813,14 @@ class _ContactDetailsState extends State<ContactDetails> {
   }
 }
 
+_ImageWidgetState __imageWidgetState;
+
 class ImageWidget extends StatefulWidget {
   @override
-  _ImageWidgetState createState() => _ImageWidgetState();
+  _ImageWidgetState createState() {
+    __imageWidgetState = new _ImageWidgetState();
+    return __imageWidgetState;
+  }
 }
 
 class _ImageWidgetState extends State<ImageWidget> {
@@ -723,7 +835,7 @@ class _ImageWidgetState extends State<ImageWidget> {
   // }
 
   File _image;
-
+  String _imagePath = null;
   var _msg = "Select Profile Pic";
 
   @override
@@ -765,6 +877,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                 SizedBox(
                   height: 50,
                 ),
+
                 _image != null
                     ? Image.asset(
                         _image.path,
@@ -773,35 +886,31 @@ class _ImageWidgetState extends State<ImageWidget> {
                       )
                     : Container(),
 
-                // SizedBox(
-                //   height: 50,
-                // ),
-                _image == null
-                    ? Padding(
-                        padding: EdgeInsets.only(top: 50),
-                        child: InkWell(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(50)),
-                              color: colors.buttonColor,
-                            ),
-                            width: 150,
-                            height: 50,
-                            child: Center(
-                              child: Text(
-                                'Choose Profile Pic',
-                                style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  color: colors.buttonTextColor,
-                                ),
-                              ),
+                if (_image == null)
+                  Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: InkWell(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                          color: colors.buttonColor,
+                        ),
+                        width: 150,
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            'Choose Profile Pic',
+                            style: TextStyle(
+                              fontFamily: Fonts.default_font,
+                              color: colors.buttonTextColor,
                             ),
                           ),
-                          onTap: chooseFile,
                         ),
-                      )
-                    : Container(),
+                      ),
+                      onTap: chooseFile,
+                    ),
+                  ),
+
                 SizedBox(
                   height: 50,
                 ),

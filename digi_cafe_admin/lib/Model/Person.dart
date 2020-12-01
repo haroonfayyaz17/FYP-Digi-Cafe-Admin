@@ -1,6 +1,11 @@
 class Person {
   String _name, _emailAddress, _gender, _dob, _password, _phoneNo;
 
+  String _id;
+  String get id => _id;
+
+  set id(String value) => _id = value;
+
   String get Name {
     return _name;
   }

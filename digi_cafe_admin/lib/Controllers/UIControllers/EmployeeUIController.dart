@@ -25,10 +25,22 @@ class EmployeeUIController {
     return result;
   }
 
-ViewEmployeesList() async
-{
-List<CafeEmployee> employee_list = await _employeeDBController.getEmployeesList();
-return employee_list; 
-}
+  ViewEmployeesList() async {
+    List<CafeEmployee> employee_list =
+        await _employeeDBController.getEmployeesList();
+    return employee_list;
+  }
 
+  Future<bool> deleteEmployee(String id) async {
+    bool result = await _employeeDBController.deleteEmployee(id);
+    return result;
+  }
+
+  Future<bool> updateEmployeeData(CafeEmployee employee) async {
+    bool result =
+        await _employeeDBController.updateEmployeeData(employee).then((value) {
+      return value;
+    });
+    // return result;
+  }
 }

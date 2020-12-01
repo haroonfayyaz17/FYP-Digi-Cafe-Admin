@@ -25,6 +25,8 @@ dependencies:
   image_picker: ^0.6.7+4
   splashscreen: ^1.2.0
   path_provider: ^1.6.24
+  rflutter_alert: ^1.0.3
+  flutter_speed_dial: ^1.2.5
   country_code_picker: ^1.6.0
   flutter_icons: ^1.1.0
   # The following adds the Cupertino Icons font to your application.

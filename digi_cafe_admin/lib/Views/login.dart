@@ -3,6 +3,7 @@ import 'package:digi_cafe_admin/Views/admin_Dashboard.dart';
 import 'package:digi_cafe_admin/Views/SignUp.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
+import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -161,6 +162,12 @@ class _LoginScreenState extends State<_LoginScreen> {
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
                                   new dashboard()));
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (BuildContext context) =>
+                      //             new ViewFoodMenu()));
+
                       // print(edtTextControllerEmail.text);
                       // print(edtTextControllerPassword.text);
                       // _loginController.CheckSignIn(edtTextControllerEmail.text,

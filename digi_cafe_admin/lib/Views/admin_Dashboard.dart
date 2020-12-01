@@ -3,6 +3,7 @@ import 'package:digi_cafe_admin/Views/AddFoodMenu.dart';
 import 'package:digi_cafe_admin/Views/AddCategory.dart';
 import 'package:digi_cafe_admin/Views/AddVoucher.dart';
 import 'package:digi_cafe_admin/Views/EmptyCartScreen.dart';
+import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/cupertino.dart';
@@ -139,16 +140,21 @@ class __dashboard extends State<_dashboard> {
                 child: InkWell(
                   onTap: () {
                     //TODO: Manage Menu clicked
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                new ViewFoodMenu()));
                     // Navigator.push(
                     //     context,
                     //     MaterialPageRoute(
                     //         builder: (BuildContext context) =>
                     //             new AddFoodMenuScreen()));
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                new AddCategoryScreen()));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (BuildContext context) =>
+                    //             new AddCategoryScreen()));
                   },
                   child: Card(
                     child: Column(children: <Widget>[

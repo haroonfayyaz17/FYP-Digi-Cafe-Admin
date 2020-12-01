@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:digi_cafe_admin/login.dart';
+import 'package:digi_cafe_admin/Views/login.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 
 class Splash_Screen extends StatefulWidget {

@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new ViewEmployees(),
+      home: new Splash_Screen(),
     );
   }
 }

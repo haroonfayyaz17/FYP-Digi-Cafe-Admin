@@ -5,9 +5,12 @@ class Fonts {
   static const double heading2_XL_size = 25;
   static const double heading2_size = 20;
   static const double heading3_size = 18;
+  static const double button_size = 16;
+
   static const double appBarTitle_size = 20;
   static const double heading_SampleText_size = 28;
   static const double label_size = 18;
+  static double dialog_heading_size = 17;
   static const double dashboardItem_heightFactor = 0.5;
   static const double dashboardItem_widthFactor = 0.5;
   static const double dishName_font = 20;
