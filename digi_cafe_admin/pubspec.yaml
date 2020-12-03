@@ -22,7 +22,7 @@ dependencies:
   cloud_firestore: ^0.13.7
   firebase_storage: ^3.1.6
   firebase_analytics: ^5.0.2
-  image_picker: 0.4.12+1
+  image_picker: ^0.6.6+5
   splashscreen: ^1.2.0
   path_provider: ^1.6.24
   rflutter_alert: ^1.0.3
@@ -46,6 +46,7 @@ flutter:
   uses-material-design: true
   assets:
      - images/logo.png
+     - images/manage_voucher.png
      - images/manage_employee.png
      - images/manage_menu.png
      - images/sales.png

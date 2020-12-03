@@ -546,7 +546,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       } else {
         if (actionType == 'update') {
           setState(() {
-            _nextLabel = 'Add';
+            _nextLabel = 'Update';
           });
         }
         controller.nextPage(duration: _kDuration, curve: _kCurve);
@@ -671,9 +671,9 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
     setState(() {
       _displayLoadingWidget = false;
     });
-    Navigator.push(context,
-        MaterialPageRoute(builder: (BuildContext context) => ViewEmployees()));
-    // Navigator.pop(context);
+    // Navigator.push(context,
+    //     MaterialPageRoute(builder: (BuildContext context) => ViewEmployees()));
+    Navigator.pop(context);
   }
 
   void _showToast(BuildContext context, var _message) {
@@ -913,7 +913,9 @@ class _ImageWidgetState extends State<ImageWidget> {
                           ),
                         ),
                       ),
-                      onTap: chooseFile,
+                      onTap: () {
+                        _showPicker(context);
+                      },
                     ),
                   ),
 
@@ -950,6 +952,36 @@ class _ImageWidgetState extends State<ImageWidget> {
     );
   }
 
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Photo Library'),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   void clearSelection() {
     setState(() {
       _image = null;
@@ -959,8 +991,41 @@ class _ImageWidgetState extends State<ImageWidget> {
     });
   }
 
+  Future _imgFromCamera() async {
+    await ImagePicker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+      maxHeight: 175,
+      maxWidth: 175,
+    ).then((image) {
+      setState(() {
+        _image = image;
+      });
+      _addEmployeeScreen.setState(() {
+        _addEmployeeScreen._image = _image;
+      });
+    });
+  }
+
+  Future _imgFromGallery() async {
+    await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+      maxHeight: 175,
+      maxWidth: 175,
+    ).then((image) {
+      setState(() {
+        _image = image;
+      });
+      _addEmployeeScreen.setState(() {
+        _addEmployeeScreen._image = _image;
+      });
+    });
+  }
+
   Future chooseFile() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
+    await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 50)
+        .then((image) {
       setState(() {
         _image = image;
       });

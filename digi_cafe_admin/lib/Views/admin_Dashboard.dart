@@ -4,6 +4,7 @@ import 'package:digi_cafe_admin/Views/AddCategory.dart';
 import 'package:digi_cafe_admin/Views/AddVoucher.dart';
 import 'package:digi_cafe_admin/Views/EmptyCartScreen.dart';
 import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
+import 'package:digi_cafe_admin/Views/ViewVouchers.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/cupertino.dart';
@@ -311,13 +312,84 @@ class __dashboard extends State<_dashboard> {
                     ]),
                   ),
                   onTap: () {
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (BuildContext context) =>
+                    //             new AddVoucherScreen()));
+                  },
+                ),
+              ),
+            ]),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              Container(
+                width: MediaQuery.of(context).size.width *
+                    Fonts.dashboardItem_widthFactor,
+                height: MediaQuery.of(context).size.width *
+                    Fonts.dashboardItem_heightFactor,
+                child: InkWell(
+                  onTap: () {
+                    //TODO: Check Review click
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (BuildContext context) =>
-                                new AddVoucherScreen()));
+                                new ViewVouchers()));
                   },
+                  child: Card(
+                    child: Column(children: <Widget>[
+                      Container(
+                        height: (MediaQuery.of(context).size.width *
+                                Fonts.dashboardItem_heightFactor) -
+                            30,
+                        child: Image.asset('images/manage_voucher.png'),
+                      ),
+                      Flexible(
+                        child: Text(
+                          'Manage Vouchers',
+                          style: TextStyle(
+                            color: colors.labelColor,
+                            fontSize: Fonts.label_size,
+                            fontFamily: Fonts.default_font,
+                          ),
+                        ),
+                      ),
+                    ]),
+                  ),
                 ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width *
+                    Fonts.dashboardItem_widthFactor,
+                height: MediaQuery.of(context).size.width *
+                    Fonts.dashboardItem_heightFactor,
+                // child: InkWell(
+                //   child: Card(
+                //     child: Column(children: <Widget>[
+                //       Container(
+                //         height: (MediaQuery.of(context).size.width *
+                //                 Fonts.dashboardItem_heightFactor) -
+                //             30,
+                //         child: Image.asset('images/complaints.png'),
+                //       ),
+                //       Text(
+                //         'Complaint/Suggestion',
+                //         style: TextStyle(
+                //           color: colors.labelColor,
+                //           fontSize: Fonts.label_size - 2,
+                //           fontFamily: Fonts.default_font,
+                //         ),
+                //       ),
+                //     ]),
+                //   ),
+                //   onTap: () {
+                //     Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (BuildContext context) =>
+                //                 new AddVoucherScreen()));
+                //   },
+                // ),
               ),
             ]),
             SizedBox(

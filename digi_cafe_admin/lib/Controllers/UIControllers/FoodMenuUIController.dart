@@ -54,9 +54,26 @@ class FoodMenuUIController {
     return Future.value(result);
   }
 
+  Future<bool> updateVoucher(String voucherTitle, String validity,
+      String minimumSpend, String discount, String id) async {
+    Voucher voucher = new Voucher(
+        id: id,
+        title: voucherTitle,
+        validity: validity,
+        minimumSpend: minimumSpend,
+        discount: discount);
+    bool result = await _foodMenuDBController.updateVoucher(voucher);
+
+    return Future.value(result);
+  }
+
   Future<bool> deleteFoodItem(String id) async {
-    print(id);
     bool result = await _foodMenuDBController.deleteFoodItem(id);
+    return result;
+  }
+
+  Future<bool> deleteVoucher(String id) async {
+    bool result = await _foodMenuDBController.deleteVoucher(id);
     return result;
   }
 
@@ -80,6 +97,10 @@ class FoodMenuUIController {
 
   Stream<QuerySnapshot> getCategorySnapshot() {
     return _foodMenuDBController.getCategorySnapshot();
+  }
+
+  Stream<QuerySnapshot> getVoucherSnapshot() {
+    return _foodMenuDBController.getVoucherSnapshot();
   }
 
   Stream<QuerySnapshot> getNominatedItemsSnapshot(String formatted) {

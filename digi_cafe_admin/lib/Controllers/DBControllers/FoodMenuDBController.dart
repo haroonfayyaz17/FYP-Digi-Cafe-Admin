@@ -88,7 +88,6 @@ class FoodMenuDBController {
   }
 
   Future<bool> deleteFoodItem(String id) async {
-    print('yes');
     await firestoreInstance
         .collection('Food Menu')
         .document("$documentName")
@@ -108,6 +107,37 @@ class FoodMenuDBController {
     return true;
   }
 
+  Future<bool> deleteVoucher(String id) async {
+    var done = false;
+    await firestoreInstance
+        .collection('Voucher')
+        .document("$id")
+        .delete()
+        .then((value1) async {
+      QuerySnapshot value = await firestoreInstance
+          .collection('Person')
+          .where('PType', whereIn: ["Faculty", "Student"]).getDocuments();
+      for (DocumentSnapshot element in value.documents) {
+        firestoreInstance
+            .collection('Person')
+            .document(element.documentID)
+            .collection("Voucher")
+            .document(id)
+            .delete()
+            .catchError((e) {
+          print(e);
+          done = false;
+        });
+        done = true;
+      }
+    }).catchError((e) {
+      print(e);
+      done = false;
+    });
+    // print(done);
+    return done;
+  }
+
   Future<bool> addVoucher(Voucher voucher) async {
     var done = false;
     // await firestoreInstance.collection('Category').add({
@@ -115,23 +145,74 @@ class FoodMenuDBController {
     // }).then((value) async {
     //   done = true;
     // });
-    QuerySnapshot value =
-        await firestoreInstance.collection('Person').getDocuments();
 
-    for (DocumentSnapshot element in value.documents) {
-      firestoreInstance
+    await firestoreInstance.collection('Voucher').add({
+      "title": voucher.title,
+      "validity": voucher.validity,
+      'discount': voucher.discount,
+      'minimumSpend': voucher.minimumSpend,
+    }).then((value1) async {
+      var id = value1.documentID;
+      QuerySnapshot value = await firestoreInstance
           .collection('Person')
-          .document(element.documentID)
-          .collection("Voucher")
-          .add({
-        "title": voucher.title,
-        "validity": voucher.validity,
-        'discount': voucher.discount,
-        'minimumSpend': voucher.minimumSpend,
-        'usedOn': 'null',
-      });
+          .where('PType', whereIn: ["Faculty", "Student"]).getDocuments();
+      for (DocumentSnapshot element in value.documents) {
+        firestoreInstance
+            .collection('Person')
+            .document(element.documentID)
+            .collection("Voucher")
+            .document(id)
+            .setData({
+          // "title": voucher.title,
+          // "validity": voucher.validity,
+          // 'discount': voucher.discount,
+          // 'minimumSpend': voucher.minimumSpend,
+          'usedOn': 'null',
+        });
+        done = true;
+      }
+    });
+
+    return Future.value(done);
+  }
+
+  Future<bool> updateVoucher(Voucher voucher) async {
+    var done = false;
+    // await firestoreInstance.collection('Category').add({
+    //   "name": categoryName,
+    // }).then((value) async {
+    //   done = true;
+    // });
+
+    await firestoreInstance
+        .collection('Voucher')
+        .document(voucher.getId)
+        .setData({
+      "title": voucher.title,
+      "validity": voucher.validity,
+      'discount': voucher.discount,
+      'minimumSpend': voucher.minimumSpend,
+    }).then((value1) async {
+      // var id = value1.documentID;
+      // QuerySnapshot value =
+      //     await firestoreInstance.collection('Person').getDocuments();
+      // for (DocumentSnapshot element in value.documents) {
+      //   firestoreInstance
+      //       .collection('Person')
+      //       .document(element.documentID)
+      //       .collection("Voucher")
+      //       .document(id)
+      //       .setData({
+      //     "title": voucher.title,
+      //     "validity": voucher.validity,
+      //     'discount': voucher.discount,
+      //     'minimumSpend': voucher.minimumSpend,
+      //     'usedOn': 'null',
+      //   });
+      //
+      // }
       done = true;
-    }
+    });
 
     return Future.value(done);
   }
@@ -224,5 +305,13 @@ class FoodMenuDBController {
     }
 
     return Future.value(true);
+  }
+
+  Stream<QuerySnapshot> getVoucherSnapshot() {
+    Stream<QuerySnapshot> querySnapshot = firestoreInstance
+        .collection('Voucher')
+        // .where('category', isEqualTo: 'continental')
+        .snapshots();
+    return querySnapshot;
   }
 }
