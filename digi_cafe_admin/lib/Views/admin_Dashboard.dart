@@ -16,19 +16,19 @@ import 'NoIternetScreen.dart';
 class dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // return MaterialApp(
-    //   theme: ThemeData(
-    //     primaryColor: colors.buttonColor,
-    //     cursorColor: colors.cursorColor,
-    //   ),
-    //   home:
-    return WillPopScope(
-      onWillPop: () {
-        //exit(0);
-        Navigator.pop(context);
-      },
-      child: _dashboard(),
-    );
+    return MaterialApp(
+        theme: ThemeData(
+          primaryColor: colors.buttonColor,
+          cursorColor: colors.cursorColor,
+        ),
+        home: _dashboard());
+    // return WillPopScope(
+    //   onWillPop: () {
+    //     //exit(0);
+    //     Navigator.pop(context);
+    //   },
+    //   child: _dashboard(),
+    // );
     // );
   }
 }

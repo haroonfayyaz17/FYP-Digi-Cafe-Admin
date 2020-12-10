@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digi_cafe_admin/Model/Cafe Employee.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/EmployeeDBController.dart';
 
@@ -42,5 +43,9 @@ class EmployeeUIController {
       return value;
     });
     // return result;
+  }
+
+  Stream<QuerySnapshot> getEmployeeSnapshot() {
+    return _employeeDBController.getEmployeeSnapshot();
   }
 }

@@ -562,7 +562,6 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       }
     } else if (controller.page == email) {
       controller.nextPage(duration: _kDuration, curve: _kCurve);
-      _functionSignUp();
       if (_email != '') {
         if (_password == '') {
           _showToast(context, 'Enter Password');
@@ -958,18 +957,37 @@ class _ImageWidgetState extends State<ImageWidget> {
         builder: (BuildContext bc) {
           return SafeArea(
             child: Container(
+              color: colors.buttonColor,
               child: new Wrap(
                 children: <Widget>[
                   new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Photo Library'),
+                      leading: new Icon(Icons.photo_library,
+                          color: colors.buttonTextColor),
+                      title: new Text(
+                        'Photo Library',
+                        style: TextStyle(
+                          color: colors.buttonTextColor,
+                          fontFamily: Fonts.default_font,
+                          fontSize: Fonts.dialog_heading_size,
+                        ),
+                      ),
                       onTap: () {
                         _imgFromGallery();
                         Navigator.of(context).pop();
                       }),
                   new ListTile(
-                    leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
+                    leading: new Icon(
+                      Icons.photo_camera,
+                      color: colors.buttonTextColor,
+                    ),
+                    title: new Text(
+                      'Camera',
+                      style: TextStyle(
+                        color: colors.buttonTextColor,
+                        fontFamily: Fonts.default_font,
+                        fontSize: Fonts.dialog_heading_size,
+                      ),
+                    ),
                     onTap: () {
                       _imgFromCamera();
                       Navigator.of(context).pop();

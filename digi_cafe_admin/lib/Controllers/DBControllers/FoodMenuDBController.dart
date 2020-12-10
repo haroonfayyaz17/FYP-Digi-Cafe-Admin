@@ -38,7 +38,6 @@ class FoodMenuDBController {
       StorageUploadTask uploadTask = firebaseStorageRef.putFile(image);
       StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
       taskSnapshot.ref.getDownloadURL().then((value) async {
-        print("Done: $value");
         await firestoreInstance
             .collection('Food Menu')
             .document("$documentName")
@@ -300,7 +299,7 @@ class FoodMenuDBController {
           .collection('$formatted')
           .document(itemsSelected[i])
           .setData({
-        "item": 'a',
+        "count": '0',
       }, merge: true);
     }
 

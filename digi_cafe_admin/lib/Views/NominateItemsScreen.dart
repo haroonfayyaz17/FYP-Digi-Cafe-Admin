@@ -111,8 +111,8 @@ class _NominateItemsState extends State<NominateItemsState> {
                           NominateItems items = new NominateItems(
                               dish.documentID,
                               dish.data['name'],
-                              dish.data['price'],
-                              dish.data['stockLeft']);
+                              dish.data['price'].toDouble(),
+                              dish.data['stockLeft'].toDouble());
                           listItems.add(items);
                         }
                         _ds = new NominateItemsDataSource(listItems);

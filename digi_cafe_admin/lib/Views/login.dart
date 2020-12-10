@@ -4,6 +4,7 @@ import 'package:digi_cafe_admin/Views/SignUp.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
+import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -40,6 +41,10 @@ class _LoginScreenState extends State<_LoginScreen> {
   TextEditingController edtTextControllerEmail;
 
   TextEditingController edtTextControllerPassword;
+
+  var adminEmail = 'digiCafeAdmin@gmail.com';
+
+  var adminPassword = 'admin123';
   @override
   void initState() {
     super.initState();
@@ -157,6 +162,9 @@ class _LoginScreenState extends State<_LoginScreen> {
                       ],
                     ),
                     onPressed: () {
+                      LoginDBController controller = new LoginDBController();
+                      controller.CreateNewUser('$adminEmail', "$adminPassword");
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(

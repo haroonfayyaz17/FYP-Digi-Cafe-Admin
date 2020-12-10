@@ -146,11 +146,13 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                       minHeight:
                                           MediaQuery.of(context).size.height),
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      // SizedBox(
-                                      //   height: 35,
-                                      // ),
+                                      SizedBox(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.1,
+                                      ),
                                       Text(
                                         '$screenHeader',
                                         style: TextStyle(
@@ -436,30 +438,32 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                                 padding:
                                                     EdgeInsets.only(top: 50),
                                                 child: InkWell(
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  50)),
-                                                      color: colors.buttonColor,
-                                                    ),
-                                                    width: 150,
-                                                    height: 50,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Choose Food Pic',
-                                                        style: TextStyle(
-                                                          fontFamily: Fonts
-                                                              .default_font,
-                                                          color: colors
-                                                              .buttonTextColor,
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    50)),
+                                                        color:
+                                                            colors.buttonColor,
+                                                      ),
+                                                      width: 150,
+                                                      height: 50,
+                                                      child: Center(
+                                                        child: Text(
+                                                          'Choose Food Pic',
+                                                          style: TextStyle(
+                                                            fontFamily: Fonts
+                                                                .default_font,
+                                                            color: colors
+                                                                .buttonTextColor,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  onTap: chooseFile,
-                                                ),
+                                                    onTap: () {
+                                                      _showPicker(context);
+                                                    }),
                                               )
                                             : Container(),
                                         SizedBox(
@@ -634,6 +638,85 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
     setState(() {
       _image = null;
       _imageURL = null;
+    });
+  }
+
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              color: colors.buttonColor,
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library,
+                          color: colors.buttonTextColor),
+                      title: new Text(
+                        'Photo Library',
+                        style: TextStyle(
+                          color: colors.buttonTextColor,
+                          fontFamily: Fonts.default_font,
+                          fontSize: Fonts.dialog_heading_size,
+                        ),
+                      ),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(
+                      Icons.photo_camera,
+                      color: colors.buttonTextColor,
+                    ),
+                    title: new Text(
+                      'Camera',
+                      style: TextStyle(
+                        color: colors.buttonTextColor,
+                        fontFamily: Fonts.default_font,
+                        fontSize: Fonts.dialog_heading_size,
+                      ),
+                    ),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Future _imgFromCamera() async {
+    await ImagePicker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 50,
+      maxHeight: 175,
+      maxWidth: 175,
+    ).then((image) {
+      setState(() {
+        _image = image;
+        _imageP = image == null ? null : _image.path;
+        // print(_image.path);
+      });
+    });
+  }
+
+  Future _imgFromGallery() async {
+    await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+      maxHeight: 175,
+      maxWidth: 175,
+    ).then((image) {
+      setState(() {
+        _image = image;
+        _imageP = image == null ? null : _image.path;
+        // print(_image.path);
+      });
     });
   }
 

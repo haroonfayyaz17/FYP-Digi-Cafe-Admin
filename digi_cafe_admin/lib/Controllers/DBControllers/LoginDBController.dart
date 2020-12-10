@@ -6,7 +6,7 @@ class LoginDBController {
   var _firebaseDatabase;
   FirebaseUser user;
 
-  LoginController() {
+  LoginDBController() {
     _firebaseAuth = FirebaseAuth.instance;
     _firebaseDatabase = FirebaseDatabase.instance.reference();
   }

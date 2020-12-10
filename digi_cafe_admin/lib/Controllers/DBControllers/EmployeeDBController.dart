@@ -13,6 +13,7 @@ class EmployeeDBController {
     firestoreInstance = Firestore.instance;
   }
   Future<bool> addEmployee(CafeEmployee _employee) async {
+    bool done = false;
     if (_employee.EmailAddres != "") {
       LoginDBController controller = new LoginDBController();
       await controller.CreateNewUser(_employee.EmailAddres, _employee.Password);
@@ -22,35 +23,36 @@ class EmployeeDBController {
       "email": _employee.EmailAddres,
       "PType": _employee.userType,
       "gender": _employee.Gender,
-      "phoneNo": _employee.PhoneNo,
-      "DOB": _employee.Dob
+      "phoneNo": _employee.PhoneNo.toString(),
+      "DOB": _employee.Dob.toString(),
+      "imgURL": "x"
     }).then((value) async {
       var id = value.documentID;
-      await firestoreInstance
-          .collection('Employee')
-          .document(id)
-          .setData({"User Type": _employee.userType}).then((value) async {
-        // print(value.documentID);
-        File myFile = new File(_employee.imgURL);
-        StorageReference firebaseStorageRef =
-            FirebaseStorage.instance.ref().child('Employee/$id');
-        StorageUploadTask uploadTask = firebaseStorageRef.putFile(myFile);
-        StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-        taskSnapshot.ref.getDownloadURL().then(
-              (value) => print("Done: $value"),
-            );
+      // print(value.documentID);
+      File myFile = new File(_employee.imgURL);
+      StorageReference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('Employee/$id');
+      StorageUploadTask uploadTask = firebaseStorageRef.putFile(myFile);
+      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+      taskSnapshot.ref.getDownloadURL().then((value) async {
+        await firestoreInstance
+            .collection('Employee')
+            .document(id)
+            .setData({"User Type": _employee.userType});
+        await firestoreInstance.collection('Person').document(id)
+          ..updateData({'imgURL': value});
       });
-      return true;
+      done = true;
     });
-
-    return true;
+    return Future.value(done);
   }
 
   Future<List<CafeEmployee>> getEmployeesList() async {
     try {
       List<CafeEmployee> list = new List<CafeEmployee>();
-      QuerySnapshot value =
-          await firestoreInstance.collection('Person').getDocuments();
+      QuerySnapshot value = await firestoreInstance
+          .collection('Person')
+          .where('PType', whereIn: ["Kitchen", "Serving"]).getDocuments();
       for (DocumentSnapshot element in value.documents) {
         CafeEmployee employee = new CafeEmployee(
             element.data["Name"],
@@ -126,5 +128,14 @@ class EmployeeDBController {
       return true;
     });
     // return Future.value(false);
+  }
+
+  Stream<QuerySnapshot> getEmployeeSnapshot() {
+    Stream<QuerySnapshot> querySnapshot = firestoreInstance
+        .collection('Person')
+        .where('PType', whereIn: ["Kitchen", "Serving"])
+        // .where('category', isEqualTo: 'continental')
+        .snapshots();
+    return querySnapshot;
   }
 }
