@@ -12,17 +12,41 @@ class LoginDBController {
   }
 
   Future<String> CheckSignIn(String _username, String _password) async {
-    String login = ' ';
+    String login = null;
     try {
       AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
           email: _username, password: _password);
       user = result.user;
-      login = user.uid;
+      if (user == null) {
+        login = null;
+      } else {
+        login = user.uid;
+      }
       print('id: ' + login);
     } catch (e) {
-      print(e.message);
+      if (e.code == 'ERROR_WRONG_PASSWORD') {
+        login = 'wrong password';
+      } else {
+        login = 'wrong email';
+      }
     }
     return login;
+  }
+
+  @override
+  Future<String> resetPassword(String email) async {
+    String login;
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      return 'correct';
+    } catch (e) {
+      if (e.code == 'ERROR_INVALID_EMAIL') {
+        return 'invalid';
+      }
+
+      // print(e.toString());
+      // print(e.message);
+    }
   }
 
   Future<String> CreateNewUser(String _username, String _password) async {

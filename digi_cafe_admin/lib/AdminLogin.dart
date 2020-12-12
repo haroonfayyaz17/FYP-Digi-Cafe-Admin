@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Views/admin_Dashboard.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 
-class LoginScreen extends StatelessWidget {
+class AdminLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

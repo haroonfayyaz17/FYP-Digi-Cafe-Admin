@@ -1,6 +1,6 @@
 import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
 import 'package:digi_cafe_admin/Views/admin_Dashboard.dart';
-import 'package:digi_cafe_admin/Views/Forgot Password Screen.dart';
+import 'package:digi_cafe_admin/Views/login.dart';
 import 'package:digi_cafe_admin/Views/SignUp.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
@@ -9,7 +9,7 @@ import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -20,32 +20,25 @@ class LoginScreen extends StatelessWidget {
         cursorColor: colors.cursorColor,
       ),
       home: Scaffold(
-        body: _LoginScreen(),
+        body: _ForgotPasswordScreen(),
       ),
     );
   }
 }
 
-class _LoginScreen extends StatefulWidget {
+class _ForgotPasswordScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
 }
 
-class _LoginScreenState extends State<_LoginScreen> {
+class _ForgotPasswordScreenState extends State<_ForgotPasswordScreen> {
   bool _buttonPressed = false;
-  bool _passwordHide = true;
 
-  Icon _passwordIcon = Icon(
-    Icons.remove_red_eye,
-    size: 22,
-  );
   TextEditingController edtTextControllerEmail;
 
   TextEditingController edtTextControllerPassword;
 
-  var adminEmail = 'haroonfayyaz17@gmail.com';
   bool _displayLabel = false;
-  var adminPassword = 'admin123';
   LoginDBController dbController;
 
   var errorHeading = '';
@@ -56,14 +49,6 @@ class _LoginScreenState extends State<_LoginScreen> {
     edtTextControllerEmail = new TextEditingController();
     edtTextControllerPassword = new TextEditingController();
     dbController = new LoginDBController();
-
-    dbController.CheckSignIn(adminEmail, adminPassword).then((value) {
-      if (value == 'wrong email') {
-        dbController.CreateNewUser(adminEmail, adminPassword);
-      }
-    });
-    // if (dbController.CheckSignIn(adminEmail, adminPassword) == null) {
-    // }
   }
 
   @override
@@ -123,70 +108,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(20),
-                  child: TextFormField(
-                    autofocus: true,
-                    controller: edtTextControllerPassword,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      border: UnderlineInputBorder(),
-                      filled: true,
-                      fillColor: colors.backgroundColor,
-                      suffixIcon: InkWell(
-                        child: _passwordIcon,
-                        onTap: () {
-                          setState(() {
-                            _passwordHide = !_passwordHide;
-                            if (_passwordHide) {
-                              _passwordIcon = Icon(
-                                Icons.remove_red_eye,
-                                size: 22,
-                              );
-                            } else {
-                              _passwordIcon = Icon(
-                                PasswordCross.eye_slash,
-                                size: 22,
-                              );
-                            }
-                          });
-                        },
-                      ),
-                      labelText: 'Password',
-                      icon: Icon(
-                        Icons.lock,
-//                    color: colors.iconButtonColor,
-                      ),
-                    ),
-                    keyboardType: TextInputType.text,
-                    obscureText: _passwordHide,
-                  ),
-                ),
-
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: InkWell(
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontFamily: Fonts.default_font,
-                          fontSize: Fonts.heading3_size,
-                          color: colors.buttonColor,
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ForgotPasswordScreen()));
-                      },
-                    ),
-                  ),
-                ),
 
                 Padding(
                   padding: const EdgeInsets.only(top: 30.0),
@@ -203,7 +124,7 @@ class _LoginScreenState extends State<_LoginScreen> {
                           Visibility(
                             visible: !_buttonPressed,
                             child: Text(
-                              'Sign In',
+                              'Reset Password',
                               style: TextStyle(
                                 fontFamily: Fonts.default_font,
                                 color: colors.buttonTextColor,
@@ -223,7 +144,7 @@ class _LoginScreenState extends State<_LoginScreen> {
                         setState(() {
                           _buttonPressed = true;
                         });
-                        checkSignIn();
+                        forgotPassword();
 
                         // Navigator.push(
                         //     context,
@@ -238,7 +159,7 @@ class _LoginScreenState extends State<_LoginScreen> {
 
                         // print(edtTextControllerEmail.text);
                         // print(edtTextControllerPassword.text);
-                        // _loginController.CheckSignIn(edtTextControllerEmail.text,
+                        // _loginController.forgotPassword(edtTextControllerEmail.text,
                         //     edtTextControllerPassword.text);
                         // _loginController
                         //     .isEmailVerified()
@@ -286,42 +207,64 @@ class _LoginScreenState extends State<_LoginScreen> {
     );
   }
 
-  Future<void> checkSignIn() async {
-    if (edtTextControllerEmail.text != '' &&
-        edtTextControllerPassword.text != '') {
-      await dbController.CheckSignIn(
-              edtTextControllerEmail.text, edtTextControllerPassword.text)
-          .then((value) {
-        if (value == 'wrong email') {
-          setState(() {
-            _displayLabel = true;
-            _buttonPressed = false;
-
-            errorHeading = 'Incorrect Email';
-          });
-        } else if (value == 'wrong password') {
-          setState(() {
-            _buttonPressed = false;
-
-            _displayLabel = true;
-            errorHeading = 'Incorrect Password';
-          });
-        } else {
-          setState(() {
-            _buttonPressed = false;
-            _displayLabel = false;
-            _passwordHide = true;
-            edtTextControllerPassword.text = '';
-          });
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => dashboard()));
-        }
-      });
+  Future<void> forgotPassword() async {
+    if (edtTextControllerEmail.text != '') {
+      String value =
+          await dbController.resetPassword(edtTextControllerEmail.text);
+      if (value == 'invalid') {
+        setState(() {
+          errorHeading = 'Invalid Email Address';
+          _buttonPressed = false;
+          _displayLabel = true;
+        });
+      } else {
+        setState(() {
+          _buttonPressed = false;
+          _displayLabel = false;
+        });
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                    content: Text(
+                      'A password reset email has been sent to this email address. Follow the instructions sent to reset your password.',
+                      style: TextStyle(
+                        fontFamily: Fonts.default_font,
+                        fontSize: Fonts.heading2_size,
+                        color: colors.labelColor,
+                      ),
+                    ),
+                    actions: <Widget>[
+                      Container(
+                        // width: MediaQuery.of(context).size.width * 0.3,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: colors.buttonColor,
+                        ),
+                        child: FlatButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                          },
+                          child: Text(
+                            'OK',
+                            style: TextStyle(
+                              fontFamily: Fonts.default_font,
+                              fontSize: Fonts.label_size,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]));
+      }
     } else {
       setState(() {
         _buttonPressed = false;
         _displayLabel = true;
-        errorHeading = 'Email or Password is empty';
+        errorHeading = 'Email is not entered';
       });
     }
   }
