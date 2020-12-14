@@ -290,39 +290,48 @@ class _LoginScreenState extends State<_LoginScreen> {
       String email = edtTextControllerEmail.text
           .replaceAll(new RegExp(r"\s+"), "")
           .toLowerCase();
-      print(email);
-      await dbController.CheckSignIn(email, edtTextControllerPassword.text)
-          .then((value) {
-        if (value == 'wrong email') {
-          setState(() {
-            _displayLabel = true;
-            _buttonPressed = false;
+      if (email != adminEmail) {
+        await dbController.CheckSignIn(email, edtTextControllerPassword.text)
+            .then((value) {
+          if (value == 'wrong email') {
+            setState(() {
+              _displayLabel = true;
+              _buttonPressed = false;
 
-            errorHeading = 'Incorrect Email';
-          });
-        } else if (value == 'wrong password') {
-          setState(() {
-            _buttonPressed = false;
+              errorHeading = 'Incorrect Email';
+            });
+          } else if (value == 'wrong password') {
+            setState(() {
+              _buttonPressed = false;
 
-            _displayLabel = true;
-            errorHeading = 'Incorrect Password';
-          });
-        } else {
-          setState(() {
-            _buttonPressed = false;
-            _displayLabel = false;
-            _passwordHide = true;
-            edtTextControllerPassword.text = '';
-          });
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => dashboard(email: email)));
-        }
-      });
+              _displayLabel = true;
+              errorHeading = 'Incorrect Password';
+            });
+          } else {
+            setState(() {
+              _buttonPressed = false;
+              _displayLabel = false;
+              _passwordHide = true;
+              edtTextControllerPassword.text = '';
+            });
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => dashboard(email: email)));
+          }
+        });
+      } else {
+        setState(() {
+          _buttonPressed = false;
+          _displayLabel = true;
+          errorHeading = 'Email or Password is empty';
+        });
+      }
     } else {
       setState(() {
-        _buttonPressed = false;
         _displayLabel = true;
-        errorHeading = 'Email or Password is empty';
+        _buttonPressed = false;
+        errorHeading = 'Incorrect Email';
       });
     }
   }
