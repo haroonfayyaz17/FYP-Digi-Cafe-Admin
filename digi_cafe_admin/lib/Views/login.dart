@@ -290,7 +290,7 @@ class _LoginScreenState extends State<_LoginScreen> {
       String email = edtTextControllerEmail.text
           .replaceAll(new RegExp(r"\s+"), "")
           .toLowerCase();
-      if (email != adminEmail) {
+      if (email == adminEmail) {
         await dbController.CheckSignIn(email, edtTextControllerPassword.text)
             .then((value) {
           if (value == 'wrong email') {
@@ -322,16 +322,16 @@ class _LoginScreenState extends State<_LoginScreen> {
         });
       } else {
         setState(() {
-          _buttonPressed = false;
           _displayLabel = true;
-          errorHeading = 'Email or Password is empty';
+          _buttonPressed = false;
+          errorHeading = 'Incorrect Email';
         });
       }
     } else {
       setState(() {
-        _displayLabel = true;
         _buttonPressed = false;
-        errorHeading = 'Incorrect Email';
+        _displayLabel = true;
+        errorHeading = 'Email or Password is empty';
       });
     }
   }
