@@ -129,7 +129,7 @@ class FoodMenuDBController {
         .then((value1) async {
       QuerySnapshot value = await firestoreInstance
           .collection('Person')
-          .where('PType', whereIn: ["Faculty", "Student"]).getDocuments();
+          .where('PType', whereIn: ["faculty", "student"]).getDocuments();
       for (DocumentSnapshot element in value.documents) {
         firestoreInstance
             .collection('Person')
@@ -169,7 +169,7 @@ class FoodMenuDBController {
         var id = value1.documentID;
         QuerySnapshot value = await firestoreInstance
             .collection('Person')
-            .where('PType', whereIn: ["Faculty", "Student"]).getDocuments();
+            .where('PType', whereIn: ["faculty", "student"]).getDocuments();
         for (DocumentSnapshot element in value.documents) {
           firestoreInstance
               .collection('Person')
