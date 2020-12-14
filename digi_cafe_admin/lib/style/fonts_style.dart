@@ -13,6 +13,6 @@ class Fonts {
   static double dialog_heading_size = 17;
   static const double dashboardItem_heightFactor = 0.5;
   static const double dashboardItem_widthFactor = 0.5;
-  static const double dishName_font = 20;
+  static const double dishName_font = 18.8;
   static const double dishDescription_font = 18;
 }

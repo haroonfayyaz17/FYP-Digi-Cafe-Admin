@@ -15,75 +15,89 @@ class FoodMenuDBController {
   var firestoreInstance;
 
   var nominatedItemsDocument = 'Nominated Items';
+
   FoodMenuDBController() {
     firestoreInstance = Firestore.instance;
   }
   Future<bool> addFoodMenu(FoodMenu foodMenu, File image) async {
-    FoodItem _foodItem = foodMenu.foodList.first;
-    await firestoreInstance
-        .collection('Food Menu')
-        .document("$documentName")
-        .collection('$collectionName')
-        .add({
-      "category": foodMenu.category,
-      "name": _foodItem.name,
-      "description": _foodItem.description,
-      "price": _foodItem.price,
-      "stockLeft": _foodItem.stockLeft,
-    }).then((value) async {
-      // print(value.documentID);
-      var id = value.documentID;
-      StorageReference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child('Food Menu/${value.documentID}');
-      StorageUploadTask uploadTask = firebaseStorageRef.putFile(image);
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-      taskSnapshot.ref.getDownloadURL().then((value) async {
-        await firestoreInstance
-            .collection('Food Menu')
-            .document("$documentName")
-            .collection("$collectionName")
-            .document(id)
-            .updateData({"imgURL": value});
-      });
-    });
-    return true;
-  }
-
-  Future<bool> updateFoodMenu(FoodMenu foodMenu) async {
-    FoodItem _foodItem = foodMenu.foodList.first;
-    await firestoreInstance
-        .collection('Food Menu')
-        .document("$documentName")
-        .collection("$collectionName")
-        .document(_foodItem.id)
-        .updateData({
-      "category": foodMenu.category,
-      "name": _foodItem.name,
-      "description": _foodItem.description,
-      "price": _foodItem.price,
-      "stockLeft": _foodItem.stockLeft,
-    }).then((value) async {
-      if (_foodItem.imgURL != null) {
-        StorageReference firebaseStorageRef =
-            FirebaseStorage.instance.ref().child('Food Menu/${_foodItem.id}');
-        print(_foodItem.imgURL);
-        File _image = File(_foodItem.imgURL);
-        // print(_image.path);
-        StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
+    var done = false;
+    try {
+      FoodItem _foodItem = foodMenu.foodList.first;
+      await firestoreInstance
+          .collection('Food Menu')
+          .document("$documentName")
+          .collection('$collectionName')
+          .add({
+        "category": foodMenu.category,
+        "name": _foodItem.name,
+        "description": _foodItem.description,
+        "price": _foodItem.price,
+        "stockLeft": _foodItem.stockLeft,
+      }).then((value) async {
+        // print(value.documentID);
+        var id = value.documentID;
+        StorageReference firebaseStorageRef = FirebaseStorage.instance
+            .ref()
+            .child('Food Menu/${value.documentID}');
+        StorageUploadTask uploadTask = firebaseStorageRef.putFile(image);
         StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
         taskSnapshot.ref.getDownloadURL().then((value) async {
-          print("Done: $value");
           await firestoreInstance
               .collection('Food Menu')
               .document("$documentName")
               .collection("$collectionName")
-              .document(_foodItem.id)
+              .document(id)
               .updateData({"imgURL": value});
         });
-      }
-    });
+      });
 
-    return true;
+      done = true;
+    } catch (e) {
+      done = false;
+    }
+    return done;
+  }
+
+  Future<bool> updateFoodMenu(FoodMenu foodMenu) async {
+    bool done;
+    try {
+      FoodItem _foodItem = foodMenu.foodList.first;
+      await firestoreInstance
+          .collection('Food Menu')
+          .document("$documentName")
+          .collection("$collectionName")
+          .document(_foodItem.id)
+          .updateData({
+        "category": foodMenu.category,
+        "name": _foodItem.name,
+        "description": _foodItem.description,
+        "price": _foodItem.price,
+        "stockLeft": _foodItem.stockLeft,
+      }).then((value) async {
+        if (_foodItem.imgURL != null) {
+          StorageReference firebaseStorageRef =
+              FirebaseStorage.instance.ref().child('Food Menu/${_foodItem.id}');
+          print(_foodItem.imgURL);
+          File _image = File(_foodItem.imgURL);
+          // print(_image.path);
+          StorageUploadTask uploadTask = firebaseStorageRef.putFile(_image);
+          StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+          taskSnapshot.ref.getDownloadURL().then((value) async {
+            print("Done: $value");
+            await firestoreInstance
+                .collection('Food Menu')
+                .document("$documentName")
+                .collection("$collectionName")
+                .document(_foodItem.id)
+                .updateData({"imgURL": value});
+          });
+        }
+      });
+      done = true;
+    } catch (e) {
+      done = false;
+    }
+    return done;
   }
 
   Future<bool> deleteFoodItem(String id) async {
@@ -127,8 +141,8 @@ class FoodMenuDBController {
           print(e);
           done = false;
         });
-        done = true;
       }
+      done = true;
     }).catchError((e) {
       print(e);
       done = false;
@@ -139,105 +153,119 @@ class FoodMenuDBController {
 
   Future<bool> addVoucher(Voucher voucher) async {
     var done = false;
-    // await firestoreInstance.collection('Category').add({
-    //   "name": categoryName,
-    // }).then((value) async {
-    //   done = true;
-    // });
+    try {
+      // await firestoreInstance.collection('Category').add({
+      //   "name": categoryName,
+      // }).then((value) async {
+      //   done = true;
+      // });
 
-    await firestoreInstance.collection('Voucher').add({
-      "title": voucher.title,
-      "validity": voucher.validity,
-      'discount': voucher.discount,
-      'minimumSpend': voucher.minimumSpend,
-    }).then((value1) async {
-      var id = value1.documentID;
-      QuerySnapshot value = await firestoreInstance
-          .collection('Person')
-          .where('PType', whereIn: ["Faculty", "Student"]).getDocuments();
-      for (DocumentSnapshot element in value.documents) {
-        firestoreInstance
+      await firestoreInstance.collection('Voucher').add({
+        "title": voucher.getTitle,
+        "validity": voucher.validity,
+        'discount': voucher.discount,
+        'minimumSpend': voucher.minimumSpend,
+      }).then((value1) async {
+        var id = value1.documentID;
+        QuerySnapshot value = await firestoreInstance
             .collection('Person')
-            .document(element.documentID)
-            .collection("Voucher")
-            .document(id)
-            .setData({
-          // "title": voucher.title,
-          // "validity": voucher.validity,
-          // 'discount': voucher.discount,
-          // 'minimumSpend': voucher.minimumSpend,
-          'usedOn': 'null',
-        });
+            .where('PType', whereIn: ["Faculty", "Student"]).getDocuments();
+        for (DocumentSnapshot element in value.documents) {
+          firestoreInstance
+              .collection('Person')
+              .document(element.documentID)
+              .collection("Voucher")
+              .document(id)
+              .setData({
+            // "title": voucher.title,
+            // "validity": voucher.validity,
+            // 'discount': voucher.discount,
+            // 'minimumSpend': voucher.minimumSpend,
+            'usedOn': 'null',
+          });
+        }
         done = true;
-      }
-    });
-
+      });
+    } catch (e) {
+      done = false;
+    }
     return Future.value(done);
   }
 
   Future<bool> updateVoucher(Voucher voucher) async {
     var done = false;
-    // await firestoreInstance.collection('Category').add({
-    //   "name": categoryName,
-    // }).then((value) async {
-    //   done = true;
-    // });
+    try {
+      // await firestoreInstance.collection('Category').add({
+      //   "name": categoryName,
+      // }).then((value) async {
+      //   done = true;
+      // });
 
-    await firestoreInstance
-        .collection('Voucher')
-        .document(voucher.getId)
-        .setData({
-      "title": voucher.title,
-      "validity": voucher.validity,
-      'discount': voucher.discount,
-      'minimumSpend': voucher.minimumSpend,
-    }).then((value1) async {
-      // var id = value1.documentID;
-      // QuerySnapshot value =
-      //     await firestoreInstance.collection('Person').getDocuments();
-      // for (DocumentSnapshot element in value.documents) {
-      //   firestoreInstance
-      //       .collection('Person')
-      //       .document(element.documentID)
-      //       .collection("Voucher")
-      //       .document(id)
-      //       .setData({
-      //     "title": voucher.title,
-      //     "validity": voucher.validity,
-      //     'discount': voucher.discount,
-      //     'minimumSpend': voucher.minimumSpend,
-      //     'usedOn': 'null',
-      //   });
-      //
-      // }
-      done = true;
-    });
+      await firestoreInstance
+          .collection('Voucher')
+          .document(voucher.getId)
+          .setData({
+        "title": voucher.title,
+        "validity": voucher.validity,
+        'discount': voucher.discount,
+        'minimumSpend': voucher.minimumSpend,
+      }).then((value1) async {
+        // var id = value1.documentID;
+        // QuerySnapshot value =
+        //     await firestoreInstance.collection('Person').getDocuments();
+        // for (DocumentSnapshot element in value.documents) {
+        //   firestoreInstance
+        //       .collection('Person')
+        //       .document(element.documentID)
+        //       .collection("Voucher")
+        //       .document(id)
+        //       .setData({
+        //     "title": voucher.title,
+        //     "validity": voucher.validity,
+        //     'discount': voucher.discount,
+        //     'minimumSpend': voucher.minimumSpend,
+        //     'usedOn': 'null',
+        //   });
+        //
+        // }
+        done = true;
+      });
+    } catch (e) {
+      done = false;
+    }
 
     return Future.value(done);
   }
 
   Future<dynamic> loadImageURL(var id) async {
-    StorageReference storageReference =
-        FirebaseStorage.instance.ref().child('Food Menu/${id}');
+    try {
+      StorageReference storageReference =
+          FirebaseStorage.instance.ref().child('Food Menu/${id}');
 
-    await storageReference.getDownloadURL().then((fileURL) {
-      return fileURL;
-    });
+      await storageReference.getDownloadURL().then((fileURL) {
+        return fileURL;
+      });
+    } catch (e) {
+      return '';
+    }
   }
 
   Future<bool> updateFoodItemQuantity(FoodItem _foodItem) async {
     bool done = false;
-
-    await firestoreInstance
-        .collection('Food Menu')
-        .document("$documentName")
-        .collection("$collectionName")
-        .document(_foodItem.id)
-        .updateData({
-      "stockLeft": _foodItem.stockLeft,
-    }).then((value) async {
-      done = true;
-    });
+    try {
+      await firestoreInstance
+          .collection('Food Menu')
+          .document("$documentName")
+          .collection("$collectionName")
+          .document(_foodItem.id)
+          .updateData({
+        "stockLeft": _foodItem.stockLeft,
+      }).then((value) async {
+        done = true;
+      });
+    } catch (e) {
+      done = false;
+    }
     return done;
   }
 
@@ -252,13 +280,31 @@ class FoodMenuDBController {
     return querySnapshot;
   }
 
-  Future<bool> addCategory(String categoryName) async {
-    var done = false;
-    await firestoreInstance.collection('Category').add({
-      "name": categoryName,
-    }).then((value) async {
-      done = true;
-    });
+  Future<String> addCategory(String categoryName) async {
+    var done = '';
+    try {
+      QuerySnapshot querySnapshot = await firestoreInstance
+          .collection('Category')
+          .where('name', isEqualTo: '$categoryName')
+          .getDocuments();
+      int count = 0;
+      for (DocumentSnapshot element in querySnapshot.documents) {
+        count++;
+        break;
+      }
+      if (count == 0) {
+        await firestoreInstance.collection('Category').add({
+          "name": categoryName,
+        }).then((value) async {
+          done = 'true';
+        });
+      } else {
+        done = 'exist';
+      }
+    } catch (e) {
+      done = 'false';
+    }
+
     return Future.value(done);
   }
 

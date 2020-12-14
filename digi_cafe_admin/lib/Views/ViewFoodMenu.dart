@@ -4,17 +4,12 @@ import 'package:digi_cafe_admin/Views/AddFoodMenu.dart';
 import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
 import 'package:digi_cafe_admin/Views/DialogInstruction.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-import 'package:digi_cafe_admin/Views/admin_Dashboard.dart';
-import 'package:digi_cafe_admin/Model/foodMenu.dart';
-import 'package:digi_cafe_admin/Model/FoodItem.dart';
 import 'package:digi_cafe_admin/Views/MenuItemWidget.dart';
-import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -171,9 +166,11 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
                                     ? snapshot.data.documents[index - 1]
                                                 .data['category'] !=
                                             dish.data['category']
-                                        ? getTextWidget(dish.data['category'])
+                                        ? getTextWidget(
+                                            capitalize(dish.data['category']))
                                         : Container()
-                                    : getTextWidget(dish.data['category']),
+                                    : getTextWidget(
+                                        capitalize(dish.data['category'])),
                                 widget,
                               ],
                             );
@@ -186,6 +183,11 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
             ),
           ]),
     );
+  }
+
+  String capitalize(String x) {
+    x[0].toUpperCase();
+    return x;
   }
 
   void createHelpAlert(context) async {

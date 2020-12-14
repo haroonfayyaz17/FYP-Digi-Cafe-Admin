@@ -1,7 +1,6 @@
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class DialogInstruction {
   static Widget getInstructionRow(var instruction) {

@@ -14,71 +14,75 @@ class EmployeeDBController {
   }
   Future<bool> addEmployee(CafeEmployee _employee) async {
     bool done = false;
-    if (_employee.EmailAddres != "") {
-      LoginDBController controller = new LoginDBController();
-      await controller.CreateNewUser(_employee.EmailAddres, _employee.Password);
-    }
-    await firestoreInstance.collection('Person').add({
-      "Name": _employee.Name,
-      "email": _employee.EmailAddres,
-      "PType": _employee.userType,
-      "gender": _employee.Gender,
-      "phoneNo": _employee.PhoneNo.toString(),
-      "DOB": _employee.Dob.toString(),
-      "imgURL": "x"
-    }).then((value) async {
-      var id = value.documentID;
-      // print(value.documentID);
-      File myFile = new File(_employee.imgURL);
-      StorageReference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child('Employee/$id');
-      StorageUploadTask uploadTask = firebaseStorageRef.putFile(myFile);
-      StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
-      taskSnapshot.ref.getDownloadURL().then((value) async {
-        await firestoreInstance
-            .collection('Employee')
-            .document(id)
-            .setData({"User Type": _employee.userType});
-        await firestoreInstance.collection('Person').document(id)
-          ..updateData({'imgURL': value});
+    try {
+      if (_employee.EmailAddres != "") {
+        LoginDBController controller = new LoginDBController();
+        await controller.CreateNewUser(
+            _employee.EmailAddres, _employee.Password);
+      }
+      await firestoreInstance.collection('Person').add({
+        "Name": _employee.Name,
+        "email": _employee.EmailAddres,
+        "PType": _employee.userType,
+        "gender": _employee.Gender,
+        "phoneNo": _employee.PhoneNo.toString(),
+        "DOB": _employee.Dob.toString(),
+      }).then((value) async {
+        var id = value.documentID;
+        // print(value.documentID);
+        File myFile = new File(_employee.imgURL);
+        StorageReference firebaseStorageRef =
+            FirebaseStorage.instance.ref().child('Employee/$id');
+        StorageUploadTask uploadTask = firebaseStorageRef.putFile(myFile);
+        StorageTaskSnapshot taskSnapshot = await uploadTask.onComplete;
+        taskSnapshot.ref.getDownloadURL().then((value) async {
+          await firestoreInstance
+              .collection('Employee')
+              .document(id)
+              .setData({"User Type": _employee.userType});
+          await firestoreInstance
+              .collection('Person')
+              .document(id)
+              .updateData({'imgURL': value});
+        });
+        done = true;
       });
-      done = true;
-    });
+    } catch (e) {}
     return Future.value(done);
   }
 
-  Future<List<CafeEmployee>> getEmployeesList() async {
-    try {
-      List<CafeEmployee> list = new List<CafeEmployee>();
-      QuerySnapshot value = await firestoreInstance
-          .collection('Person')
-          .where('PType', whereIn: ["Kitchen", "Serving"]).getDocuments();
-      for (DocumentSnapshot element in value.documents) {
-        CafeEmployee employee = new CafeEmployee(
-            element.data["Name"],
-            element.data["email"],
-            element.data["gender"],
-            element.data["DOB"],
-            "",
-            element.data["phoneNo"],
-            element.data["PType"],
-            null);
-        StorageReference storageReference = FirebaseStorage.instance
-            .ref()
-            .child('Employee/${element.documentID}');
+  // Future<List<CafeEmployee>> getEmployeesList() async {
+  //   try {
+  //     List<CafeEmployee> list = new List<CafeEmployee>();
+  //     QuerySnapshot value = await firestoreInstance
+  //         .collection('Person')
+  //         .where('PType', whereIn: ["Kitchen", "Serving"]).getDocuments();
+  //     for (DocumentSnapshot element in value.documents) {
+  //       CafeEmployee employee = new CafeEmployee(
+  //           element.data["Name"],
+  //           element.data["email"],
+  //           element.data["gender"],
+  //           element.data["DOB"],
+  //           "",
+  //           element.data["phoneNo"],
+  //           element.data["PType"],
+  //           null);
+  //       StorageReference storageReference = FirebaseStorage.instance
+  //           .ref()
+  //           .child('Employee/${element.documentID}');
 
-        await storageReference.getDownloadURL().then((fileURL) {
-          employee.imgURL = fileURL;
-        });
-        employee.id = element.documentID;
-        list.add(employee);
-      }
-      print(list.length);
-      return list;
-    } catch (e) {
-      print(e);
-    }
-  }
+  //       await storageReference.getDownloadURL().then((fileURL) {
+  //         employee.imgURL = fileURL;
+  //       });
+  //       employee.id = element.documentID;
+  //       list.add(employee);
+  //     }
+  //     print(list.length);
+  //     return list;
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   Future<bool> deleteEmployee(String id) async {
     await firestoreInstance
@@ -106,27 +110,32 @@ class EmployeeDBController {
   }
 
   Future<bool> updateEmployeeData(CafeEmployee _employee) async {
-    await firestoreInstance
-        .collection('Person')
-        .document(_employee.id)
-        .updateData({
-      "Name": _employee.Name,
-      "email": _employee.EmailAddres,
-      "PType": _employee.userType,
-      "gender": _employee.Gender,
-      "phoneNo": _employee.PhoneNo,
-      "DOB": _employee.Dob
-    }).then((value) async {
+    try {
       await firestoreInstance
-          .collection('Employee')
+          .collection('Person')
           .document(_employee.id)
-          .updateData({"User Type": _employee.userType}).then((value) async {
-        // print(value.documentID);
-      }).then((value) {
+          .updateData({
+        "Name": _employee.Name,
+        "email": _employee.EmailAddres,
+        "PType": _employee.userType,
+        "gender": _employee.Gender,
+        "phoneNo": _employee.PhoneNo,
+        "DOB": _employee.Dob
+      }).then((value) async {
+        await firestoreInstance
+            .collection('Employee')
+            .document(_employee.id)
+            .updateData({"User Type": _employee.userType}).then((value) async {
+          // print(value.documentID);
+        }).then((value) {
+          return true;
+        });
         return true;
       });
-      return true;
-    });
+    } catch (e) {
+      return false;
+    }
+
     // return Future.value(false);
   }
 

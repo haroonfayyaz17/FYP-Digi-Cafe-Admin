@@ -193,6 +193,9 @@ class _NominateItemsState extends State<NominateItemsState> {
         ));
       }
     }
+    setState(() {
+      _displayLoadingWidget = false;
+    });
     //  else {
     //   _scaffoldKey.currentState.showSnackBar(SnackBar(
     //     content: Text('No Item Selected'),

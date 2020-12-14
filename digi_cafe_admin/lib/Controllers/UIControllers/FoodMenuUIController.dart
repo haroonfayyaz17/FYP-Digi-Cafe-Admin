@@ -36,8 +36,9 @@ class FoodMenuUIController {
     return result;
   }
 
-  Future<bool> addCategory(String categoryName) async {
-    bool result = await _foodMenuDBController.addCategory(categoryName);
+  Future<String> addCategory(String categoryName) async {
+    String result =
+        await _foodMenuDBController.addCategory(categoryName.toLowerCase());
 
     return Future.value(result);
   }

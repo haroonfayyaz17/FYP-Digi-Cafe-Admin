@@ -116,18 +116,17 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                         ),
                         child: FlatButton(
                           onPressed: () async {
-                            //TODO: Delete Employee
-                            print(widget.foodID);
+                            //TODO: Delete Food
+                            Navigator.pop(context);
                             bool result = await _foodMenuUIController
                                 .deleteFoodItem(widget.foodID);
 
-                            Navigator.pop(context);
                             if (result.toString() == "true") {
                               _showToast(_buildContext,
-                                  "Employee deleted successfully");
+                                  "Food Item deleted successfully");
                             } else {
                               _showToast(_buildContext,
-                                  "Employee delete unsuccessful");
+                                  "Food Item delete unsuccessful");
                             }
                           },
                           child: Text(
@@ -191,20 +190,26 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                             children: <Widget>[
                               Row(
                                 children: [
-                                  Text(
-                                    widget.name,
-                                    style: TextStyle(
-                                      fontFamily: Fonts.default_font,
-                                      fontSize: Fonts.dishName_font,
-                                      fontWeight: FontWeight.bold,
+                                  Container(
+                                    constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.6),
+                                    child: Text(
+                                      widget.name,
+                                      style: TextStyle(
+                                        fontFamily: Fonts.default_font,
+                                        fontSize: Fonts.dishName_font,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
                                   ),
                                   Spacer(flex: 2),
                                   Padding(
                                     padding: const EdgeInsets.only(right: 5.0),
                                     child: Text(
-                                      'Quantity: ${widget.quantity.toInt().toString()}',
+                                      'Qty: ${widget.quantity.toInt().toString()}',
                                       style: TextStyle(
                                         fontFamily: Fonts.default_font,
                                         fontSize: Fonts.dishName_font,

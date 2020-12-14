@@ -9,7 +9,7 @@ class AppBarWidget {
     return AppBar(
       backgroundColor: colors.buttonColor,
       title: Text(
-        'Digi-Cafe Admin',
+        'Digi Café Admin',
         style: TextStyle(
           fontFamily: Fonts.default_font,
           fontSize: Fonts.label_size,

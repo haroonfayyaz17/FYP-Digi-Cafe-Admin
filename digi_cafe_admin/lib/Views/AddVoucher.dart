@@ -1,11 +1,7 @@
 import 'package:digi_cafe_admin/Model/Voucher.dart';
-import 'package:digi_cafe_admin/Views/login.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
-import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-import 'package:country_code_picker/country_code_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,10 +70,10 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
     if (widget.actionType == 'update') {
       screenHeader = 'Update Voucher';
 
-      _edtTitleController.text = _voucherTitle = widget._voucher.title;
-      _dateControllerText.text = _validity = widget._voucher.validity;
-      edtMinimumAmount.text = _minimumSpend = widget._voucher.minimumSpend;
-      edtDiscountController.text = _discount = widget._voucher.discount;
+      _edtTitleController.text = _voucherTitle = widget._voucher.getTitle;
+      _dateControllerText.text = _validity = widget._voucher.getValidity;
+      edtMinimumAmount.text = _minimumSpend = widget._voucher.getMinimumSpend;
+      edtDiscountController.text = _discount = widget._voucher.getDiscount;
       btnText = 'Update';
     } else {
       screenHeader = 'Add Voucher';

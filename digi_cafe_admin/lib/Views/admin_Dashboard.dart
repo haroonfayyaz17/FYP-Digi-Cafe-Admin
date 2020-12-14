@@ -1,7 +1,4 @@
 import 'package:digi_cafe_admin/Views/ViewEmployees.dart';
-import 'package:digi_cafe_admin/Views/AddFoodMenu.dart';
-import 'package:digi_cafe_admin/Views/AddCategory.dart';
-import 'package:digi_cafe_admin/Views/AddVoucher.dart';
 import 'package:digi_cafe_admin/Views/EmptyCartScreen.dart';
 import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
 import 'package:digi_cafe_admin/Views/ViewVouchers.dart';
@@ -14,9 +11,13 @@ import '../style/fonts_style.dart';
 import 'NoIternetScreen.dart';
 
 class dashboard extends StatelessWidget {
+  var email;
+  dashboard({this.email});
   @override
   Widget build(BuildContext context) {
-    return _dashboard();
+    return _dashboard(
+      email: email,
+    );
     // return WillPopScope(
     //   onWillPop: () {
     //     //exit(0);
@@ -29,6 +30,8 @@ class dashboard extends StatelessWidget {
 }
 
 class _dashboard extends StatefulWidget {
+  var email;
+  _dashboard({this.email});
   @override
   State<StatefulWidget> createState() => __dashboard();
 }
@@ -43,61 +46,7 @@ class __dashboard extends State<_dashboard> {
     return Scaffold(
       body: WillPopScope(
         onWillPop: () async {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) => AlertDialog(
-                      content: Text(
-                        'Do you want to Logout?',
-                        style: TextStyle(
-                          fontFamily: Fonts.default_font,
-                          fontSize: Fonts.heading2_size,
-                          color: colors.labelColor,
-                        ),
-                      ),
-                      actions: <Widget>[
-                        Container(
-                          // width: MediaQuery.of(context).size.width * 0.3,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: colors.buttonColor,
-                          ),
-                          child: FlatButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              'No',
-                              style: TextStyle(
-                                fontFamily: Fonts.default_font,
-                                fontSize: Fonts.label_size,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          // width: MediaQuery.of(context).size.width * 0.3,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: colors.buttonColor,
-                          ),
-                          child: FlatButton(
-                            onPressed: () async {
-                              //TODO: Delete Employee
-                              Navigator.pop(_buildContext);
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              'Yes',
-                              style: TextStyle(
-                                fontFamily: Fonts.default_font,
-                                fontSize: Fonts.label_size,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]));
+          showDialogBox();
         },
         child: SingleChildScrollView(
           child: Column(
@@ -139,7 +88,7 @@ class __dashboard extends State<_dashboard> {
                                 ),
                                 FittedBox(
                                   child: Text(
-                                    'admin@gmail.com',
+                                    '${widget.email}',
                                     style: TextStyle(
                                       fontFamily: Fonts.default_font,
                                       fontSize: Fonts.heading2_size,
@@ -406,6 +355,9 @@ class __dashboard extends State<_dashboard> {
                               height: (MediaQuery.of(context).size.width *
                                       Fonts.dashboardItem_heightFactor) -
                                   30,
+                              width: (MediaQuery.of(context).size.width *
+                                      Fonts.dashboardItem_heightFactor) -
+                                  48,
                               child: Image.asset('images/manage_voucher.png'),
                             ),
                             Flexible(
@@ -474,7 +426,9 @@ class __dashboard extends State<_dashboard> {
                       color: Colors.white,
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    showDialogBox();
+                  },
                 ),
               ),
             ],
@@ -482,5 +436,63 @@ class __dashboard extends State<_dashboard> {
         ),
       ),
     );
+  }
+
+  void showDialogBox() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+                content: Text(
+                  'Do you want to Logout?',
+                  style: TextStyle(
+                    fontFamily: Fonts.default_font,
+                    fontSize: Fonts.heading2_size,
+                    color: colors.labelColor,
+                  ),
+                ),
+                actions: <Widget>[
+                  Container(
+                    // width: MediaQuery.of(context).size.width * 0.3,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: colors.buttonColor,
+                    ),
+                    child: FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'No',
+                        style: TextStyle(
+                          fontFamily: Fonts.default_font,
+                          fontSize: Fonts.label_size,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    // width: MediaQuery.of(context).size.width * 0.3,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: colors.buttonColor,
+                    ),
+                    child: FlatButton(
+                      onPressed: () async {
+                        //TODO: Delete Employee
+                        Navigator.pop(_buildContext);
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(
+                          fontFamily: Fonts.default_font,
+                          fontSize: Fonts.label_size,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ]));
   }
 }

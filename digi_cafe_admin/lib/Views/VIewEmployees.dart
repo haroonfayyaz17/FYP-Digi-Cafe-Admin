@@ -6,7 +6,6 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/EmployeeUIController.dart';
 import 'package:digi_cafe_admin/Model/Cafe Employee.dart';
 import 'package:digi_cafe_admin/Views/AddEmployee.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';

@@ -1,10 +1,8 @@
 import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
 import 'package:digi_cafe_admin/Views/admin_Dashboard.dart';
 import 'package:digi_cafe_admin/Views/Forgot Password Screen.dart';
-import 'package:digi_cafe_admin/Views/SignUp.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +83,7 @@ class _LoginScreenState extends State<_LoginScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 10),
                   child: Text(
-                    'Digi Cafe',
+                    'Digi Café',
                     style: TextStyle(
                       fontSize: Fonts.heading1_size,
                       fontFamily: Fonts.default_font,
@@ -289,8 +287,11 @@ class _LoginScreenState extends State<_LoginScreen> {
   Future<void> checkSignIn() async {
     if (edtTextControllerEmail.text != '' &&
         edtTextControllerPassword.text != '') {
-      await dbController.CheckSignIn(
-              edtTextControllerEmail.text, edtTextControllerPassword.text)
+      String email = edtTextControllerEmail.text
+          .replaceAll(new RegExp(r"\s+"), "")
+          .toLowerCase();
+      print(email);
+      await dbController.CheckSignIn(email, edtTextControllerPassword.text)
           .then((value) {
         if (value == 'wrong email') {
           setState(() {
@@ -313,8 +314,8 @@ class _LoginScreenState extends State<_LoginScreen> {
             _passwordHide = true;
             edtTextControllerPassword.text = '';
           });
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => dashboard()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => dashboard(email: email)));
         }
       });
     } else {

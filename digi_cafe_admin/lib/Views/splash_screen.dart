@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:digi_cafe_admin/AdminLogin.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -39,18 +38,21 @@ class _MyAppState extends State<Splash_Screen> {
             Padding(
               padding: EdgeInsets.only(top: 10),
               child: Text(
-                'Digi Cafe',
+                'Digi Café',
                 style: TextStyle(
                   fontSize: Fonts.heading1_size,
                   fontFamily: Fonts.default_font,
                 ),
               ),
             ),
-            Text(
-              'Admin',
-              style: TextStyle(
-                fontSize: Fonts.heading2_size,
-                fontFamily: Fonts.default_font,
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                'Admin',
+                style: TextStyle(
+                  fontSize: Fonts.heading2_size,
+                  fontFamily: Fonts.default_font,
+                ),
               ),
             ),
             Container(

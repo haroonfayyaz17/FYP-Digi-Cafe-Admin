@@ -162,11 +162,13 @@ class _AddCategoryScreenState extends State<_AddCategoryScreen> {
       return;
     }
     var value = await _foodMenuUIController.addCategory(_categoryName);
-    if (value) {
+    if (value == 'true') {
       _showToast(context, "Record Added");
       Navigator.pop(context);
-    } else {
+    } else if (value == 'false') {
       _showToast(context, "Fail to add record");
+    } else {
+      _showToast(context, "Category already exist");
     }
   }
 }

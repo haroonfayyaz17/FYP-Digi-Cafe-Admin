@@ -5,19 +5,13 @@ import 'package:digi_cafe_admin/Model/FoodMenu.dart';
 import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:digi_cafe_admin/Views/login.dart';
-import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'dart:math' as math;
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
-
 import '../style/colors.dart';
 
 class AddFoodMenuScreen extends StatelessWidget {
@@ -419,15 +413,15 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                         _imageURL != null
                                             ? Image.network(
                                                 _imageURL,
-                                                width: 175,
-                                                height: 175,
+                                                width: 275,
+                                                height: 275,
                                               )
                                             : Container(),
                                         _image != null
                                             ? Image.asset(
                                                 _image.path,
-                                                width: 175,
-                                                height: 175,
+                                                width: 225,
+                                                height: 225,
                                               )
                                             : Container(),
                                         // SizedBox(
@@ -693,9 +687,9 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
   Future _imgFromCamera() async {
     await ImagePicker.pickImage(
       source: ImageSource.camera,
-      imageQuality: 50,
-      maxHeight: 175,
-      maxWidth: 175,
+      imageQuality: 75,
+      maxHeight: 225,
+      maxWidth: 225,
     ).then((image) {
       setState(() {
         _image = image;
@@ -708,9 +702,9 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
   Future _imgFromGallery() async {
     await ImagePicker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 50,
-      maxHeight: 175,
-      maxWidth: 175,
+      imageQuality: 75,
+      maxHeight: 225,
+      maxWidth: 225,
     ).then((image) {
       setState(() {
         _image = image;

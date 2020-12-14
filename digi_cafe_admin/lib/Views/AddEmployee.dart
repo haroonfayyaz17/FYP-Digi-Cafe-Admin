@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:digi_cafe_admin/Model/Cafe%20Employee.dart';
 import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
-import 'package:digi_cafe_admin/Views/login.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/EmployeeUIController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:digi_cafe_admin/Views/VIewEmployees.dart';
 import '../style/colors.dart';
 
 class AddEmployeeScreen extends StatelessWidget {
@@ -171,230 +169,213 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                     children: [
                       SingleChildScrollView(
                         // physics: NeverScrollableScrollPhysics(),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                              minHeight: MediaQuery.of(context).size.height),
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 10),
-                                  child: Text(
-                                    '${screenHeader}',
-                                    style: TextStyle(
-                                      fontSize: Fonts.heading1_size,
-                                      fontFamily: Fonts.default_font,
-                                    ),
-                                  ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 35),
+                              child: Text(
+                                '${screenHeader}',
+                                style: TextStyle(
+                                  fontSize: Fonts.heading1_size,
+                                  fontFamily: Fonts.default_font,
                                 ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                  child: Container(
-                                    height: 150,
-                                    width: MediaQuery.of(context).size.width *
-                                        0.73,
-                                    child: Image.asset(
-                                      'images/innerImages/cook_img.jpg',
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 15,
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 20),
-                                    child: Text(
-                                      'Personal Information',
-                                      style: TextStyle(
-                                        fontSize: Fonts.heading_SampleText_size,
-                                        fontFamily: Fonts.default_font,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                  child: TextFormField(
-                                    autofocus: true,
-                                    textInputAction: TextInputAction.next,
-                                    onFieldSubmitted: (_) =>
-                                        FocusScope.of(context).nextFocus(),
-                                    onChanged: (text) {
-                                      _name = text;
-                                    },
-                                    controller: edtControllerName,
-                                    textCapitalization:
-                                        TextCapitalization.words,
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: colors.buttonColor,
-                                            width: 1.3),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: colors.buttonColor,
-                                            width: 1.3),
-                                      ),
-                                      hintText: 'Full Name',
-                                      filled: true,
-                                      fillColor: colors.backgroundColor,
-                                      labelText: 'Full Name',
-                                      icon: Icon(
-                                        Icons.person_add,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                  child: TextFormField(
-                                    controller: _dateControllerText,
-                                    readOnly: true,
-                                    autofocus: true,
-                                    textInputAction: TextInputAction.next,
-                                    onFieldSubmitted: (_) =>
-                                        FocusScope.of(context).nextFocus(),
-                                    textCapitalization:
-                                        TextCapitalization.words,
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: colors.buttonColor,
-                                            width: 1.3),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: colors.buttonColor,
-                                            width: 1.3),
-                                      ),
-                                      hintText: 'Date Of Birth',
-                                      filled: true,
-                                      fillColor: colors.backgroundColor,
-                                      labelText: 'Date Of Birth',
-                                      icon: Icon(
-                                        Icons.calendar_today,
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2000),
-                                        lastDate: DateTime(2100),
-                                      ).then((value) {
-                                        String day = value.day.toString();
-                                        String month = value.month.toString();
-                                        String year = value.year.toString();
-                                        String date = '${day}-${month}-${year}';
-                                        _dateControllerText.text = date;
-
-                                        setState(() {
-                                          _dateControllerText.text = date;
-                                        });
-                                      });
-                                    },
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                  child: DropdownButtonFormField<String>(
-                                    value: chosenGender,
-                                    autofocus: true,
-                                    icon: Icon(Icons.arrow_drop_down),
-                                    iconSize: 24,
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: colors.buttonColor,
-                                            width: 1.3),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: colors.buttonColor,
-                                            width: 1.3),
-                                      ),
-                                      hintText: 'Gender',
-                                      filled: true,
-                                      fillColor: colors.backgroundColor,
-                                      labelText: 'Gender',
-                                      icon: Icon(
-                                        Icons.person_outline,
-                                      ),
-                                    ),
-                                    onChanged: (String newValue) {
-                                      setState(() {
-                                        chosenGender = newValue;
-                                      });
-                                    },
-                                    items: genderOptionList
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          value,
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                                  child: DropdownButtonFormField<String>(
-                                    value: choosenstaffType,
-                                    autofocus: true,
-                                    icon: Icon(Icons.arrow_drop_down),
-                                    iconSize: 24,
-                                    decoration: InputDecoration(
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: colors.buttonColor,
-                                            width: 1.3),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: colors.buttonColor,
-                                            width: 1.3),
-                                      ),
-                                      hintText: 'Staff Type',
-                                      filled: true,
-                                      fillColor: colors.backgroundColor,
-                                      labelText: 'Staff Type',
-                                      icon: Icon(
-                                        Icons.person,
-                                      ),
-                                    ),
-                                    onChanged: (String newValue) {
-                                      setState(() {
-                                        choosenstaffType = newValue;
-                                      });
-                                    },
-                                    items: staffType
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          value,
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                              child: Container(
+                                height: 150,
+                                width: MediaQuery.of(context).size.width * 0.73,
+                                child: Image.asset(
+                                  'images/innerImages/cook_img.jpg',
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    left: 20, top: 20, bottom: 10),
+                                child: Text(
+                                  'Personal Information',
+                                  style: TextStyle(
+                                    fontSize: Fonts.heading_SampleText_size,
+                                    fontFamily: Fonts.default_font,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                              child: TextFormField(
+                                autofocus: true,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (_) =>
+                                    FocusScope.of(context).nextFocus(),
+                                onChanged: (text) {
+                                  _name = text;
+                                },
+                                controller: edtControllerName,
+                                textCapitalization: TextCapitalization.words,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  hintText: 'Full Name',
+                                  filled: true,
+                                  fillColor: colors.backgroundColor,
+                                  labelText: 'Full Name',
+                                  icon: Icon(
+                                    Icons.person_add,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                              child: TextFormField(
+                                controller: _dateControllerText,
+                                readOnly: true,
+                                autofocus: true,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (_) =>
+                                    FocusScope.of(context).nextFocus(),
+                                textCapitalization: TextCapitalization.words,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  hintText: 'Date Of Birth',
+                                  filled: true,
+                                  fillColor: colors.backgroundColor,
+                                  labelText: 'Date Of Birth',
+                                  icon: Icon(
+                                    Icons.calendar_today,
+                                  ),
+                                ),
+                                onTap: () {
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime(2100),
+                                  ).then((value) {
+                                    String day = value.day.toString();
+                                    String month = value.month.toString();
+                                    String year = value.year.toString();
+                                    String date = '${day}-${month}-${year}';
+                                    _dateControllerText.text = date;
+
+                                    setState(() {
+                                      _dateControllerText.text = date;
+                                    });
+                                  });
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                              child: DropdownButtonFormField<String>(
+                                value: chosenGender,
+                                autofocus: true,
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 24,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  hintText: 'Gender',
+                                  filled: true,
+                                  fillColor: colors.backgroundColor,
+                                  labelText: 'Gender',
+                                  icon: Icon(
+                                    Icons.person_outline,
+                                  ),
+                                ),
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    chosenGender = newValue;
+                                  });
+                                },
+                                items: genderOptionList
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
+                                      value,
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                              child: DropdownButtonFormField<String>(
+                                value: choosenstaffType,
+                                autofocus: true,
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 24,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  hintText: 'Staff Type',
+                                  filled: true,
+                                  fillColor: colors.backgroundColor,
+                                  labelText: 'Staff Type',
+                                  icon: Icon(
+                                    Icons.person,
+                                  ),
+                                ),
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    choosenstaffType = newValue;
+                                  });
+                                },
+                                items: staffType.map<DropdownMenuItem<String>>(
+                                    (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(
+                                      value,
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       ContactDetailsWidget(),
@@ -886,8 +867,8 @@ class _ImageWidgetState extends State<ImageWidget> {
                 _image != null
                     ? Image.asset(
                         _image.path,
-                        width: 175,
-                        height: 175,
+                        width: 275,
+                        height: 275,
                       )
                     : Container(),
 
@@ -1012,9 +993,9 @@ class _ImageWidgetState extends State<ImageWidget> {
   Future _imgFromCamera() async {
     await ImagePicker.pickImage(
       source: ImageSource.camera,
-      imageQuality: 50,
-      maxHeight: 175,
-      maxWidth: 175,
+      imageQuality: 75,
+      maxHeight: 225,
+      maxWidth: 225,
     ).then((image) {
       setState(() {
         _image = image;
@@ -1028,9 +1009,9 @@ class _ImageWidgetState extends State<ImageWidget> {
   Future _imgFromGallery() async {
     await ImagePicker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 50,
-      maxHeight: 175,
-      maxWidth: 175,
+      imageQuality: 75,
+      maxHeight: 225,
+      maxWidth: 225,
     ).then((image) {
       setState(() {
         _image = image;

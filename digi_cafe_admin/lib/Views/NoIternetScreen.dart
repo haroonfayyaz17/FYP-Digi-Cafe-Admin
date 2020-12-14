@@ -1,7 +1,6 @@
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/material.dart';
-
 import '../style/colors.dart';
 
 class NoInternetScreen extends StatelessWidget {
