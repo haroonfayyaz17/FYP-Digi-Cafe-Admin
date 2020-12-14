@@ -4,6 +4,7 @@ import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
 import 'package:digi_cafe_admin/Views/ViewVouchers.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
+import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/Views/NominateItemsScreen.dart';
@@ -38,6 +39,14 @@ class _dashboard extends StatefulWidget {
 
 class __dashboard extends State<_dashboard> {
   BuildContext _buildContext;
+  LoginDBController _loginDBController;
+  @override
+  void initState() {
+    super.initState();
+    _loginDBController = new LoginDBController();
+    // if (dbController.CheckSignIn(adminEmail, adminPassword) == null) {
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -440,59 +449,62 @@ class __dashboard extends State<_dashboard> {
 
   void showDialogBox() async {
     showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-                content: Text(
-                  'Do you want to Logout?',
-                  style: TextStyle(
-                    fontFamily: Fonts.default_font,
-                    fontSize: Fonts.heading2_size,
-                    color: colors.labelColor,
-                  ),
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        content: Text(
+          'Do you want to Logout?',
+          style: TextStyle(
+            fontFamily: Fonts.default_font,
+            fontSize: Fonts.heading2_size,
+            color: colors.labelColor,
+          ),
+        ),
+        actions: <Widget>[
+          Container(
+            // width: MediaQuery.of(context).size.width * 0.3,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              color: colors.buttonColor,
+            ),
+            child: FlatButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'No',
+                style: TextStyle(
+                  fontFamily: Fonts.default_font,
+                  fontSize: Fonts.label_size,
+                  color: Colors.white,
                 ),
-                actions: <Widget>[
-                  Container(
-                    // width: MediaQuery.of(context).size.width * 0.3,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: colors.buttonColor,
-                    ),
-                    child: FlatButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'No',
-                        style: TextStyle(
-                          fontFamily: Fonts.default_font,
-                          fontSize: Fonts.label_size,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    // width: MediaQuery.of(context).size.width * 0.3,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: colors.buttonColor,
-                    ),
-                    child: FlatButton(
-                      onPressed: () async {
-                        //TODO: Delete Employee
-                        Navigator.pop(_buildContext);
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(
-                          fontFamily: Fonts.default_font,
-                          fontSize: Fonts.label_size,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ]));
+              ),
+            ),
+          ),
+          Container(
+            // width: MediaQuery.of(context).size.width * 0.3,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              color: colors.buttonColor,
+            ),
+            child: FlatButton(
+              onPressed: () async {
+                //TODO: Delete Employee
+                Navigator.pop(_buildContext);
+                await _loginDBController.signOut();
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Yes',
+                style: TextStyle(
+                  fontFamily: Fonts.default_font,
+                  fontSize: Fonts.label_size,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
