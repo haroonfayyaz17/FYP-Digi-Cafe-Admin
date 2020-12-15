@@ -80,7 +80,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
                     content: Text(
-                      'Do you want to remove Employee?',
+                      'Do you want to remove Food Item?',
                       style: TextStyle(
                         fontFamily: Fonts.default_font,
                         fontSize: Fonts.heading2_size,
