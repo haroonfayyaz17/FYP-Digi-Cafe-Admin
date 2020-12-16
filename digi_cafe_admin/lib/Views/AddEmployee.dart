@@ -100,9 +100,18 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   void setPhoneNo() {
     setState(() {
       if (employee != null) {
-        edtPhoneController.text = employee.PhoneNo;
-        _phoneNo = employee.PhoneNo;
-        _phoneNo = employee.PhoneNo;
+        List<String> x = employee.PhoneNo.split(' ');
+        if (x.length > 0) {
+          code = x[0];
+        } else {
+          code = '';
+        }
+        if (x.length > 1) {
+          _phoneNo = x[1];
+        } else {
+          _phoneNo = '';
+        }
+        edtPhoneController.text = _phoneNo;
       }
     });
 
@@ -617,7 +626,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
             _dateControllerText.text,
             chosenGender,
             choosenstaffType,
-            '${code}' + '${_phoneNo}',
+            '${code}' + ' ' + '${_phoneNo}',
             _email,
             _password,
             _image.path);
@@ -674,8 +683,6 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   }
 
   Widget ContactDetailsWidget() {
-    String code = '+92';
-
     return Container(
       child: Center(
         child: Column(
@@ -728,9 +735,10 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                         _addEmployeeScreen.code = code;
                       });
                     },
-                    // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
                     initialSelection: 'PK',
-                    favorite: ['+92', 'PK'],
+                    // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+                    favorite: ['$code', 'PK'],
+
                     // optional. Shows only country name and flag
                     showCountryOnly: false,
                     // optional. Shows only country name and flag when popup is closed.
@@ -1080,6 +1088,8 @@ class _EmailDetailsState extends State<EmailDetails> {
   }
 
   String validateEmail(String value) {
+    value = value.replaceAll(new RegExp(r"\s+"), "");
+
     if (value != '') {
       Pattern pattern1 =
           r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
