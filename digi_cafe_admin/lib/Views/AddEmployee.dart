@@ -1082,8 +1082,7 @@ class _EmailDetailsState extends State<EmailDetails> {
   String validateEmail(String value) {
     if (value != '') {
       Pattern pattern1 =
-          r'(^[A-Za-z0-9._%+-]+@nu.edu.pk)|(^[A-Za-z0-9._%+-]+@cfd.nu.edu.pk)';
-
+          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
       RegExp regex1 = new RegExp(pattern1);
       if (!regex1.hasMatch(value.trim()))
         return 'Enter Valid Email';
