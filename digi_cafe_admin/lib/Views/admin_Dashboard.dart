@@ -1,6 +1,7 @@
 import 'package:digi_cafe_admin/Views/ViewEmployees.dart';
 import 'package:digi_cafe_admin/Views/EmptyCartScreen.dart';
 import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
+import 'package:digi_cafe_admin/Views/ViewSales.dart';
 import 'package:digi_cafe_admin/Views/ViewVouchers.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
@@ -245,7 +246,7 @@ class __dashboard extends State<_dashboard> {
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      new NoInternetScreen()));
+                                      new ViewSales()));
                         },
                         child: Card(
                           child: Column(children: <Widget>[
