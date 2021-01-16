@@ -6,6 +6,9 @@ import 'package:intl/intl.dart';
 class OrderDBController {
   var firestoreInstance;
   FirebaseUser user;
+  var documentName = 'All';
+
+  var collectionName = 'Orders';
 
   OrderDBController() {
     firestoreInstance = Firestore.instance;
@@ -71,5 +74,19 @@ class OrderDBController {
     } catch (e) {
       return Future.value(false);
     }
+  }
+
+  Stream<QuerySnapshot> getOrdersSnapshot() {
+    Stream<QuerySnapshot> querySnapshot = firestoreInstance
+        .collection('Sales')
+        .document('Date')
+        .collection('Date')
+        // .orderBy('dateTime', descending: true)
+        // .where('category', isEqualTo: 'continental')
+        .snapshots();
+    //   .listen((snapshot) {
+    //  double tempTotal = snapshot.documents.fold(0, (tot, doc) => tot + doc.data['amount']);
+
+    return querySnapshot;
   }
 }
