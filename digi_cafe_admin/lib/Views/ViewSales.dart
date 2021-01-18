@@ -37,12 +37,38 @@ class __ViewSales extends State<_ViewSales> {
   OrderUIController uiController;
   var _dateControllerText1 = new TextEditingController();
   var _dateControllerText2 = new TextEditingController();
+  NominateItemsDataSource _ds;
+
+  List<SalesViewItems> nominateItems;
+
+  OrderUIController _orderUIController;
+  var _displayLoadingWidget = false;
+  Stream<QuerySnapshot> selectedItemsSnapshot;
+
   bool _buttonPressed = false;
+
+  var totalOrders;
+  var totalAmount;
+  double amount = 0, orders = 0;
   @override
   void initState() {
     super.initState();
     uiController = new OrderUIController();
     querySnapshot = uiController.getOrdersSnapshot();
+    // button = FlatButton(
+    //     child: Text(""),
+    //     onPressed: () {
+    //       print('yes');
+    //       setState(() {
+    //         // totalOrders = 'Total Orders: ' +
+    //         //     orders.toStringAsFixed(1);
+    //         // totalAmount = 'Total Amount: ' +
+    //         //     amount.toStringAsFixed(1);
+    //         totalOrders = 'Total Orders: ';
+    //         totalAmount = 'Total Amount: ';
+    //       });
+    //     });
+    // button.color = colors.backgroundColor;
   }
 
   @override
@@ -51,40 +77,119 @@ class __ViewSales extends State<_ViewSales> {
     // TODO: implement build
     return Scaffold(
       appBar: getSalesAppBar(),
-      floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          animatedIconTheme: IconThemeData(size: 20),
-          backgroundColor: colors.buttonColor,
-          children: []),
+      bottomNavigationBar: Row(
+        children: [Text('$totalOrders'), Text('$totalAmount')],
+      ),
       body: Flex(
-          direction: Axis.vertical,
-          verticalDirection: VerticalDirection.down,
-          children: <Widget>[
-            Flexible(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: querySnapshot,
-                builder: (context, snapshot) {
-                  //return snapshot.hasData
+        direction: Axis.vertical,
+        verticalDirection: VerticalDirection.down,
+        children: <Widget>[
+          Flexible(
+            //ye paginated ka hai
+            child: Stack(
+              children: [
+                _displayLoadingWidget
+                    ? LoadingWidget()
+                    : StreamBuilder<QuerySnapshot>(
+                        stream: querySnapshot,
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.done:
+                              print('yes');
+                              setState(() {
+                                // totalOrders = 'Total Orders: ' +
+                                //     orders.toStringAsFixed(1);
+                                // totalAmount = 'Total Amount: ' +
+                                //     amount.toStringAsFixed(1);
+                                totalOrders = 'Total Orders: ';
+                                totalAmount = 'Total Amount: ';
+                              });
+                              return Container();
+                              break;
+                            case ConnectionState.active:
+                              if (snapshot.hasData) {
+                                List<SalesViewItems> listItems = new List();
+                                double amount = 0, orders = 0;
+                                for (int count = 0;
+                                    count < snapshot.data.documents.length;
+                                    count++) {
+                                  DocumentSnapshot element =
+                                      snapshot.data.documents[count];
+                                  SalesViewItems items = new SalesViewItems(
+                                      element.documentID,
+                                      // element.data['date'],
+                                      element.data['totalOrders'],
+                                      element.data['totalAmount']);
+                                  if (items.orders != null) {
+                                    orders += items.orders;
+                                  }
+                                  if (items.total != null) {
+                                    amount += items.total;
+                                  }
+                                  listItems.add(items);
+                                }
+                                // for (var x = 0; x < listItems.length; x++) {
+                                //   print(listItems[x].date);
+                                //   print(listItems[x].total);
+                                //   print(listItems[x].orders);
+                                // }
 
-                  return !snapshot.hasData
-                      ? LoadingWidget()
-                      : ListView.builder(
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot element =
-                                snapshot.data.documents[index];
-                            Widget widget = SaleItemWidget(
-                              date: element.documentID,
-                              total: element.data['TotalAmount'],
-                              orders: element.data['TotalOrders'],
-                            );
-
-                            return widget;
-                          });
-                },
-              ),
+                                // button.onPressed();
+                                _ds = new NominateItemsDataSource(listItems);
+                                // return Container(
+                                //   color: colors.backgroundColor,
+                                // );
+                                return SingleChildScrollView(
+                                  child: PaginatedDataTable(
+                                    header: Center(
+                                      child: Text(
+                                        'View Sales',
+                                        style: TextStyle(
+                                          fontSize: Fonts.heading1_size,
+                                          fontFamily: Fonts.default_font,
+                                        ),
+                                      ),
+                                    ),
+                                    // dataRowHeight:
+                                    //     MediaQuery.of(context).size.height *
+                                    //         0.7 /
+                                    //         _rowsPerPage,
+                                    rowsPerPage: _rowsPerPage,
+                                    availableRowsPerPage: <int>[5, 10, 20],
+                                    onRowsPerPageChanged: (int value) {
+                                      setState(() {
+                                        _rowsPerPage = value;
+                                      });
+                                    },
+                                    showCheckboxColumn: false,
+                                    columns: kTableColumns,
+                                    source: _ds,
+                                  ),
+                                );
+                              } else {
+                                return LoadingWidget();
+                              }
+                              break;
+                            default:
+                              // setState(() {
+                              //   // totalOrders = 'Total Orders: ' +
+                              //   //     orders.toStringAsFixed(1);
+                              //   // totalAmount = 'Total Amount: ' +
+                              //   //     amount.toStringAsFixed(1);
+                              //   totalOrders = 'Total Orders: ';
+                              //   totalAmount = 'Total Amount: ';
+                              // });
+                              print('${snapshot.connectionState}');
+                              return Container();
+                              break;
+                          }
+                        },
+                      ),
+              ],
             ),
-          ]),
+          ),
+        ],
+      ),
     );
   }
 
@@ -210,32 +315,6 @@ class __ViewSales extends State<_ViewSales> {
               },
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: colors.buttonColor,
-            ),
-            width: 150,
-            height: 40,
-            child: FlatButton(
-              color: colors.buttonColor,
-              child: Text(
-                'Check Sales',
-                style: TextStyle(
-                  fontSize: Fonts.button_size,
-                  fontFamily: Fonts.default_font,
-                  color: colors.buttonTextColor,
-                ),
-              ),
-              onPressed: () {
-                FutureBuilder<bool>(
-                  builder: (context, snapshot) {
-                    return Container();
-                  },
-                );
-              },
-            ),
-          ),
-          // DialogInstruction.getInstructionRow('Long Press to delete Order'),
         ],
       ),
     ).show();
@@ -303,10 +382,11 @@ class SaleItemWidget extends StatefulWidget {
 
 class _SaleItemWidgetState extends State<SaleItemWidget> {
   OrderUIController _OrderUIController;
+  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
 
+  List<SalesViewItems> nominateItems;
   BuildContext _buildContext;
 
-  // var quantityController = new TextEditingController();
   @override
   void initState() {
     _OrderUIController = new OrderUIController();
@@ -315,73 +395,97 @@ class _SaleItemWidgetState extends State<SaleItemWidget> {
   @override
   Widget build(BuildContext context) {
     this._buildContext = context;
+
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
-            height: MediaQuery.of(context).size.height / 8,
-            width: MediaQuery.of(context).size.width - 10,
             child: InkWell(
-              child: Card(
-                elevation: 10,
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(left: 10),
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: [
-                                  Container(
-                                    constraints: BoxConstraints(
-                                        maxWidth:
-                                            MediaQuery.of(context).size.width *
-                                                0.6),
-                                    child: Text(
-                                      widget.date,
-                                      style: TextStyle(
-                                        fontFamily: Fonts.default_font,
-                                        fontSize: Fonts.dishName_font,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Spacer(flex: 2),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 5.0),
-                                    child: Text(
-                                      '${widget.orders}',
-                                      style: TextStyle(
-                                        fontFamily: Fonts.default_font,
-                                        fontSize: Fonts.dishName_font,
-                                        // fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                widget.total,
-                                style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  fontSize: Fonts.dishDescription_font,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              child: Column(
+                children: <Widget>[
+                  // ye table hai
+                  // Padding(
+                  //   padding: EdgeInsets.all(8.0),
+                  //   child: Text(
+                  //     "TOTAL SALES",
+                  //     // textScaleFactor: 2.0,
+                  //     style: TextStyle(
+                  //       fontSize: Fonts.heading1_size,
+                  //       fontFamily: Fonts.default_font,
+                  //     ),
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: EdgeInsets.all(10.0),
+                  //   child: Table(
+                  //     border: TableBorder.all(
+                  //         width: 1.5, color: colors.buttonColor),
+                  //     children: [
+                  //       TableRow(children: [
+                  //         Padding(
+                  //           padding: const EdgeInsets.only(),
+                  //           child: Text(
+                  //             "Date",
+                  //             style: TextStyle(
+                  //               fontWeight: FontWeight.bold,
+                  //               fontSize: Fonts.heading2_size,
+                  //               fontFamily: Fonts.default_font,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         Text(
+                  //           "Orders",
+                  //           style: TextStyle(
+                  //             fontWeight: FontWeight.bold,
+                  //             fontSize: Fonts.heading2_size,
+                  //             fontFamily: Fonts.default_font,
+                  //           ),
+                  //         ),
+                  //         Text(
+                  //           "Sale",
+                  //           style: TextStyle(
+                  //             fontWeight: FontWeight.bold,
+                  //             fontSize: Fonts.heading2_size,
+                  //             fontFamily: Fonts.default_font,
+                  //           ),
+                  //         ),
+                  //       ]),
+                  //       TableRow(children: [
+                  //         Text(
+                  //           widget.date,
+                  //           style: TextStyle(
+                  //             fontFamily: Fonts.default_font,
+                  //             fontSize: Fonts.heading2_XL_size,
+                  //             // fontWeight: FontWeight.bold,
+                  //           ),
+                  //           overflow: TextOverflow.ellipsis,
+                  //         ),
+                  //         // Spacer(flex: 2),
+                  //         Text(
+                  //           widget.orders,
+                  //           style: TextStyle(
+                  //             fontFamily: Fonts.default_font,
+                  //             fontSize: Fonts.heading2_XL_size,
+                  //           ),
+                  //           overflow: TextOverflow.ellipsis,
+                  //         ),
+                  //         // Spacer(flex: 2),
+                  //         Text(
+                  //           widget.total,
+                  //           style: TextStyle(
+                  //             fontFamily: Fonts.default_font,
+                  //             fontSize: Fonts.heading2_XL_size,
+                  //           ),
+                  //           overflow: TextOverflow.ellipsis,
+                  //         ),
+                  //         //Spacer(flex: 2),
+                  //       ]),
+                  //     ],
+                  //   ),
+                  // )
+                ],
+                //   ),
               ),
             ),
           ),
@@ -400,4 +504,111 @@ class _SaleItemWidgetState extends State<SaleItemWidget> {
       ),
     );
   }
+}
+
+//idr se paginated shuru ho gya
+////// Columns in table.
+const kTableColumns = <DataColumn>[
+  DataColumn(
+    label: Text(
+      'Date',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: Fonts.heading2_size,
+        fontFamily: Fonts.default_font,
+      ),
+    ),
+  ),
+  DataColumn(
+    label: Text(
+      'Orders',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: Fonts.heading2_size,
+        fontFamily: Fonts.default_font,
+      ),
+    ),
+    numeric: true,
+  ),
+  DataColumn(
+    label: Text(
+      'Total Sale',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: Fonts.heading2_size,
+        fontFamily: Fonts.default_font,
+      ),
+    ),
+    numeric: true,
+  ),
+];
+
+////// Data class.
+class SalesViewItems {
+  SalesViewItems(this.date, this.orders, this.total);
+  var itemID;
+  var date;
+  var orders;
+  var total;
+  bool selected = false;
+}
+
+////// Data source class for obtaining row data for PaginatedDataTable.
+class NominateItemsDataSource extends DataTableSource {
+  NominateItemsDataSource(List<SalesViewItems> nominate) {
+    nominateItems = nominate;
+  }
+  int _selectedCount = 0;
+  List<SalesViewItems> nominateItems;
+
+  @override
+  DataRow getRow(int index) {
+    assert(index >= 0);
+    if (index >= nominateItems.length) return null;
+
+    final SalesViewItems _nominateItems = nominateItems[index];
+    return DataRow.byIndex(
+        index: index,
+        selected: _nominateItems.selected,
+        cells: <DataCell>[
+          DataCell(
+            Text(
+              _nominateItems.date,
+              style: TextStyle(
+                fontSize: Fonts.heading3_size,
+                fontFamily: Fonts.default_font,
+              ),
+            ),
+          ),
+          DataCell(
+            Text(
+              _nominateItems.orders.toString(),
+              style: TextStyle(
+                fontSize: Fonts.heading3_size,
+                fontFamily: Fonts.default_font,
+              ),
+            ),
+          ),
+          DataCell(
+            Text(
+              _nominateItems.total.toString(),
+              style: TextStyle(
+                fontSize: Fonts.heading3_size,
+                fontFamily: Fonts.default_font,
+              ),
+            ),
+          ),
+        ]);
+  }
+
+  @override
+  int get rowCount {
+    return nominateItems.length;
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get selectedRowCount => _selectedCount;
 }

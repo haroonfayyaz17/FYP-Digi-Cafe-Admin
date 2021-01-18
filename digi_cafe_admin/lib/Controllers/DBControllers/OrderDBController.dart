@@ -79,8 +79,8 @@ class OrderDBController {
   Stream<QuerySnapshot> getOrdersSnapshot() {
     Stream<QuerySnapshot> querySnapshot = firestoreInstance
         .collection('Sales')
-        .document('Date')
-        .collection('Date')
+        .document('All Sales')
+        .collection('Month')
         // .orderBy('dateTime', descending: true)
         // .where('category', isEqualTo: 'continental')
         .snapshots();
