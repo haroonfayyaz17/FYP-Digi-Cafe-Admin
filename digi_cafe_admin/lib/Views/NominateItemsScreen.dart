@@ -275,9 +275,9 @@ class NominateItemsDataSource extends DataTableSource {
         index: index,
         color: MaterialStateColor.resolveWith((states) {
           if (index.isEven) {
-            return Colors.blue[50];
+            return Colors.orange[50];
           } else {
-            return Colors.yellow[50];
+            return Colors.transparent;
           }
         }),
         selected: _nominateItems.selected,
