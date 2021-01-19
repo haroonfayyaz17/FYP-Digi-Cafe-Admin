@@ -8,7 +8,6 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Views/MenuItemWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:digi_cafe_admin/Model/Order.dart';
 
 class ViewSales extends StatelessWidget {
   @override
@@ -32,6 +31,8 @@ class __ViewSales extends State<_ViewSales> {
   OrderUIController _OrderUIController;
 
   Stream<QuerySnapshot> querySnapshot;
+  List<String> filterTypeOptionList = <String>['Daily', 'Monthly', 'Yearly'];
+  String chosenFilterType;
 
   BuildContext _buildContext;
   OrderUIController uiController;
@@ -50,25 +51,12 @@ class __ViewSales extends State<_ViewSales> {
   var totalOrders;
   var totalAmount;
   double amount = 0, orders = 0;
+
   @override
   void initState() {
     super.initState();
     uiController = new OrderUIController();
     querySnapshot = uiController.getOrdersSnapshot();
-    // button = FlatButton(
-    //     child: Text(""),
-    //     onPressed: () {
-    //       print('yes');
-    //       setState(() {
-    //         // totalOrders = 'Total Orders: ' +
-    //         //     orders.toStringAsFixed(1);
-    //         // totalAmount = 'Total Amount: ' +
-    //         //     amount.toStringAsFixed(1);
-    //         totalOrders = 'Total Orders: ';
-    //         totalAmount = 'Total Amount: ';
-    //       });
-    //     });
-    // button.color = colors.backgroundColor;
   }
 
   @override
@@ -78,7 +66,33 @@ class __ViewSales extends State<_ViewSales> {
     return Scaffold(
       appBar: getSalesAppBar(),
       bottomNavigationBar: Row(
-        children: [Text('$totalOrders'), Text('$totalAmount')],
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, top: 8, bottom: 8),
+            child: Text(
+              '$totalOrders',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                fontFamily: Fonts.default_font,
+              ),
+            ),
+          ),
+          Spacer(
+            flex: 1,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 8, bottom: 8),
+            child: Text(
+              '$totalAmount',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                fontFamily: Fonts.default_font,
+              ),
+            ),
+          ),
+        ],
       ),
       body: Flex(
         direction: Axis.vertical,
@@ -93,95 +107,72 @@ class __ViewSales extends State<_ViewSales> {
                     : StreamBuilder<QuerySnapshot>(
                         stream: querySnapshot,
                         builder: (context, snapshot) {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.done:
-                              print('yes');
-                              setState(() {
-                                // totalOrders = 'Total Orders: ' +
-                                //     orders.toStringAsFixed(1);
-                                // totalAmount = 'Total Amount: ' +
-                                //     amount.toStringAsFixed(1);
-                                totalOrders = 'Total Orders: ';
-                                totalAmount = 'Total Amount: ';
-                              });
-                              return Container();
-                              break;
-                            case ConnectionState.active:
-                              if (snapshot.hasData) {
-                                List<SalesViewItems> listItems = new List();
-                                double amount = 0, orders = 0;
-                                for (int count = 0;
-                                    count < snapshot.data.documents.length;
-                                    count++) {
-                                  DocumentSnapshot element =
-                                      snapshot.data.documents[count];
-                                  SalesViewItems items = new SalesViewItems(
-                                      element.documentID,
-                                      // element.data['date'],
-                                      element.data['totalOrders'],
-                                      element.data['totalAmount']);
-                                  if (items.orders != null) {
-                                    orders += items.orders;
-                                  }
-                                  if (items.total != null) {
-                                    amount += items.total;
-                                  }
-                                  listItems.add(items);
-                                }
-                                // for (var x = 0; x < listItems.length; x++) {
-                                //   print(listItems[x].date);
-                                //   print(listItems[x].total);
-                                //   print(listItems[x].orders);
-                                // }
-
-                                // button.onPressed();
-                                _ds = new NominateItemsDataSource(listItems);
-                                // return Container(
-                                //   color: colors.backgroundColor,
-                                // );
-                                return SingleChildScrollView(
-                                  child: PaginatedDataTable(
-                                    header: Center(
-                                      child: Text(
-                                        'View Sales',
-                                        style: TextStyle(
-                                          fontSize: Fonts.heading1_size,
-                                          fontFamily: Fonts.default_font,
-                                        ),
-                                      ),
-                                    ),
-                                    // dataRowHeight:
-                                    //     MediaQuery.of(context).size.height *
-                                    //         0.7 /
-                                    //         _rowsPerPage,
-                                    rowsPerPage: _rowsPerPage,
-                                    availableRowsPerPage: <int>[5, 10, 20],
-                                    onRowsPerPageChanged: (int value) {
-                                      setState(() {
-                                        _rowsPerPage = value;
-                                      });
-                                    },
-                                    showCheckboxColumn: false,
-                                    columns: kTableColumns,
-                                    source: _ds,
-                                  ),
-                                );
-                              } else {
-                                return LoadingWidget();
+                          if (snapshot.hasData) {
+                            List<SalesViewItems> listItems = new List();
+                            double amount = 0, orders = 0;
+                            for (int count = 0;
+                                count < snapshot.data.documents.length;
+                                count++) {
+                              DocumentSnapshot element =
+                                  snapshot.data.documents[count];
+                              String docID = element.documentID;
+                              if (chosenFilterType == 'Monthly') {
+                                docID = getAlphabeticalMonth(docID);
                               }
-                              break;
-                            default:
-                              // setState(() {
-                              //   // totalOrders = 'Total Orders: ' +
-                              //   //     orders.toStringAsFixed(1);
-                              //   // totalAmount = 'Total Amount: ' +
-                              //   //     amount.toStringAsFixed(1);
-                              //   totalOrders = 'Total Orders: ';
-                              //   totalAmount = 'Total Amount: ';
-                              // });
-                              print('${snapshot.connectionState}');
-                              return Container();
-                              break;
+                              SalesViewItems items = new SalesViewItems(
+                                  docID,
+                                  // element.data['date'],
+                                  element.data['totalOrders'],
+                                  element.data['totalAmount']);
+                              if (items.orders != null) {
+                                orders += items.orders;
+                              }
+                              if (items.total != null) {
+                                amount += items.total;
+                              }
+                              listItems.add(items);
+                            }
+                            // for (var x = 0; x < listItems.length; x++) {
+                            //   print(listItems[x].date);
+                            //   print(listItems[x].total);
+                            //   print(listItems[x].orders);
+                            // }
+                            totalOrders = 'Total Orders: ' +
+                                orders.toStringAsPrecision(1);
+                            totalAmount =
+                                'Total Amount: ' + amount.toStringAsFixed(1);
+
+                            _ds = new NominateItemsDataSource(listItems);
+
+                            return SingleChildScrollView(
+                              child: PaginatedDataTable(
+                                header: Center(
+                                  child: Text(
+                                    'View Sales',
+                                    style: TextStyle(
+                                      fontSize: Fonts.heading1_size,
+                                      fontFamily: Fonts.default_font,
+                                    ),
+                                  ),
+                                ),
+                                dataRowHeight:
+                                    MediaQuery.of(context).size.height *
+                                        0.7 /
+                                        _rowsPerPage,
+                                rowsPerPage: _rowsPerPage,
+                                availableRowsPerPage: <int>[5, 10, 20],
+                                onRowsPerPageChanged: (int value) {
+                                  setState(() {
+                                    _rowsPerPage = value;
+                                  });
+                                },
+                                showCheckboxColumn: false,
+                                columns: kTableColumns,
+                                source: _ds,
+                              ),
+                            );
+                          } else {
+                            return LoadingWidget();
                           }
                         },
                       ),
@@ -212,14 +203,51 @@ class __ViewSales extends State<_ViewSales> {
           fontFamily: Fonts.default_font,
           fontWeight: FontWeight.bold),
     );
-
     Alert(
       context: context,
       style: alertStyle,
-      title: 'Select Dates',
+      title: 'Filter Results',
       content: Column(
         children: [
           // DialogInstruction.getInstructionRow('Single tap to update Order'),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+            child: DropdownButtonFormField<String>(
+              value: chosenFilterType,
+              autofocus: true,
+              icon: Icon(Icons.arrow_drop_down),
+              iconSize: 24,
+              decoration: InputDecoration(
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
+                ),
+                hintText: 'FilterType',
+                filled: true,
+                fillColor: colors.backgroundColor,
+                labelText: 'FilterType',
+                icon: Icon(
+                  Icons.person_outline,
+                ),
+              ),
+              onChanged: (String newValue) {
+                setState(() {
+                  chosenFilterType = newValue;
+                });
+              },
+              items: filterTypeOptionList
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(
+                    value,
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
           Padding(
             padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
             child: TextFormField(
@@ -315,6 +343,43 @@ class __ViewSales extends State<_ViewSales> {
               },
             ),
           ),
+          Padding(
+            padding:
+                const EdgeInsets.only(left: 30, right: 10, bottom: 5, top: 5),
+            child: ClipPath(
+              clipper: ShapeBorderClipper(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25)))),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: colors.buttonColor,
+                ),
+                // width: 100,
+                // height: 30,
+                child: FlatButton(
+                  color: colors.buttonColor,
+                  child: Text(
+                    'Apply',
+                    style: TextStyle(
+                      fontSize: Fonts.button_size,
+                      fontFamily: Fonts.default_font,
+                      color: colors.buttonTextColor,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                    // Navigator.pop(context);
+                    // FutureBuilder<bool>(
+                    //   builder: (context, snapshot) {
+                    //     return Container();
+                    //   },
+                    //   future: _nominateSelectedItems(context),
+                    // );
+                  },
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     ).show();
@@ -365,6 +430,28 @@ class __ViewSales extends State<_ViewSales> {
       ],
     );
   }
+}
+
+String getAlphabeticalMonth(String docID) {
+  if (docID != null) {
+    var lst = docID.split('-');
+    var months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+    return months[int.parse(lst[0]) - 1] + ', ' + lst[1];
+  }
+  return docID;
 }
 
 class SaleItemWidget extends StatefulWidget {
@@ -546,11 +633,9 @@ const kTableColumns = <DataColumn>[
 ////// Data class.
 class SalesViewItems {
   SalesViewItems(this.date, this.orders, this.total);
-  var itemID;
   var date;
   var orders;
   var total;
-  bool selected = false;
 }
 
 ////// Data source class for obtaining row data for PaginatedDataTable.
@@ -567,38 +652,44 @@ class NominateItemsDataSource extends DataTableSource {
     if (index >= nominateItems.length) return null;
 
     final SalesViewItems _nominateItems = nominateItems[index];
-    return DataRow.byIndex(
-        index: index,
-        selected: _nominateItems.selected,
-        cells: <DataCell>[
-          DataCell(
-            Text(
-              _nominateItems.date,
-              style: TextStyle(
-                fontSize: Fonts.heading3_size,
-                fontFamily: Fonts.default_font,
-              ),
+    return DataRow.byIndex(index: index, cells: <DataCell>[
+      DataCell(
+        Container(
+          constraints: BoxConstraints(minWidth: 50, maxWidth: 75),
+          child: Text(
+            _nominateItems.date,
+            style: TextStyle(
+              fontSize: Fonts.heading3_size,
+              fontFamily: Fonts.default_font,
             ),
           ),
-          DataCell(
-            Text(
-              _nominateItems.orders.toString(),
-              style: TextStyle(
-                fontSize: Fonts.heading3_size,
-                fontFamily: Fonts.default_font,
-              ),
+        ),
+      ),
+      DataCell(
+        Container(
+          constraints: BoxConstraints(minWidth: 35, maxWidth: 60),
+          child: Text(
+            _nominateItems.orders.toString(),
+            style: TextStyle(
+              fontSize: Fonts.heading3_size,
+              fontFamily: Fonts.default_font,
             ),
           ),
-          DataCell(
-            Text(
-              _nominateItems.total.toString(),
-              style: TextStyle(
-                fontSize: Fonts.heading3_size,
-                fontFamily: Fonts.default_font,
-              ),
+        ),
+      ),
+      DataCell(
+        Container(
+          constraints: BoxConstraints(minWidth: 70, maxWidth: 100),
+          child: Text(
+            _nominateItems.total.toString(),
+            style: TextStyle(
+              fontSize: Fonts.heading3_size,
+              fontFamily: Fonts.default_font,
             ),
           ),
-        ]);
+        ),
+      ),
+    ]);
   }
 
   @override
