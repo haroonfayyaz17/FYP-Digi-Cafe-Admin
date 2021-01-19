@@ -669,7 +669,7 @@ class NominateItemsDataSource extends DataTableSource {
         cells: <DataCell>[
           DataCell(
             Container(
-              constraints: BoxConstraints(minWidth: 50, maxWidth: 80),
+              constraints: BoxConstraints(minWidth: 50, maxWidth: 88),
               child: Text(
                 _nominateItems.date,
                 style: TextStyle(
