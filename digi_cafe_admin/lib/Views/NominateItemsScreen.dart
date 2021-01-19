@@ -119,28 +119,32 @@ class _NominateItemsState extends State<NominateItemsState> {
                       //   color: colors.backgroundColor,
                       // );
                       return SingleChildScrollView(
-                        child: PaginatedDataTable(
-                          header: Center(
-                            child: Text(
-                              'Nominate Items',
-                              style: TextStyle(
-                                fontSize: Fonts.heading1_size,
-                                fontFamily: Fonts.default_font,
+                        child: Theme(
+                          data: Theme.of(context)
+                              .copyWith(dividerColor: colors.buttonColor),
+                          child: PaginatedDataTable(
+                            header: Center(
+                              child: Text(
+                                'Nominate Items',
+                                style: TextStyle(
+                                  fontSize: Fonts.heading1_size,
+                                  fontFamily: Fonts.default_font,
+                                ),
                               ),
                             ),
+                            dataRowHeight: MediaQuery.of(context).size.height *
+                                0.7 /
+                                _rowsPerPage,
+                            rowsPerPage: _rowsPerPage,
+                            availableRowsPerPage: <int>[5, 10, 20],
+                            onRowsPerPageChanged: (int value) {
+                              setState(() {
+                                _rowsPerPage = value;
+                              });
+                            },
+                            columns: kTableColumns,
+                            source: _ds,
                           ),
-                          dataRowHeight: MediaQuery.of(context).size.height *
-                              0.7 /
-                              _rowsPerPage,
-                          rowsPerPage: _rowsPerPage,
-                          availableRowsPerPage: <int>[5, 10, 20],
-                          onRowsPerPageChanged: (int value) {
-                            setState(() {
-                              _rowsPerPage = value;
-                            });
-                          },
-                          columns: kTableColumns,
-                          source: _ds,
                         ),
                       );
                     } else {
@@ -269,6 +273,13 @@ class NominateItemsDataSource extends DataTableSource {
     final NominateItems _nominateItems = nominateItems[index];
     return DataRow.byIndex(
         index: index,
+        color: MaterialStateColor.resolveWith((states) {
+          if (index.isEven) {
+            return Colors.blue[50];
+          } else {
+            return Colors.yellow[50];
+          }
+        }),
         selected: _nominateItems.selected,
         onSelectChanged: (bool value) {
           // allow only 4 selections

@@ -137,38 +137,42 @@ class __ViewSales extends State<_ViewSales> {
                             //   print(listItems[x].total);
                             //   print(listItems[x].orders);
                             // }
-                            totalOrders = 'Total Orders: ' +
-                                orders.toStringAsPrecision(1);
+                            totalOrders =
+                                'Total Orders: ' + orders.toInt().toString();
                             totalAmount =
                                 'Total Amount: ' + amount.toStringAsFixed(1);
 
                             _ds = new NominateItemsDataSource(listItems);
 
                             return SingleChildScrollView(
-                              child: PaginatedDataTable(
-                                header: Center(
-                                  child: Text(
-                                    'View Sales',
-                                    style: TextStyle(
-                                      fontSize: Fonts.heading1_size,
-                                      fontFamily: Fonts.default_font,
+                              child: Theme(
+                                data: Theme.of(context)
+                                    .copyWith(dividerColor: colors.buttonColor),
+                                child: PaginatedDataTable(
+                                  header: Center(
+                                    child: Text(
+                                      'View Sales',
+                                      style: TextStyle(
+                                        fontSize: Fonts.heading1_size,
+                                        fontFamily: Fonts.default_font,
+                                      ),
                                     ),
                                   ),
+                                  dataRowHeight:
+                                      MediaQuery.of(context).size.height *
+                                          0.7 /
+                                          _rowsPerPage,
+                                  rowsPerPage: _rowsPerPage,
+                                  availableRowsPerPage: <int>[5, 10, 20],
+                                  onRowsPerPageChanged: (int value) {
+                                    setState(() {
+                                      _rowsPerPage = value;
+                                    });
+                                  },
+                                  showCheckboxColumn: false,
+                                  columns: kTableColumns,
+                                  source: _ds,
                                 ),
-                                dataRowHeight:
-                                    MediaQuery.of(context).size.height *
-                                        0.7 /
-                                        _rowsPerPage,
-                                rowsPerPage: _rowsPerPage,
-                                availableRowsPerPage: <int>[5, 10, 20],
-                                onRowsPerPageChanged: (int value) {
-                                  setState(() {
-                                    _rowsPerPage = value;
-                                  });
-                                },
-                                showCheckboxColumn: false,
-                                columns: kTableColumns,
-                                source: _ds,
                               ),
                             );
                           } else {
@@ -469,7 +473,8 @@ class SaleItemWidget extends StatefulWidget {
 
 class _SaleItemWidgetState extends State<SaleItemWidget> {
   OrderUIController _OrderUIController;
-  int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+  // int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
+  int _rowsPerPage = 5;
 
   List<SalesViewItems> nominateItems;
   BuildContext _buildContext;
@@ -652,44 +657,53 @@ class NominateItemsDataSource extends DataTableSource {
     if (index >= nominateItems.length) return null;
 
     final SalesViewItems _nominateItems = nominateItems[index];
-    return DataRow.byIndex(index: index, cells: <DataCell>[
-      DataCell(
-        Container(
-          constraints: BoxConstraints(minWidth: 50, maxWidth: 75),
-          child: Text(
-            _nominateItems.date,
-            style: TextStyle(
-              fontSize: Fonts.heading3_size,
-              fontFamily: Fonts.default_font,
+    return DataRow.byIndex(
+        index: index,
+        color: MaterialStateColor.resolveWith((states) {
+          if (index.isEven) {
+            return Colors.blue[50];
+          } else {
+            return Colors.yellow[50];
+          }
+        }),
+        cells: <DataCell>[
+          DataCell(
+            Container(
+              constraints: BoxConstraints(minWidth: 50, maxWidth: 80),
+              child: Text(
+                _nominateItems.date,
+                style: TextStyle(
+                  fontSize: Fonts.heading3_size,
+                  fontFamily: Fonts.default_font,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      DataCell(
-        Container(
-          constraints: BoxConstraints(minWidth: 35, maxWidth: 60),
-          child: Text(
-            _nominateItems.orders.toString(),
-            style: TextStyle(
-              fontSize: Fonts.heading3_size,
-              fontFamily: Fonts.default_font,
+          DataCell(
+            Container(
+              constraints: BoxConstraints(minWidth: 35, maxWidth: 60),
+              child: Text(
+                _nominateItems.orders.toString(),
+                style: TextStyle(
+                  fontSize: Fonts.heading3_size,
+                  fontFamily: Fonts.default_font,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      DataCell(
-        Container(
-          constraints: BoxConstraints(minWidth: 70, maxWidth: 100),
-          child: Text(
-            _nominateItems.total.toString(),
-            style: TextStyle(
-              fontSize: Fonts.heading3_size,
-              fontFamily: Fonts.default_font,
+          DataCell(
+            Container(
+              constraints: BoxConstraints(minWidth: 70, maxWidth: 100),
+              child: Text(
+                _nominateItems.total.toString(),
+                style: TextStyle(
+                  fontSize: Fonts.heading3_size,
+                  fontFamily: Fonts.default_font,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-    ]);
+        ]);
   }
 
   @override
