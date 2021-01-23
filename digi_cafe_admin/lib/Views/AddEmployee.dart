@@ -47,7 +47,7 @@ class _AddEmployeeScreen extends StatefulWidget {
 }
 
 class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
-  var screenHeader;
+  var screenHeader = 'Add Employee';
 
   _AddEmployeeScreen3State({this.employee, this.actionType});
   CafeEmployee employee;
@@ -121,8 +121,16 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   @override
   void initState() {
     super.initState();
+    if (actionType == 'update') {
+      screenHeader = 'Update Employee';
+      // setFieldsForUpdate();
+      // setPhoneNo();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (actionType == 'update') {
+        // setState(() {
+        //   screenHeader = 'Update Employee';
+        // });
         setFieldsForUpdate();
         setPhoneNo();
       }
@@ -158,10 +166,11 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   Widget build(BuildContext context) {
     if (actionType == 'update' && count < 1) {
       setFieldsForUpdate();
-        screenHeader = 'Update Employee';
-    } else {
-      screenHeader = 'Add Employee';
+      screenHeader = 'Update Employee';
     }
+    // else {
+    //   screenHeader = 'Add Employee';
+    // }
 
     Widget widget = Stack(children: [
       _displayLoadingWidget
@@ -182,7 +191,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                             Padding(
                               padding: EdgeInsets.only(top: 35),
                               child: Text(
-                                '${screenHeader}',
+                                '$screenHeader',
                                 style: TextStyle(
                                   fontSize: Fonts.heading1_size,
                                   fontFamily: Fonts.default_font,
@@ -619,6 +628,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       _emailDetailsState._validateInputs();
       if (_emailDetailsState._autoValidate == false) {
         print(_email + _password + _phoneNo);
+
         bool result = await _employeeUIController.addEmployee(
             edtControllerName.text,
             _dateControllerText.text,
@@ -648,9 +658,10 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
     setState(() {
       _displayLoadingWidget = true;
     });
+    print(code);
     employee.Dob = _dateControllerText.text;
     employee.Gender = chosenGender;
-    employee.PhoneNo = _phoneNo;
+    employee.PhoneNo = code + ' ' + _phoneNo;
     employee.Name = edtControllerName.text;
     employee.userType = choosenstaffType;
     await _employeeUIController.updateEmployeeData(employee);
@@ -733,9 +744,10 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                         _addEmployeeScreen.code = code;
                       });
                     },
-                    initialSelection: 'PK',
+                    initialSelection: '$code',
+
                     // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                    favorite: ['$code', 'PK'],
+                    favorite: ['PK'],
 
                     // optional. Shows only country name and flag
                     showCountryOnly: false,
