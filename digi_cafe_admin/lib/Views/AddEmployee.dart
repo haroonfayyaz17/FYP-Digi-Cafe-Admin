@@ -158,9 +158,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   Widget build(BuildContext context) {
     if (actionType == 'update' && count < 1) {
       setFieldsForUpdate();
-      setState(() {
         screenHeader = 'Update Employee';
-      });
     } else {
       screenHeader = 'Add Employee';
     }

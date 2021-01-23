@@ -41,7 +41,7 @@ class _LoginScreenState extends State<_LoginScreen> {
 
   TextEditingController edtTextControllerPassword;
 
-  var adminEmail = 'haroonfayyaz17@gmail.com';
+  var adminEmail = 'ayeshaghani1998@gmail.com';
   bool _displayLabel = false;
   var adminPassword = 'admin123';
   LoginDBController dbController;
