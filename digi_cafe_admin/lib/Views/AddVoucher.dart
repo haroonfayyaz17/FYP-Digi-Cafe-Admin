@@ -184,16 +184,41 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
                                   firstDate: DateTime(2000),
                                   lastDate: DateTime(2100),
                                 ).then((value) {
-                                  String day = value.day.toString();
-                                  String month = value.month.toString();
-                                  String year = value.year.toString();
-                                  String date = '${day}-${month}-${year}';
-                                  _dateControllerText.text = date;
+                                  if (value != null) {
+                                    var current = DateTime.now();
+                                    var newDate = new DateTime(
+                                        current.year,
+                                        current.month,
+                                        current.day,
+                                        0,
+                                        0,
+                                        0,
+                                        0,
+                                        0);
 
-                                  setState(() {
+                                    if (value.compareTo(newDate) < 0) {
+                                      _showToast(context,
+                                          'Date should not be less than current date');
+                                      _dateControllerText.text = '';
+
+                                      setState(() {
+                                        _dateControllerText.text = '';
+                                        _validity = '';
+                                      });
+                                      return;
+                                    }
+                                    String day = value.day.toString();
+                                    String month = value.month.toString();
+                                    String year = value.year.toString();
+                                    String date = '${day}-${month}-${year}';
+
                                     _dateControllerText.text = date;
-                                    _validity = date;
-                                  });
+
+                                    setState(() {
+                                      _dateControllerText.text = date;
+                                      _validity = date;
+                                    });
+                                  }
                                 });
                               },
                             ),
@@ -296,11 +321,25 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
     final scaffold = Scaffold.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        content: Text('$_message'),
+        backgroundColor: colors.buttonColor,
+        content: Text(
+          '$_message',
+          style: TextStyle(
+            color: colors.textColor,
+            fontFamily: Fonts.default_font,
+            fontSize: Fonts.appBarTitle_size,
+          ),
+        ),
         // action: SnackBarAction(
         //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),
     );
+  }
+
+  void stopLoading() {
+    setState(() {
+      _displayLoadingWidget = false;
+    });
   }
 
   Future<void> _addVoucher() async {
@@ -309,18 +348,28 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
     });
     if (_voucherTitle.trim() == '') {
       _showToast(context, "Enter Voucher");
+      stopLoading();
       return;
     }
     if (_validity.trim() == '') {
       _showToast(context, "Enter Expiry Date");
+      stopLoading();
       return;
     }
     if (_minimumSpend.trim() == '') {
       _showToast(context, "Enter Minimum Spend Amount");
+      stopLoading();
       return;
     }
     if (_discount.trim() == '') {
       _showToast(context, "Enter Discount");
+      stopLoading();
+      return;
+    }
+    if (double.parse(_minimumSpend) < double.parse(_discount)) {
+      _showToast(
+          context, "Minimum Spend Amount should be greater than Discount");
+      stopLoading();
       return;
     }
     if (widget.actionType != 'update') {

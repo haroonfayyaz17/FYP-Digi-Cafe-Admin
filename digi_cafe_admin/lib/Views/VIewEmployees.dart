@@ -302,7 +302,15 @@ class __ViewEmployees extends State<_ViewEmployees> {
     final scaffold = Scaffold.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        content: Text('$_message'),
+        backgroundColor: colors.buttonColor,
+        content: Text(
+          '$_message',
+          style: TextStyle(
+            color: colors.textColor,
+            fontFamily: Fonts.default_font,
+            fontSize: Fonts.appBarTitle_size,
+          ),
+        ),
         // action: SnackBarAction(
         //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),

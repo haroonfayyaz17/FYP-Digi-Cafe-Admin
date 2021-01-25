@@ -623,7 +623,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       setState(() {
         _displayLoadingWidget = true;
       });
-      _email = _email.replaceAll(new RegExp(r"\s+"), "");
+      _email = _email.replaceAll(new RegExp(r"\s+"), "").toLowerCase();
       _password = _password.trim();
       _emailDetailsState._validateInputs();
       if (_emailDetailsState._autoValidate == false) {
@@ -678,7 +678,15 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
     final scaffold = Scaffold.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        content: Text('$_message'),
+        backgroundColor: colors.buttonColor,
+        content: Text(
+          '$_message',
+          style: TextStyle(
+            color: colors.textColor,
+            fontFamily: Fonts.default_font,
+            fontSize: Fonts.appBarTitle_size,
+          ),
+        ),
         // action: SnackBarAction(
         //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
       ),

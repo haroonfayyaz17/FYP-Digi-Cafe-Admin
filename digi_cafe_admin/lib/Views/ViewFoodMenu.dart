@@ -185,9 +185,17 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
     );
   }
 
-  String capitalize(String x) {
-    x[0].toUpperCase();
-    return x;
+  String capitalize(String string) {
+    if (string == null) {
+      // throw ArgumentError.notNull('string');
+      return null;
+    }
+
+    if (string.isEmpty) {
+      return string;
+    }
+
+    return string[0].toUpperCase() + string.substring(1);
   }
 
   void createHelpAlert(context) async {
