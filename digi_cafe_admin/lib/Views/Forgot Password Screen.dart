@@ -205,8 +205,10 @@ class _ForgotPasswordScreenState extends State<_ForgotPasswordScreen> {
 
   Future<void> forgotPassword() async {
     if (edtTextControllerEmail.text != '') {
-      String value =
-          await dbController.resetPassword(edtTextControllerEmail.text);
+      String email = edtTextControllerEmail.text
+          .replaceAll(new RegExp(r"\s+"), "")
+          .toLowerCase();
+      String value = await dbController.resetPassword(email);
       if (value == 'invalid') {
         setState(() {
           errorHeading = 'Invalid Email Address';

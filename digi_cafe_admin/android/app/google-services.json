@@ -1,78 +1,34 @@
 {
   "project_info": {
-    "project_number": "716615220770",
-    "firebase_url": "https://digicafe-d123.firebaseio.com",
-    "project_id": "digicafe-d123",
-    "storage_bucket": "digicafe-d123.appspot.com"
+    "project_number": "384720655745",
+    "project_id": "digi-cafe-2",
+    "storage_bucket": "digi-cafe-2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:716615220770:android:32cf9677895c54a8b8d47b",
+        "mobilesdk_app_id": "1:384720655745:android:e160449ca8f8c3b7808480",
         "android_client_info": {
           "package_name": "codingstars.digi_cafe_admin"
         }
       },
       "oauth_client": [
         {
-          "client_id": "716615220770-kdr3h8orqo5e7ho2ehveknrqicjje1e0.apps.googleusercontent.com",
+          "client_id": "384720655745-4qj0fcj36b55o5d2ktqo99h81udafboi.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDAuryMvvCUAj_ZNLyZvqDw4UDZbQw8fPM"
+          "current_key": "AIzaSyDWWepBVLk6W0G1x4iLPCNxBxJ4giX8uE8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "716615220770-kdr3h8orqo5e7ho2ehveknrqicjje1e0.apps.googleusercontent.com",
+              "client_id": "384720655745-4qj0fcj36b55o5d2ktqo99h81udafboi.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "716615220770-gsaa8nvv3rukri5545tv85d2lefhe27j.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "codingstars.digiCafeAdmin"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:716615220770:android:9502a6922a24bc31b8d47b",
-        "android_client_info": {
-          "package_name": "codingstars.digi_cafe_customer"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "716615220770-kdr3h8orqo5e7ho2ehveknrqicjje1e0.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDAuryMvvCUAj_ZNLyZvqDw4UDZbQw8fPM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "716615220770-kdr3h8orqo5e7ho2ehveknrqicjje1e0.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "716615220770-gsaa8nvv3rukri5545tv85d2lefhe27j.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "codingstars.digiCafeAdmin"
-              }
             }
           ]
         }
