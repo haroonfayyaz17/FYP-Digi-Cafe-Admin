@@ -79,7 +79,7 @@ class OrderDBController {
   Stream<QuerySnapshot> getOrdersSnapshot() {
     Stream<QuerySnapshot> querySnapshot = firestoreInstance
         .collection('Sales')
-        .document('All Sales')
+        .document('All Sale')
         .collection('Month')
         // .orderBy('dateTime', descending: true)
         // .where('category', isEqualTo: 'continental')
@@ -87,6 +87,30 @@ class OrderDBController {
     //   .listen((snapshot) {
     //  double tempTotal = snapshot.documents.fold(0, (tot, doc) => tot + doc.data['amount']);
 
+    return querySnapshot;
+  }
+
+  Future<Stream<QuerySnapshot>> getFilteredOrdersSnapshot(
+      String filterType, DateTime fromDate, DateTime toDate) async {
+    print(filterType +
+        ' ' +
+        fromDate.toLocal().toIso8601String() +
+        ' ' +
+        toDate.toLocal().toIso8601String());
+    Stream<QuerySnapshot> querySnapshot = await firestoreInstance
+        .collection('Sales')
+        .document('All Sales')
+        .collection(filterType)
+        .where("date", isGreaterThanOrEqualTo: fromDate)
+        .where("date", isLessThanOrEqualTo: toDate)
+        // .orderBy('dateTime', descending: true)
+        // .where('category', isEqualTo: 'continental')
+        .snapshots();
+    // print(querySnapshot.length);
+
+    querySnapshot.listen((event) {
+      print(event.documents.length);
+    });
     return querySnapshot;
   }
 }

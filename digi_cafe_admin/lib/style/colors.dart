@@ -18,6 +18,7 @@ class colors {
   static const Color cursorColor = Color(0xFFBF752A);
   static const Color buttonTextColor = Color(0xFFFFFFFF);
   static const Color textColor = Color(0xFFFFFFFF);
+  // 87B1FF
   // static const Color labelColor = Color(0xFFFFFFFF);
   static const Color headingColor = Color(0xFFBD7332);
   static const Color menuColor = Color(0xFFFFFFFF);

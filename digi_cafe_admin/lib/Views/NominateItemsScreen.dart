@@ -200,7 +200,14 @@ class _NominateItemsState extends State<NominateItemsState> {
       });
       if (result) {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text('Items Nominated Successfully'),
+          content: Text(
+            'Items nominated successfully',
+            style: TextStyle(
+              color: colors.textColor,
+              fontFamily: Fonts.default_font,
+              fontSize: Fonts.appBarTitle_size,
+            ),
+          ),
           duration: Duration(seconds: 3),
         ));
       }

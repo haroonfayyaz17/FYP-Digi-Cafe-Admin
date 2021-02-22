@@ -16,4 +16,10 @@ class OrderUIController {
   Stream<QuerySnapshot> getOrdersSnapshot() {
     return _orderDBController.getOrdersSnapshot();
   }
+
+  Future<Stream<QuerySnapshot>> getFilteredOrdersSnapshot(
+      String filterType, DateTime fromDate, DateTime toDate) async {
+    return await _orderDBController.getFilteredOrdersSnapshot(
+        filterType, fromDate, toDate);
+  }
 }
