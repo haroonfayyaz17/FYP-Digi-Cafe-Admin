@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:digi_cafe_admin/Controllers/DBControllers/FirebaseCloudMessaging.dart';
 import 'package:digi_cafe_admin/Model/FoodMenu.dart';
 import 'package:digi_cafe_admin/Model/FoodItem.dart';
 import 'package:digi_cafe_admin/Model/Voucher.dart';
@@ -149,6 +149,19 @@ class FoodMenuDBController {
     });
     // print(done);
     return done;
+  }
+
+  Future<void> sendNotifications() async {
+    print('yes');
+    FirebaseCloudMessaging firebaseCloudMessaging =
+        new FirebaseCloudMessaging();
+    QuerySnapshot value = await firestoreInstance
+        .collection('Person')
+        .where('PType', whereIn: ["faculty", "student"]).getDocuments();
+    for (DocumentSnapshot element in value.documents) {
+      firebaseCloudMessaging.sendAndRetrieveMessage("Items Nominated",
+          "The new items are nominated", element.data['tokenID']);
+    }
   }
 
   Future<bool> addVoucher(Voucher voucher) async {
@@ -348,6 +361,7 @@ class FoodMenuDBController {
         "count": '0',
       }, merge: true);
     }
+    sendNotifications();
 
     return Future.value(true);
   }
