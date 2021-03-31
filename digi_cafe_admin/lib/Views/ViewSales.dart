@@ -1,7 +1,6 @@
 import 'package:digi_cafe_admin/Controllers/UIControllers/OrderUIController.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
@@ -57,6 +56,10 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
 
   final ValueNotifier<Stream<QuerySnapshot>> _counter =
       ValueNotifier<Stream<QuerySnapshot>>(null);
+
+  final ValueNotifier<String> _totalOrdersAmount = ValueNotifier<String>(null);
+  final ValueNotifier<String> _totalOrderss = ValueNotifier<String>(null);
+
   DateTime fromDate;
 
   DateTime toDate;
@@ -68,6 +71,8 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
     uiController = new OrderUIController();
     // querySnapshot = uiController.getOrdersSnapshot();
     _counter.value = uiController.getOrdersSnapshot();
+    _totalOrdersAmount.value = "0";
+    _totalOrderss.value = "0";
   }
 
   @override
@@ -80,28 +85,56 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 8.0, top: 8, bottom: 8),
-            child: Text(
-              '$totalOrders',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-                fontFamily: Fonts.default_font,
-              ),
-            ),
+            child: ValueListenableBuilder(
+                builder:
+                    (BuildContext context, String totalOrderss, Widget child) {
+                  return Text(
+                    '$totalOrderss',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      fontFamily: Fonts.default_font,
+                    ),
+                  );
+                },
+                valueListenable: _totalOrderss),
+
+            // Text(
+            //   '$totalOrders',
+            //   style: TextStyle(
+            //     fontWeight: FontWeight.bold,
+            //     fontSize: 17,
+            //     fontFamily: Fonts.default_font,
+            //   ),
+            // ),
           ),
           Spacer(
             flex: 1,
           ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0, top: 8, bottom: 8),
-            child: Text(
-              '$totalAmount',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
-                fontFamily: Fonts.default_font,
-              ),
-            ),
+            child:
+                // Text(
+                //   '$totalAmount',
+                //   style: TextStyle(
+                //     fontWeight: FontWeight.bold,
+                //     fontSize: 17,
+                //     fontFamily: Fonts.default_font,
+                //   ),
+                // ),
+                ValueListenableBuilder(
+                    builder: (BuildContext context, String totalOAmount,
+                        Widget child) {
+                      return Text(
+                        '$totalOAmount',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          fontFamily: Fonts.default_font,
+                        ),
+                      );
+                    },
+                    valueListenable: _totalOrdersAmount),
           ),
         ],
       ),
@@ -121,6 +154,10 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                           return StreamBuilder<QuerySnapshot>(
                             stream: querySnapshot,
                             builder: (context, snapshot) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                _totalOrdersAmount.value = totalAmount;
+                                _totalOrderss.value = totalOrders;
+                              });
                               if (snapshot.hasData) {
                                 List<SalesViewItems> listItems = new List();
                                 double amount = 0, orders = 0;
@@ -159,7 +196,7 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                                 //   print(listItems[x].orders);
                                 // }
                                 // print(orders);
-                                // print(totalAmount);
+                                print(totalAmount);
                                 totalOrders = 'Total Orders: ' +
                                     orders.toInt().toString();
                                 totalAmount = 'Total Amount: ' +
@@ -253,6 +290,12 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                         valueListenable: _counter,
                         child: const Text('Good job!'),
                       ),
+                // Builder(builder: (BuildContext context) {
+                //   _totalOrderss.value = totalOrders.toString();
+
+                //   _totalOrdersAmount.value = totalAmount.toString();
+                //   return Container();
+                // }),
               ],
             ),
           ),

@@ -32,6 +32,8 @@ class FoodMenuDBController {
         "name": _foodItem.name,
         "description": _foodItem.description,
         "price": _foodItem.price,
+        "rating": 0,
+        "review": null,
         "stockLeft": _foodItem.stockLeft,
       }).then((value) async {
         // print(value.documentID);
