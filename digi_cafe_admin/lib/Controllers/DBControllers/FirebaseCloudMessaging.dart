@@ -27,6 +27,8 @@ class FirebaseCloudMessaging {
           'priority': 'high',
           'data': <String, dynamic>{
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'sound': 'default',
+            'screen': 'screenA',
             'id': '1',
             'status': 'done'
           },
