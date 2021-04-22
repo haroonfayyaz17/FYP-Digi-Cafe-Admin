@@ -8,6 +8,8 @@ import 'package:digi_cafe_admin/Model/Complaint.dart';
 import 'LoadingWidget.dart';
 import 'package:intl/intl.dart';
 
+import 'ViewFeedbackDetails.dart';
+
 class ComplaintScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ComplaintScreen();
@@ -54,141 +56,157 @@ class _ComplaintScreen extends State<ComplaintScreen> {
       child: Column(
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: DropdownButtonFormField<String>(
-              value: chosenComplaint,
-              autofocus: true,
-              icon: Icon(Icons.arrow_drop_down),
-              iconSize: 24,
-              decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-                ),
-                hintText: 'FilterType',
-                filled: true,
-                fillColor: colors.backgroundColor,
-                labelText: 'FilterType',
-                icon: Icon(
-                  Icons.person_outline,
-                ),
-              ),
-              onChanged: (String newValue) {
-                setState(() {
-                  chosenComplaint = newValue;
-                });
-                getQuerySnapshot(newValue);
-              },
-              items: complaintCategories
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(
-                    value,
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+            child: Container(
+              height: 57,
+              child: DropdownButtonFormField<String>(
+                value: chosenComplaint,
+                autofocus: true,
+                icon: Icon(Icons.arrow_drop_down),
+                iconSize: 24,
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: colors.buttonColor, width: 1.3),
                   ),
-                );
-              }).toList(),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: colors.buttonColor, width: 1.3),
+                  ),
+                  hintText: 'FilterType',
+                  filled: true,
+                  fillColor: colors.backgroundColor,
+                  labelText: 'FilterType',
+                ),
+                onChanged: (String newValue) {
+                  setState(() {
+                    chosenComplaint = newValue;
+                  });
+                  getQuerySnapshot(newValue);
+                },
+                items: complaintCategories
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
           ValueListenableBuilder(
             builder: (BuildContext context, Stream<QuerySnapshot> querySnapshot,
                 Widget child) {
               return StreamBuilder<QuerySnapshot>(
-                  stream: querySnapshot,
-                  builder: (context, snapshot) {
-                    return !snapshot.hasData
-                        ? LoadingWidget()
-                        : ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              DocumentSnapshot complaintDoc =
-                                  snapshot.data.documents[index];
+                stream: querySnapshot,
+                builder: (context, snapshot) {
+                  return !snapshot.hasData
+                      ? LoadingWidget()
+                      : ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            DocumentSnapshot complaintDoc =
+                                snapshot.data.documents[index];
 
-                              Complaint complaint = new Complaint(
-                                  complaintDoc.documentID.toString(),
-                                  complaintDoc.data[
-                                      "feedback"], //backend se ara snapshot main
-                                  complaintDoc.data["status"],
-                                  complaintDoc.data["date"].toDate(),
-                                  complaintDoc.data["category"]);
-                              // String convertTime =
-                              //     complaint.time.DateTime.now();
-                              // if (complaint.time != null) {
-                              //   String day = complaint.time.day.toString();
-                              //   String month = complaint.time.month.toString();
-                              //   String year = complaint.time.year.toString();
-                              //   String date = '${day}-${month}-${year}';
-                              //   String time = date;
-                              // }
-                              return Container(
-                                margin: EdgeInsets.only(left: 10, top: 10),
-                                width: MediaQuery.of(context).size.width * 0.9,
-                                height: MediaQuery.of(context).size.width * 0.2,
+                            Complaint complaint = new Complaint(
+                                complaintDoc.documentID.toString(),
+                                complaintDoc.data["feedback"],
+                                complaintDoc.data["status"],
+                                complaintDoc.data["date"].toDate(),
+                                complaintDoc.data["category"]);
+                            return Container(
+                              margin: EdgeInsets.only(left: 10, top: 10),
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              height: MediaQuery.of(context).size.width * 0.22,
+                              child: InkWell(
+                                onDoubleTap: () {
+                                  complaint.status == 'read'
+                                      ? orderUIController.changeComplaintStatus(
+                                          complaint.id, 'unread')
+                                      : orderUIController.changeComplaintStatus(
+                                          complaint.id, 'read');
+                                },
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              ViewFeedbackDetails('complaint',complaint.id)));
+                                },
                                 child: Card(
-                                    elevation: 2,
-                                    shadowColor: complaint.status == 'unread'
-                                        ? colors.appBarColor
-                                        : null,
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: <Widget>[
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Text(
-                                                complaint.category,
+                                  elevation: 8,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 10),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              complaint.category,
+                                              style: TextStyle(
+                                                fontFamily: Fonts.default_font,
+                                                fontSize: Fonts.heading2_size,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: Text(
+                                                convertDateTimeDisplay(
+                                                    complaint.time.toString()),
                                                 style: TextStyle(
+                                                  fontSize: Fonts.label_size,
                                                   fontFamily:
                                                       Fonts.default_font,
-                                                  fontSize: Fonts.heading3_size,
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                                 overflow: TextOverflow.ellipsis,
                                               ),
-                                              Align(
-                                                alignment: Alignment.topRight,
-                                                child: Text(
-                                                  convertDateTimeDisplay(
-                                                      complaint.time
-                                                          .toString()),
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                        Fonts.default_font,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Align(
+                                            ),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 8.0),
+                                          child: Align(
                                             alignment: Alignment.bottomLeft,
                                             child: Text(
                                               complaint.text,
                                               style: TextStyle(
+                                                fontSize: Fonts.heading2_size,
                                                 fontFamily: Fonts.default_font,
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),
-                                          Spacer(flex: 2),
-                                        ],
-                                      ),
-                                    )),
-                              );
-                            });
-                  });
+                                        ),
+                                        Spacer(flex: 2),
+                                      ],
+                                    ),
+                                  ),
+                                  color: complaint.status == 'read'
+                                      // ? Colors.yellow[100]
+                                      ? Colors.orange[50]
+                                      : colors.backgroundColor,
+                                  //
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                },
+              );
             },
             valueListenable: _counter,
             child: const Text('Good job!'),

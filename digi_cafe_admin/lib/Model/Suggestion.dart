@@ -11,19 +11,19 @@ class Suggestion {
     this._time = time;
   }
 
-  void set id(String id) {
+  set id(String id) {
     this._id = id;
   }
 
-  void set text(String text) {
+  set text(String text) {
     this._text = text;
   }
 
-  void set status(String status) {
+  set status(String status) {
     this._status = status;
   }
 
-  void set time(DateTime time) {
+  set time(DateTime time) {
     this._time = time;
   }
 
@@ -36,7 +36,7 @@ class Suggestion {
   }
 
   String get status {
-    return this._id;
+    return this._status;
   }
 
   DateTime get time {

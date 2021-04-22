@@ -4,7 +4,6 @@ import 'package:digi_cafe_admin/Views/EmptyCartScreen.dart';
 import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
 import 'package:digi_cafe_admin/Views/ViewSales.dart';
 import 'package:digi_cafe_admin/Views/ViewVouchers.dart';
-import 'package:digi_cafe_admin/Views/ViewFeedback.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart';
@@ -12,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/Views/NominateItemsScreen.dart';
 import '../style/fonts_style.dart';
-import 'NoIternetScreen.dart';
 
 class dashboard extends StatelessWidget {
   var email;

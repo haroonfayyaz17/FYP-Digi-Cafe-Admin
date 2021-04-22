@@ -23,7 +23,19 @@ class OrderUIController {
         filterType, fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getComplaintsSnapshot({String newValue=null}) {
+  Stream<QuerySnapshot> getComplaintsSnapshot({String newValue = null}) {
     return _orderDBController.getComplaintsSnapshot(newValue: newValue);
+  }
+
+  Future<void> changeComplaintStatus(String id, String status) async {
+    await _orderDBController.changeComplaintStatus(id, status);
+  }
+
+  Stream<QuerySnapshot> getSuggestionSnapshot() {
+    return _orderDBController.getSuggestionSnapshot();
+  }
+
+  Future<void> changeSuggestionStatus(String id, String status) async {
+    await _orderDBController.changeSuggestionStatus(id, status);
   }
 }

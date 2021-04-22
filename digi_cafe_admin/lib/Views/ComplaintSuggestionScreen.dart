@@ -12,15 +12,8 @@ class ComplaintSuggestionScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _ComplaintSuggestionScreen();
 }
 
-@override
-void initState() {
-  //_controller = AnimationController(vsync: context);
-}
-
 class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
   BuildContext _buildContext;
-
-  List<String> filterTypeOptionList = <String>['Daily', 'Monthly', 'Yearly'];
 
   String chosenFilterType;
   String chosenFilterCategory;
@@ -38,7 +31,14 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
 
   DateTime toDate;
   bool _buttonPressed = false;
-
+  final _kTabs = <Widget>[
+    Tab(
+      text: 'Complaints',
+    ),
+    Tab(
+      text: 'Suggestions',
+    ),
+  ];
   Widget build(BuildContext context) {
     this._buildContext = context;
 
@@ -50,18 +50,10 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
       // PastVouchers(),
     ];
 
-    final _kTabs = <Widget>[
-      Tab(
-        text: 'Comlaints',
-      ),
-      Tab(
-        text: 'Suggestions',
-      ),
-    ];
-
     return DefaultTabController(
       length: _kTabs.length,
       child: Scaffold(
+        backgroundColor: colors.backgroundColor,
         appBar: getSalesAppBar(),
         // appBar: AppBar(
         //   title: Text('Feedback',
@@ -77,6 +69,12 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //_controller = AnimationController(vsync: context);
   }
 
   void createFilterAlert(context) async {
@@ -298,63 +296,9 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
           ),
         ),
       ],
+      bottom: TabBar(
+        tabs: _kTabs,
+      ),
     );
   }
-}
-
-Widget getTextWidget(var data) {
-  return Padding(
-    padding: const EdgeInsets.all(15),
-    child: Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        data,
-        style: TextStyle(
-          fontSize: Fonts.heading1_size,
-          fontFamily: Fonts.default_font,
-        ),
-      ),
-    ),
-  );
-}
-
-String getAlphabeticalMonth(int month, int year) {
-  if (month != null) {
-    // var lst = docID.split('-');
-    var months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December"
-    ];
-    return months[month] + ', ' + year.toString();
-  }
-  return '';
-}
-
-void _showToast(BuildContext context, var _message) {
-  final scaffold = Scaffold.of(context);
-  scaffold.showSnackBar(
-    SnackBar(
-      backgroundColor: colors.buttonColor,
-      content: Text(
-        '$_message',
-        style: TextStyle(
-          color: colors.textColor,
-          fontFamily: Fonts.default_font,
-          fontSize: Fonts.appBarTitle_size,
-        ),
-      ),
-      // action: SnackBarAction(
-      //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-    ),
-  );
 }

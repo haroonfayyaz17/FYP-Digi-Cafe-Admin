@@ -132,4 +132,25 @@ class OrderDBController {
           .snapshots();
     }
   }
+
+  Future<void> changeComplaintStatus(String id, String status) async {
+    await firestoreInstance.collection('Complaints').document(id).updateData({
+      "status": status,
+    });
+  }
+
+  Stream<QuerySnapshot> getSuggestionSnapshot() {
+    return firestoreInstance
+        .collection('Suggestions')
+        .orderBy('date', descending: true)
+
+        // .where('category', isEqualTo: 'Serving')
+        .snapshots();
+  }
+
+  Future<void> changeSuggestionStatus(String id, String status) async {
+    await firestoreInstance.collection('Suggestions').document(id).updateData({
+      "status": status,
+    });
+  }
 }
