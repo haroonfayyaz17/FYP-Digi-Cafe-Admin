@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:digi_cafe_admin/Views/FeedbackDetailsClass.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:digi_cafe_admin/Model/Order.dart';
 import 'package:intl/intl.dart';
@@ -152,5 +153,26 @@ class OrderDBController {
     await firestoreInstance.collection('Suggestions').document(id).updateData({
       "status": status,
     });
+  }
+
+  Future<FeedbackDetails> getFeedbackData(
+      String complaintID, String type) async {
+    FeedbackDetails feedbackDetails = new FeedbackDetails();
+    DocumentSnapshot document;
+    if (type == 'complaint')
+      await firestoreInstance
+          .collection('Complaints')
+          .document(complaintID)
+          .get()
+          .then((value) => document = value);
+    else {
+      document = await firestoreInstance
+          .collection('Suggestions')
+          .document(complaintID)
+          .get()
+          .then((value) => document = value);
+    }
+    print(document['date']);
+    return feedbackDetails;
   }
 }

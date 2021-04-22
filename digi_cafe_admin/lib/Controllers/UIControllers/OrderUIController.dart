@@ -4,6 +4,7 @@ import 'package:digi_cafe_admin/Model/Voucher.dart';
 import 'package:digi_cafe_admin/Model/FoodItem.dart';
 import 'package:digi_cafe_admin/Model/Order.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/OrderDBController.dart';
+import 'package:digi_cafe_admin/Views/FeedbackDetailsClass.dart';
 
 class OrderUIController {
   OrderDBController _orderDBController;
@@ -37,5 +38,10 @@ class OrderUIController {
 
   Future<void> changeSuggestionStatus(String id, String status) async {
     await _orderDBController.changeSuggestionStatus(id, status);
+  }
+
+  Future<FeedbackDetails> getFeedbackData(
+      String complaintID, String type) async {
+    return await _orderDBController.getFeedbackData(complaintID, type);
   }
 }

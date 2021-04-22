@@ -16,7 +16,6 @@ class SuggestionScreen extends StatefulWidget {
 }
 
 class _SuggestionScreen extends State<SuggestionScreen> {
-  String chosenComplaint = 'All';
   OrderUIController orderUIController;
 
   String convertDateTimeDisplay(String date) {
