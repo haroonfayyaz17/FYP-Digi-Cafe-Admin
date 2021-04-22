@@ -22,4 +22,8 @@ class OrderUIController {
     return await _orderDBController.getFilteredOrdersSnapshot(
         filterType, fromDate, toDate);
   }
+
+  Stream<QuerySnapshot> getComplaintsSnapshot({String newValue=null}) {
+    return _orderDBController.getComplaintsSnapshot(newValue: newValue);
+  }
 }

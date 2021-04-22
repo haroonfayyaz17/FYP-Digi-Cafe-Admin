@@ -113,4 +113,23 @@ class OrderDBController {
     });
     return querySnapshot;
   }
+
+  Stream<QuerySnapshot> getComplaintsSnapshot({String newValue = null}) {
+    if (newValue == null)
+      return firestoreInstance
+          .collection('Complaints')
+          .orderBy('category')
+          .orderBy('date', descending: true)
+
+          // .where('category', isEqualTo: 'Serving')
+          .snapshots();
+    else {
+      return firestoreInstance
+          .collection('Complaints')
+          .where('category', isEqualTo: '$newValue')
+          // .orderBy('category', descending: false)
+          .orderBy('date', descending: true)
+          .snapshots();
+    }
+  }
 }
