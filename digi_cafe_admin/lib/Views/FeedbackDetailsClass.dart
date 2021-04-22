@@ -6,6 +6,7 @@ class FeedbackDetails {
   String _email;
   String _reply;
   String _category;
+  String _orderNo;
 
   FeedbackDetails(
       {String id = '',
@@ -14,7 +15,8 @@ class FeedbackDetails {
       String text = '',
       String reply = '',
       DateTime date,
-      String category}) {
+      String category = '',
+      String orderNo=''}) {
     _id = id;
     _name = name;
     _email = email;
@@ -22,7 +24,16 @@ class FeedbackDetails {
     _reply = reply;
     _dateTime = date;
     _category = category;
+    _orderNo = orderNo;
   }
+
+  String get orderNo => this._orderNo;
+
+  set orderNo(String value) => this._orderNo = value;
+
+  get category => this._category;
+
+  set category(value) => this._category = value;
 
   String get id => this._id;
 

@@ -6,6 +6,7 @@ class Fonts {
   static const double heading2_size = 20;
   static const double heading3_size = 18;
   static const double button_size = 16;
+  static const double link_size = 27;
 
   static const double appBarTitle_size = 20;
   static const double heading_SampleText_size = 28;

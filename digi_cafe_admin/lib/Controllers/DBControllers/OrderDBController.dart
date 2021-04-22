@@ -172,7 +172,28 @@ class OrderDBController {
           .get()
           .then((value) => document = value);
     }
-    print(document['date']);
+    if (type == 'complaint') {
+      feedbackDetails.text = document['feedback'];
+      feedbackDetails.category = document['category'];
+      feedbackDetails.orderNo = document['orderNo'];
+    } else {
+      feedbackDetails.text = document['suggestion'];
+      feedbackDetails.orderNo = null;
+    }
+    feedbackDetails.dateTime = document['date'].toDate();
+    feedbackDetails.id = document.documentID;
+    feedbackDetails.reply = document['reply'];
+
+    DocumentSnapshot document1;
+
+    await firestoreInstance
+        .collection('Person')
+        .document(document['customerID'])
+        .get()
+        .then((value) => document1 = value);
+    feedbackDetails.name = document1['Name'];
+    feedbackDetails.email = document1['email'];
+    print(feedbackDetails.text);
     return feedbackDetails;
   }
 }
