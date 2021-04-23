@@ -11,8 +11,16 @@ import 'package:intl/intl.dart';
 import 'ViewFeedbackDetails.dart';
 
 class ComplaintScreen extends StatefulWidget {
+  ComplaintScreen({this.fromDate, this.toDate});
+  DateTime fromDate;
+  DateTime toDate;
+  _ComplaintScreen complaintState;
+
   @override
-  State<StatefulWidget> createState() => _ComplaintScreen();
+  State<StatefulWidget> createState() {
+    complaintState = new _ComplaintScreen();
+    return complaintState;
+  }
 }
 
 class _ComplaintScreen extends State<ComplaintScreen> {
@@ -136,7 +144,8 @@ class _ComplaintScreen extends State<ComplaintScreen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              ViewFeedbackDetails('complaint',complaint.id)));
+                                              ViewFeedbackDetails(
+                                                  'complaint', complaint.id)));
                                 },
                                 child: Card(
                                   elevation: 8,
@@ -218,9 +227,10 @@ class _ComplaintScreen extends State<ComplaintScreen> {
 
   void getQuerySnapshot(String newValue) async {
     if (newValue == 'All')
-      _counter.value = orderUIController.getComplaintsSnapshot();
+      _counter.value = orderUIController.getComplaintsSnapshot(
+          fromDate: widget.fromDate, toDate: widget.toDate);
     else
-      _counter.value =
-          orderUIController.getComplaintsSnapshot(newValue: newValue);
+      _counter.value = orderUIController.getComplaintsSnapshot(
+          newValue: newValue, fromDate: widget.fromDate, toDate: widget.toDate);
   }
 }

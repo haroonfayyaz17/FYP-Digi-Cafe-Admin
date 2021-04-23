@@ -1,13 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/OrderUIController.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
-import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
-import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
+import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'FeedbackDetailsClass.dart';
@@ -25,6 +21,8 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
   FeedbackDetails _feedbackDetails;
 
   var replyController = new TextEditingController();
+
+  var _buttonPressed = false;
 
   @override
   void initState() {
@@ -48,27 +46,22 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // await _orderUIController
-      //     .getFeedbackData(widget.complaintID, widget.type)
-      //     .then((value) {
-      //   setState(() {
-      //     _feedbackDetails = value;
-      //   });
-      // });
-    });
     return Scaffold(
-      appBar: AppBarWidget.getAppBar(),
+      appBar: MyWidgets.getAppBar(),
       backgroundColor: colors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
             child: FutureBuilder<FeedbackDetails>(
           builder: (context, snapshot) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              replyController.text =
+                  _feedbackDetails.reply == null ? '' : _feedbackDetails.reply;
+            });
             if (!snapshot.hasData) {
               return Container();
             } else {
               FeedbackDetails details = snapshot.data;
-              debugPrint(details.orderNo);
+              _feedbackDetails = details;
               return ConstrainedBox(
                 constraints: BoxConstraints(
                     minHeight: MediaQuery.of(context).size.height),
@@ -82,39 +75,28 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                         //name
                         Padding(
                           padding: const EdgeInsets.only(top: 0.0),
-                          child: Text(
-                            'Name: ${details.name}',
-                            style: TextStyle(
-                              fontSize: Fonts.heading2_size,
-                              fontFamily: Fonts.default_font,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          child: MyWidgets.getTextWidget(
+                              text: 'Name: ${details.name}',
+                              size: Fonts.heading2_size,
+                              overflow: TextOverflow.ellipsis,
+                              weight: FontWeight.bold),
                         ),
                         //email
                         Padding(
                           padding: const EdgeInsets.only(top: 16.0),
-                          child: Text(
-                            'Email: ${details.email}',
-                            style: TextStyle(
-                              fontSize: Fonts.heading2_size,
-                              fontFamily: Fonts.default_font,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          child: MyWidgets.getTextWidget(
+                              text: 'Email: ${details.email}',
+                              size: Fonts.heading2_size,
+                              overflow: TextOverflow.ellipsis,
+                              weight: FontWeight.bold),
                         ),
                         //category
                         widget.type == 'complaint'
                             ? Padding(
                                 padding: const EdgeInsets.only(top: 16.0),
-                                child: Text(
-                                  'Category: ${details.category}',
-                                  style: TextStyle(
-                                    fontSize: Fonts.heading2_size,
-                                    fontFamily: Fonts.default_font,
-                                  ),
+                                child: MyWidgets.getTextWidget(
+                                  text: 'Category: ${details.category}',
+                                  size: Fonts.heading2_size,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               )
@@ -128,12 +110,9 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                                   // crossAxisAlignment: CrossAxisAlignment.center,
                                   // mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      'Order: ',
-                                      style: TextStyle(
-                                        fontSize: Fonts.heading2_size,
-                                        fontFamily: Fonts.default_font,
-                                      ),
+                                    MyWidgets.getTextWidget(
+                                      text: 'Order: ',
+                                      size: Fonts.heading2_size,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     InkWell(
@@ -158,37 +137,43 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                         //feedback
                         Padding(
                           padding: const EdgeInsets.only(top: 14.0),
-                          child: Text(
-                            widget.type == 'complaint'
-                                ? 'Customer Complaint'
-                                : 'Customer Suggestion',
-                            style: TextStyle(
-                              fontSize: Fonts.heading3_size,
-                              fontFamily: Fonts.default_font,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          child: MyWidgets.getTextWidget(
+                              text: widget.type == 'complaint'
+                                  ? 'Customer Complaint'
+                                  : 'Customer Suggestion',
+                              size: Fonts.heading3_size,
+                              overflow: TextOverflow.ellipsis,
+                              weight: FontWeight.bold),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          padding: EdgeInsets.all(10),
-                          height: 150,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: colors.buttonColor,
+
+                        Wrap(
+                          children: [
+                            Container(
+                              constraints: BoxConstraints(
+                                  minHeight: 100, maxHeight: 300),
+                              margin: EdgeInsets.only(top: 10),
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: colors.buttonColor,
+                                ),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              child: MyWidgets.getTextWidget(
+                                text: details.text,
+                                size: Fonts.heading2_size,
+                              ),
                             ),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          child: Text(
-                            '${details.text}',
-                            style: TextStyle(
-                              fontSize: Fonts.heading2_size,
-                              fontFamily: Fonts.default_font,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 14.0),
+                          child: MyWidgets.getTextWidget(
+                              text: 'Reply',
+                              size: Fonts.heading3_size,
+                              overflow: TextOverflow.ellipsis,
+                              weight: FontWeight.bold),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 16.0),
@@ -196,7 +181,9 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                             width: MediaQuery.of(context).size.width * 0.9,
                             child: TextField(
                               controller: this.replyController,
-                              maxLines: 6,
+                              maxLines: 5,
+                              maxLength: 400,
+                              enabled: details.reply == null ? true : false,
                               textCapitalization: TextCapitalization.sentences,
                               decoration: InputDecoration(
                                 labelText: 'Write Reply',
@@ -206,6 +193,60 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                               style: TextStyle(
                                 fontSize: Fonts.heading2_size,
                                 fontFamily: Fonts.default_font,
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 30.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                color: colors.buttonColor,
+                              ),
+                              width: 175,
+                              height: 50,
+                              child: FlatButton(
+                                disabledColor: Colors.grey,
+                                child: Stack(
+                                  children: <Widget>[
+                                    Visibility(
+                                        visible: !_buttonPressed,
+                                        child: MyWidgets.getTextWidget(
+                                            text: 'Reply',
+                                            size: Fonts.heading3_size,
+                                            color: colors.buttonTextColor)),
+                                    Visibility(
+                                      visible: _buttonPressed,
+                                      child: CircularProgressIndicator(
+                                        valueColor:
+                                            new AlwaysStoppedAnimation<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                onPressed: _feedbackDetails.reply != null
+                                    ? null
+                                    : () async {
+                                        print('hjds');
+                                        setState(() {
+                                          _buttonPressed = true;
+                                        });
+                                        await _orderUIController
+                                            .submitReply(
+                                                feedbackID: details.id,
+                                                reply: replyController.text,
+                                                type: widget.type)
+                                            .then((value) {
+                                          setState(() {
+                                            _buttonPressed = false;
+                                          });
+                                        });
+                                      },
                               ),
                             ),
                           ),

@@ -1,6 +1,6 @@
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'package:digi_cafe_admin/Views/AddVoucher.dart';
-import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
+import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/Views/DialogInstruction.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,7 +33,7 @@ class ViewVouchers extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBarWidget.getAppBar(),
+      appBar: MyWidgets.getAppBar(),
       backgroundColor: colors.backgroundColor,
       body: _ViewVouchers(),
     );

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digi_cafe_admin/Model/FoodItem.dart';
 import 'package:digi_cafe_admin/Model/FoodMenu.dart';
-import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
+import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
@@ -21,7 +21,7 @@ class AddFoodMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget.getAppBar(),
+      appBar: MyWidgets.getAppBar(),
       backgroundColor: colors.backgroundColor,
       body: _AddFoodMenuScreen(foodItem: foodItem, actionType: actionType),
     );

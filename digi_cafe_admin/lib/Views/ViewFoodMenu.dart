@@ -1,7 +1,7 @@
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'package:digi_cafe_admin/Views/AddCategory.dart';
 import 'package:digi_cafe_admin/Views/AddFoodMenu.dart';
-import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
+import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/Views/DialogInstruction.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -32,7 +32,7 @@ class ViewFoodMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBarWidget.getAppBar(),
+      appBar: MyWidgets.getAppBar(),
       backgroundColor: colors.backgroundColor,
       body: _ViewFoodMenu(),
     );

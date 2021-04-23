@@ -115,12 +115,15 @@ class OrderDBController {
     return querySnapshot;
   }
 
-  Stream<QuerySnapshot> getComplaintsSnapshot({String newValue = null}) {
+  Stream<QuerySnapshot> getComplaintsSnapshot(
+      {String newValue = null, DateTime fromDate, DateTime toDate}) {
     if (newValue == null)
       return firestoreInstance
           .collection('Complaints')
-          .orderBy('category')
           .orderBy('date', descending: true)
+          .orderBy('category')
+          .where("date", isGreaterThanOrEqualTo: fromDate)
+          .where("date", isLessThanOrEqualTo: toDate)
 
           // .where('category', isEqualTo: 'Serving')
           .snapshots();
@@ -129,6 +132,8 @@ class OrderDBController {
           .collection('Complaints')
           .where('category', isEqualTo: '$newValue')
           // .orderBy('category', descending: false)
+          .where("date", isGreaterThanOrEqualTo: fromDate)
+          .where("date", isLessThanOrEqualTo: toDate)
           .orderBy('date', descending: true)
           .snapshots();
     }
@@ -193,7 +198,23 @@ class OrderDBController {
         .then((value) => document1 = value);
     feedbackDetails.name = document1['Name'];
     feedbackDetails.email = document1['email'];
-    print(feedbackDetails.text);
     return feedbackDetails;
+  }
+
+  Future<void> submitReply(
+      {String feedbackID, String reply, String type}) async {
+    type == 'complaint'
+        ? await firestoreInstance
+            .collection('Complaints')
+            .document(feedbackID)
+            .updateData({
+            "reply": reply,
+          })
+        : await firestoreInstance
+            .collection('Suggestions')
+            .document(feedbackID)
+            .updateData({
+            "reply": reply,
+          });
   }
 }

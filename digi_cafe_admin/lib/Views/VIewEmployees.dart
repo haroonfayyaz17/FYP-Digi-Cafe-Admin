@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
+import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/Views/DialogInstruction.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
@@ -50,7 +50,7 @@ class ViewEmployees extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppBarWidget.getAppBar(),
+      appBar: MyWidgets.getAppBar(),
       body: _ViewEmployees(),
       floatingActionButton: SpeedDial(
           animatedIcon: AnimatedIcons.menu_close,

@@ -1,5 +1,5 @@
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
-import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
+import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +59,7 @@ class _NominateItemsState extends State<NominateItemsState> {
     _buildContext = context;
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBarWidget.getAppBar(),
+      appBar: MyWidgets.getAppBar(),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 120, right: 120, bottom: 5),
         child: ClipPath(

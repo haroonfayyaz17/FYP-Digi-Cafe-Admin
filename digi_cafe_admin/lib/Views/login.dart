@@ -222,28 +222,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                           _buttonPressed = true;
                         });
                         checkSignIn();
-
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (BuildContext context) =>
-                        //             new dashboard()));
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //         builder: (BuildContext context) =>
-                        //             new ViewFoodMenu()));
-
-                        // print(edtTextControllerEmail.text);
-                        // print(edtTextControllerPassword.text);
-                        // _loginController.CheckSignIn(edtTextControllerEmail.text,
-                        //     edtTextControllerPassword.text);
-                        // _loginController
-                        //     .isEmailVerified()
-                        //     .then((value) => print(value));
-                        // setState(() {
-                        //   _buttonPressed = true;
-                        // });
                       },
                     ),
                   ),

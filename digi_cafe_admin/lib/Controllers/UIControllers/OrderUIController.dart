@@ -24,8 +24,10 @@ class OrderUIController {
         filterType, fromDate, toDate);
   }
 
-  Stream<QuerySnapshot> getComplaintsSnapshot({String newValue = null}) {
-    return _orderDBController.getComplaintsSnapshot(newValue: newValue);
+  Stream<QuerySnapshot> getComplaintsSnapshot(
+      {String newValue = null, DateTime fromDate, DateTime toDate}) {
+    return _orderDBController.getComplaintsSnapshot(
+        newValue: newValue, fromDate: fromDate, toDate: toDate);
   }
 
   Future<void> changeComplaintStatus(String id, String status) async {
@@ -43,5 +45,11 @@ class OrderUIController {
   Future<FeedbackDetails> getFeedbackData(
       String complaintID, String type) async {
     return await _orderDBController.getFeedbackData(complaintID, type);
+  }
+
+  Future<void> submitReply(
+      {String feedbackID, String reply, String type}) async {
+    await _orderDBController.submitReply(
+        feedbackID: feedbackID, reply: reply, type: type);
   }
 }

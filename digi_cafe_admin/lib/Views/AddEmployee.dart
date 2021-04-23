@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:digi_cafe_admin/Model/Cafe%20Employee.dart';
-import 'package:digi_cafe_admin/Views/AppBarWidget.dart';
+import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/EmployeeUIController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
@@ -21,7 +21,7 @@ class AddEmployeeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWidget.getAppBar(),
+      appBar: MyWidgets.getAppBar(),
       // backgroundColor: colors.buttonColor,
       backgroundColor: colors.backgroundColor,
       body: _AddEmployeeScreen(

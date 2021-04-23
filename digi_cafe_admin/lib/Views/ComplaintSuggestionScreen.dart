@@ -12,7 +12,8 @@ class ComplaintSuggestionScreen extends StatefulWidget {
   State<StatefulWidget> createState() => _ComplaintSuggestionScreen();
 }
 
-class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
+class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
+    with TickerProviderStateMixin {
   BuildContext _buildContext;
 
   String chosenFilterType;
@@ -30,6 +31,7 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
   DateTime fromDate;
 
   DateTime toDate;
+  TabController _tabController;
   bool _buttonPressed = false;
   final _kTabs = <Widget>[
     Tab(
@@ -39,12 +41,20 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
       text: 'Suggestions',
     ),
   ];
+  ComplaintScreen _complaintScreen;
+
+  @override
+  void initState() {
+    super.initState();
+    _complaintScreen = new ComplaintScreen();
+    _tabController = new TabController(vsync: this, length: _kTabs.length);
+  }
+
   Widget build(BuildContext context) {
     this._buildContext = context;
 
     final _kTabsPages = <Widget>[
-      ComplaintScreen(),
-
+      _complaintScreen,
       SuggestionScreen(),
       // CurrentVouchers(false, 0),
       // PastVouchers(),
@@ -65,16 +75,11 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
         //   ),
         // ),
         body: TabBarView(
+          controller: _tabController,
           children: _kTabsPages,
         ),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    //_controller = AnimationController(vsync: context);
   }
 
   void createFilterAlert(context) async {
@@ -245,6 +250,7 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
                         ),
                       ),
                       onPressed: () async {
+                        Navigator.pop(context);
                         DateTime fromDateTemp = fromDate;
                         DateTime toDateTemp = toDate;
 
@@ -252,6 +258,19 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
                                 _fromDateController.text != '') &&
                             (_toDateController.text != null ||
                                 _toDateController.text != '')) {
+                          fromDateTemp = new DateTime(fromDate.year,
+                              fromDate.month, fromDate.day, 0, 0, 0, 0, 0);
+                          toDateTemp = new DateTime(toDate.year, toDate.month,
+                              toDate.day, 0, 0, 0, 0, 0);
+                          _complaintScreen.fromDate = fromDateTemp;
+                          _complaintScreen.toDate = toDateTemp;
+                          _tabController.index == 0
+                              ? _complaintScreen.complaintState
+                                  .getQuerySnapshot(_complaintScreen
+                                      .complaintState.chosenComplaint)
+                              : _complaintScreen.complaintState
+                                  .getQuerySnapshot(_complaintScreen
+                                      .complaintState.chosenComplaint);
                         } else {
                           setState(() {
                             displayAlertMsg = true;
@@ -297,6 +316,7 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen> {
         ),
       ],
       bottom: TabBar(
+        controller: _tabController,
         tabs: _kTabs,
       ),
     );
