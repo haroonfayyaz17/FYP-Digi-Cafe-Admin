@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/OrderUIController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
+import 'package:digi_cafe_admin/Views/ViewOrderDetails.dart';
 import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:intl/intl.dart';
+import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 
 import 'FeedbackDetailsClass.dart';
 
@@ -58,7 +60,7 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                   _feedbackDetails.reply == null ? '' : _feedbackDetails.reply;
             });
             if (!snapshot.hasData) {
-              return Container();
+              return LoadingWidget();
             } else {
               FeedbackDetails details = snapshot.data;
               _feedbackDetails = details;
@@ -117,7 +119,13 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        print('yes');
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        ViewOrderDetails(
+                                                            details.orderNo)));
                                       },
                                       child: Text(
                                         '${details.orderNo}',

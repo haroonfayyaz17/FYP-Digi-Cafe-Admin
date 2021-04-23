@@ -42,11 +42,13 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
     ),
   ];
   ComplaintScreen _complaintScreen;
+  SuggestionScreen _suggestionScreen;
 
   @override
   void initState() {
     super.initState();
     _complaintScreen = new ComplaintScreen();
+    _suggestionScreen = new SuggestionScreen();
     _tabController = new TabController(vsync: this, length: _kTabs.length);
   }
 
@@ -55,7 +57,7 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
 
     final _kTabsPages = <Widget>[
       _complaintScreen,
-      SuggestionScreen(),
+      _suggestionScreen,
       // CurrentVouchers(false, 0),
       // PastVouchers(),
     ];
@@ -264,13 +266,18 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
                               toDate.day, 0, 0, 0, 0, 0);
                           _complaintScreen.fromDate = fromDateTemp;
                           _complaintScreen.toDate = toDateTemp;
-                          _tabController.index == 0
-                              ? _complaintScreen.complaintState
-                                  .getQuerySnapshot(_complaintScreen
-                                      .complaintState.chosenComplaint)
-                              : _complaintScreen.complaintState
-                                  .getQuerySnapshot(_complaintScreen
-                                      .complaintState.chosenComplaint);
+                          if (_tabController.index == 0) {
+                            _complaintScreen.fromDate = fromDateTemp;
+                            _complaintScreen.toDate = toDateTemp;
+                            _complaintScreen.complaintState.getQuerySnapshot(
+                                _complaintScreen
+                                    .complaintState.chosenComplaint);
+                          } else {
+                            _suggestionScreen.fromDate = fromDateTemp;
+                            _suggestionScreen.toDate = toDateTemp;
+                            _suggestionScreen.suggestionState
+                                .getQuerySnapshot();
+                          }
                         } else {
                           setState(() {
                             displayAlertMsg = true;

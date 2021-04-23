@@ -5,7 +5,6 @@ class Order {
   int _totalAmount, _rating;
   List<OrderItem> _orderItems;
   DateTime _orderTime;
-
   Order(this._totalAmount, this._orderItems, this._orderTime, this._status) {
     this._totalAmount = _totalAmount;
     this._orderItems = _orderItems;

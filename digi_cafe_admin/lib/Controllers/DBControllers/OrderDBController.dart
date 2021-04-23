@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digi_cafe_admin/Views/FeedbackDetailsClass.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:digi_cafe_admin/Model/Order.dart';
+import 'package:digi_cafe_admin/Model/OrderItem.dart';
+import 'package:digi_cafe_admin/Model/FoodItem.dart';
 import 'package:intl/intl.dart';
 
 class OrderDBController {
@@ -139,16 +141,74 @@ class OrderDBController {
     }
   }
 
+  Future<Order> getOrderItemsList(String orderNo) async {
+    //This function sends list of order items that wer ordered before
+    //and are nominated in todays date as well
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    List<OrderItem> list = new List();
+
+    Order order = new Order(0, list, now, '');
+    int no = int.parse(
+      orderNo,
+      radix: 10,
+      onError: (source) {
+        //change double to int
+        return double.parse(source.toString()).toInt();
+      },
+    );
+    QuerySnapshot snapshot = await firestoreInstance
+        .collection('Orders')
+        .where('orderNo', isEqualTo: no)
+        .getDocuments();
+    // print(snapshot.documents.first.data['amount']);
+    // print(snapshot.documents.length);
+    DocumentSnapshot element;
+
+    if (snapshot.documents.length != 0) {
+      element = snapshot.documents.first;
+      order.orderTime = element.data['dateTime'].toDate();
+      order.totalAmount = element.data['amount'];
+
+      QuerySnapshot querySnapshot = await firestoreInstance
+          .collection('Orders')
+          .document(element.documentID)
+          .collection('Items')
+          .getDocuments();
+      List<OrderItem> list = new List();
+      for (DocumentSnapshot element in querySnapshot.documents) {
+        var doc = await firestoreInstance
+            .collection('Food Menu')
+            .document('All')
+            .collection('Foods')
+            .document(element.documentID)
+            .get();
+
+        FoodItem foodItem = new FoodItem(
+            doc.documentID, doc.data['name'], '', '', doc.data['price'], 0);
+        var orderItemQuantity = element.data['quantity'];
+        list.add(new OrderItem(foodItem, orderItemQuantity));
+      }
+      order.orderItems = list;
+    }
+
+    return order;
+  }
+
   Future<void> changeComplaintStatus(String id, String status) async {
     await firestoreInstance.collection('Complaints').document(id).updateData({
       "status": status,
     });
   }
 
-  Stream<QuerySnapshot> getSuggestionSnapshot() {
+  Stream<QuerySnapshot> getSuggestionSnapshot(
+      {DateTime fromDate, DateTime toDate}) {
     return firestoreInstance
         .collection('Suggestions')
         .orderBy('date', descending: true)
+        .where("date", isGreaterThanOrEqualTo: fromDate)
+        .where("date", isLessThanOrEqualTo: toDate)
 
         // .where('category', isEqualTo: 'Serving')
         .snapshots();

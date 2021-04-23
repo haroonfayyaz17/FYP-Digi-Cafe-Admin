@@ -132,14 +132,17 @@ class _ComplaintScreen extends State<ComplaintScreen> {
                               width: MediaQuery.of(context).size.width * 0.9,
                               height: MediaQuery.of(context).size.width * 0.22,
                               child: InkWell(
-                                onDoubleTap: () {
-                                  complaint.status == 'read'
-                                      ? orderUIController.changeComplaintStatus(
-                                          complaint.id, 'unread')
-                                      : orderUIController.changeComplaintStatus(
-                                          complaint.id, 'read');
+                                onDoubleTap: () async {
+                                  await changeStatus(
+                                      complaint.id, complaint.status);
                                 },
-                                onTap: () {
+                                onTap: () async {
+                                  complaint.status == 'unread'
+                                      ? await orderUIController
+                                          .changeComplaintStatus(
+                                              complaint.id, 'read')
+                                      : null;
+
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -232,5 +235,11 @@ class _ComplaintScreen extends State<ComplaintScreen> {
     else
       _counter.value = orderUIController.getComplaintsSnapshot(
           newValue: newValue, fromDate: widget.fromDate, toDate: widget.toDate);
+  }
+
+  Future<void> changeStatus(String id, String status) async {
+    status == 'read'
+        ? await orderUIController.changeComplaintStatus(id, 'unread')
+        : await orderUIController.changeComplaintStatus(id, 'read');
   }
 }

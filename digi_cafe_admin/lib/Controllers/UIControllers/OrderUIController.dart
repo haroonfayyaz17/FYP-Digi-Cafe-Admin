@@ -34,8 +34,10 @@ class OrderUIController {
     await _orderDBController.changeComplaintStatus(id, status);
   }
 
-  Stream<QuerySnapshot> getSuggestionSnapshot() {
-    return _orderDBController.getSuggestionSnapshot();
+  Stream<QuerySnapshot> getSuggestionSnapshot(
+      {DateTime fromDate, DateTime toDate}) {
+    return _orderDBController.getSuggestionSnapshot(
+        fromDate: fromDate, toDate: toDate);
   }
 
   Future<void> changeSuggestionStatus(String id, String status) async {
@@ -51,5 +53,9 @@ class OrderUIController {
       {String feedbackID, String reply, String type}) async {
     await _orderDBController.submitReply(
         feedbackID: feedbackID, reply: reply, type: type);
+  }
+
+  Future<Order> fetchOrderData(String orderNo) async {
+    return await _orderDBController.getOrderItemsList(orderNo);
   }
 }

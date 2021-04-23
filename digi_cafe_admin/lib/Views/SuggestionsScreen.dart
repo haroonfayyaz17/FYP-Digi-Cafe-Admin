@@ -11,8 +11,15 @@ import 'LoadingWidget.dart';
 import 'ViewFeedbackDetails.dart';
 
 class SuggestionScreen extends StatefulWidget {
+  SuggestionScreen({this.fromDate, this.toDate});
+  DateTime fromDate;
+  DateTime toDate;
+  _SuggestionScreen suggestionState;
   @override
-  State<StatefulWidget> createState() => _SuggestionScreen();
+  State<StatefulWidget> createState() {
+    suggestionState = new _SuggestionScreen();
+    return suggestionState;
+  }
 }
 
 class _SuggestionScreen extends State<SuggestionScreen> {
@@ -68,30 +75,22 @@ class _SuggestionScreen extends State<SuggestionScreen> {
                               complaintDoc.data["status"],
                               complaintDoc.data["date"].toDate(),
                             );
-                            // String convertTime =
-                            //     complaint.time.DateTime.now();
-                            // if (complaint.time != null) {
-                            //   String day = complaint.time.day.toString();
-                            //   String month = complaint.time.month.toString();
-                            //   String year = complaint.time.year.toString();
-                            //   String date = '${day}-${month}-${year}';
-                            //   String time = date;
-                            // }
+
                             return Container(
                               margin: EdgeInsets.only(left: 10, top: 10),
                               width: MediaQuery.of(context).size.width * 0.9,
                               height: MediaQuery.of(context).size.width * 0.22,
                               child: InkWell(
-                                onDoubleTap: () {
-                                  complaint.status == 'read'
-                                      ? orderUIController
-                                          .changeSuggestionStatus(
-                                              complaint.id, 'unread')
-                                      : orderUIController
-                                          .changeSuggestionStatus(
-                                              complaint.id, 'read');
+                                onDoubleTap: () async {
+                                  await changeStatus(
+                                      complaint.id, complaint.status);
                                 },
-                                onTap: () {
+                                onTap: () async {
+                                  complaint.status == 'unread'
+                                      ? await orderUIController
+                                          .changeSuggestionStatus(
+                                              complaint.id, 'read')
+                                      : null;
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -169,6 +168,13 @@ class _SuggestionScreen extends State<SuggestionScreen> {
   }
 
   void getQuerySnapshot() async {
-    _counter.value = orderUIController.getSuggestionSnapshot();
+    _counter.value = orderUIController.getSuggestionSnapshot(
+        fromDate: widget.fromDate, toDate: widget.toDate);
+  }
+
+  Future<void> changeStatus(String id, String status) async {
+    status == 'read'
+        ? await orderUIController.changeSuggestionStatus(id, 'unread')
+        : await orderUIController.changeSuggestionStatus(id, 'read');
   }
 }
