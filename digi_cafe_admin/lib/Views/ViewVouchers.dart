@@ -33,7 +33,7 @@ class ViewVouchers extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: MyWidgets.getAppBar(),
+      appBar: MyWidgets.getAppBar(text: 'View Vouchers'),
       backgroundColor: colors.backgroundColor,
       body: _ViewVouchers(),
     );
@@ -189,13 +189,7 @@ class __ViewVouchers extends State<_ViewVouchers> {
       padding: const EdgeInsets.all(15),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text(
-          data,
-          style: TextStyle(
-            fontSize: Fonts.heading1_size,
-            fontFamily: Fonts.default_font,
-          ),
-        ),
+        child: MyWidgets.getTextWidget(text: data, size: Fonts.heading1_size),
       ),
     );
   }

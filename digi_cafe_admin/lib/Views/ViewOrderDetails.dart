@@ -30,7 +30,7 @@ class _ViewOrderDetailsState extends State<ViewOrderDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyWidgets.getAppBar(),
+      appBar: MyWidgets.getAppBar(text: 'Order Details'),
       backgroundColor: colors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -43,48 +43,37 @@ class _ViewOrderDetailsState extends State<ViewOrderDetails> {
                   Order order = snapshot.data;
                   return ConstrainedBox(
                       constraints: BoxConstraints(
-                          minHeight: MediaQuery.of(context).size.height * 0.7),
+                          minHeight: MediaQuery.of(context).size.height * 0.65),
                       child: Center(
                         child: Column(
                           children: [
+                            MyWidgets.getTextWidget(
+                                text: 'Order # ' + widget.orderNo.toString(),
+                                size: Fonts.heading1_size,
+                                weight: FontWeight.bold,
+                                color: colors.buttonColor),
                             Padding(
-                              padding: const EdgeInsets.all(60.0),
-                              child: Text(
-                                'Order Details',
-                                style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  fontSize: Fonts.heading1_size,
-                                ),
-                              ),
+                              padding: const EdgeInsets.only(top: 15.0),
+                              child: MyWidgets.getTextWidget(
+                                  text: 'Date: ' +
+                                      order.orderTime.day.toString() +
+                                      '/' +
+                                      order.orderTime.month.toString() +
+                                      '/' +
+                                      order.orderTime.year.toString(),
+                                  size: Fonts.heading2_size + 1,
+                                  weight: FontWeight.bold),
                             ),
-                            Text(
-                              'Order # ' + widget.orderNo.toString(),
-                              style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  fontSize: Fonts.label_size,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Date: ' +
-                                  order.orderTime.day.toString() +
-                                  '/' +
-                                  order.orderTime.month.toString() +
-                                  '/' +
-                                  order.orderTime.year.toString(),
-                              style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  fontSize: Fonts.label_size,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Time: ' +
-                                  order.orderTime.hour.toString() +
-                                  ':' +
-                                  order.orderTime.minute.toString(),
-                              style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  fontSize: Fonts.label_size,
-                                  fontWeight: FontWeight.bold),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 15.0, bottom: 25.0),
+                              child: MyWidgets.getTextWidget(
+                                  text: 'Time: ' +
+                                      order.orderTime.hour.toString() +
+                                      ':' +
+                                      order.orderTime.minute.toString(),
+                                  size: Fonts.heading2_size + 1,
+                                  weight: FontWeight.bold),
                             ),
                             SizedBox(
                               height: 20,
@@ -98,95 +87,93 @@ class _ViewOrderDetailsState extends State<ViewOrderDetails> {
                                   var item = order.orderItems.elementAt(index);
                                   return Wrap(
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: SizedBox(
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 15.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 8.0, left: 25),
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.5,
+                                                child: MyWidgets.getTextWidget(
+                                                    text: item.foodItem.name,
+                                                    size:
+                                                        Fonts.heading2_size + 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                              ),
+                                            ),
+                                            SizedBox(
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
-                                                  0.4,
-                                              child: Text(
-                                                item.foodItem.name,
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      Fonts.default_font,
-                                                  fontSize: Fonts
-                                                      .dishDescription_font,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
+                                                  0.05,
+                                              child: MyWidgets.getTextWidget(
+                                                  text: 'x' +
+                                                      item.quantity.toString(),
+                                                  size: Fonts.heading3_size,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.1,
-                                            child: Text(
-                                              'x' + item.quantity.toString(),
-                                              style: TextStyle(
-                                                fontFamily: Fonts.default_font,
-                                                fontSize: Fonts.label_size,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 8.0),
-                                            child: SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.25,
-                                              child: Text(
-                                                'Rs ' +
-                                                    (item.foodItem.price *
-                                                            item.quantity)
-                                                        .toString(),
-                                                style: TextStyle(
-                                                  fontFamily:
-                                                      Fonts.default_font,
-                                                  fontSize: Fonts.label_size,
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 8.0, left: 8),
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.3,
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: MyWidgets.getTextWidget(
+                                                      text: 'Rs ' +
+                                                          (item.foodItem.price *
+                                                                  item.quantity)
+                                                              .toString(),
+                                                      size:
+                                                          Fonts.heading3_size +
+                                                              1,
+                                                      overflow: TextOverflow
+                                                          .ellipsis),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   );
                                 }),
                             Container(
                               margin:
-                                  EdgeInsets.only(left: 20, right: 20, top: 10),
+                                  EdgeInsets.only(left: 25, right: 25, top: 20),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    'Total',
-                                    style: TextStyle(
-                                      fontFamily: Fonts.default_font,
-                                      fontSize: Fonts.label_size,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  Text(
-                                    'Rs ' + order.totalAmount.toString(),
-                                    style: TextStyle(
-                                      fontFamily: Fonts.default_font,
-                                      fontSize: Fonts.label_size,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
+                                  MyWidgets.getTextWidget(
+                                      text: 'Total',
+                                      size: Fonts.heading2_size,
+                                      weight: FontWeight.bold,
+                                      overflow: TextOverflow.ellipsis),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: MyWidgets.getTextWidget(
+                                        text: 'Rs ' +
+                                            order.totalAmount.toString(),
+                                        size: Fonts.heading2_size,
+                                        weight: FontWeight.bold,
+                                        overflow: TextOverflow.ellipsis),
                                   ),
                                 ],
                               ),

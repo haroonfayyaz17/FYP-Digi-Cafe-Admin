@@ -32,7 +32,7 @@ class ViewFoodMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: MyWidgets.getAppBar(),
+      appBar: MyWidgets.getAppBar(text: 'View Food Menu'),
       backgroundColor: colors.backgroundColor,
       body: _ViewFoodMenu(),
     );
@@ -143,14 +143,6 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
                           itemBuilder: (context, index) {
                             DocumentSnapshot dish =
                                 snapshot.data.documents[index];
-
-                            // var url = null;
-                            // storageReference.getDownloadURL().then((fileURL) {
-                            //   url = fileURL;
-                            //   print(fileURL);
-                            // });
-                            // var imgURL = loadPic(dish.documentID);
-                            // print(url);
                             Widget widget = MenuItemWidget(
                                 quantity: dish.data['stockLeft'],
                                 foodImg: dish.data['imgURL'],
@@ -212,10 +204,8 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
           color: Colors.grey,
         ),
       ),
-      titleStyle: TextStyle(
-          fontSize: Fonts.dialog_heading_size,
-          fontFamily: Fonts.default_font,
-          fontWeight: FontWeight.bold),
+      titleStyle: MyWidgets.getTextStyle(
+          size: Fonts.dialog_heading_size, weight: FontWeight.bold),
     );
     Alert(
         context: context,
@@ -238,13 +228,7 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
       padding: const EdgeInsets.all(15),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text(
-          data,
-          style: TextStyle(
-            fontSize: Fonts.heading1_size,
-            fontFamily: Fonts.default_font,
-          ),
-        ),
+        child: MyWidgets.getTextWidget(text: data, size: Fonts.heading1_size),
       ),
     );
   }

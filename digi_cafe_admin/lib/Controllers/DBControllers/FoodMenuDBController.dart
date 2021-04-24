@@ -74,7 +74,6 @@ class FoodMenuDBController {
         "name": _foodItem.name,
         "description": _foodItem.description,
         "price": _foodItem.price,
-        "stockLeft": _foodItem.stockLeft,
       }).then((value) async {
         if (_foodItem.imgURL != null) {
           StorageReference firebaseStorageRef =

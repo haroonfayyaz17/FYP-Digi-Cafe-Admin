@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/Views/ComplaintScreen.dart';
 import 'package:digi_cafe_admin/Views/SuggestionsScreen.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'MyWidgets.dart';
 
 class ComplaintSuggestionScreen extends StatefulWidget {
   @override
@@ -67,15 +68,6 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
       child: Scaffold(
         backgroundColor: colors.backgroundColor,
         appBar: getSalesAppBar(),
-        // appBar: AppBar(
-        //   title: Text('Feedback',
-        //       style: TextStyle(
-        //         fontFamily: Fonts.default_font,
-        //       )),
-        //   bottom: TabBar(
-        //     tabs: _kTabs,
-        //   ),
-        // ),
         body: TabBarView(
           controller: _tabController,
           children: _kTabsPages,
@@ -118,14 +110,12 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
               displayAlertMsg
                   ? Padding(
                       padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                      child: Text(
-                        'Incomplete Fields',
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontSize: Fonts.dialog_heading_size,
-                            fontFamily: Fonts.default_font,
-                            fontWeight: FontWeight.bold),
-                      ),
+                      child: MyWidgets.getTextWidget(
+                          weight: FontWeight.bold,
+                          size: Fonts.dialog_heading_size,
+                          text: 'Incomplete Fields',
+                          color: colors.warningColor),
+                      
                     )
                   : Container(),
               Padding(
@@ -243,29 +233,21 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
                     ),
                     child: FlatButton(
                       color: colors.buttonColor,
-                      child: Text(
-                        'Apply',
-                        style: TextStyle(
-                          fontSize: Fonts.button_size,
-                          fontFamily: Fonts.default_font,
-                          color: colors.buttonTextColor,
-                        ),
-                      ),
+                      child: MyWidgets.getTextWidget(
+                          text: 'Apply',
+                          size: Fonts.button_size,
+                          color: colors.buttonTextColor),
                       onPressed: () async {
-                        Navigator.pop(context);
                         DateTime fromDateTemp = fromDate;
                         DateTime toDateTemp = toDate;
-
-                        if ((_fromDateController.text != null ||
-                                _fromDateController.text != '') &&
-                            (_toDateController.text != null ||
-                                _toDateController.text != '')) {
+                        if (fromDate != null && toDate != null) {
                           fromDateTemp = new DateTime(fromDate.year,
                               fromDate.month, fromDate.day, 0, 0, 0, 0, 0);
                           toDateTemp = new DateTime(toDate.year, toDate.month,
                               toDate.day, 0, 0, 0, 0, 0);
                           _complaintScreen.fromDate = fromDateTemp;
                           _complaintScreen.toDate = toDateTemp;
+                          Navigator.pop(context);
                           if (_tabController.index == 0) {
                             _complaintScreen.fromDate = fromDateTemp;
                             _complaintScreen.toDate = toDateTemp;
@@ -279,7 +261,8 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
                                 .getQuerySnapshot();
                           }
                         } else {
-                          setState(() {
+                          // _setState(() {});
+                          _setState(() {
                             displayAlertMsg = true;
                           });
                         }
@@ -298,24 +281,18 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
   Widget getSalesAppBar() {
     return AppBar(
       backgroundColor: colors.buttonColor,
-      title: Text(
-        'Digi Café Admin',
-        style: TextStyle(
-          fontFamily: Fonts.default_font,
-          fontSize: Fonts.label_size,
-        ),
-      ),
+      title: MyWidgets.getTextWidget(
+          text: 'Complaints/Suggestions',
+          color: colors.appBarColor,
+          size: Fonts.label_size),
       actions: [
         Padding(
           padding: const EdgeInsets.only(top: 18.0, right: 20),
           child: InkWell(
-            child: Text(
-              'Filter',
-              style: TextStyle(
-                fontFamily: Fonts.default_font,
-                fontSize: Fonts.label_size,
-              ),
-            ),
+            child: MyWidgets.getTextWidget(
+                text: 'Filter',
+                size: Fonts.label_size,
+                color: colors.appBarColor),
             onTap: () {
               createFilterAlert(context);
             },

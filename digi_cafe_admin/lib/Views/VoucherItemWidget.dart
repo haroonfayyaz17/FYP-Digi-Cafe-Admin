@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-
+import 'MyWidgets.dart';
 import 'AddVoucher.dart';
 
 class VoucherItemWidget extends StatefulWidget {
@@ -69,14 +69,10 @@ class _VoucherItemWidgetState extends State<VoucherItemWidget> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
-                    content: Text(
-                      'Do you want to remove Voucher?',
-                      style: TextStyle(
-                        fontFamily: Fonts.default_font,
-                        fontSize: Fonts.heading2_size,
-                        color: colors.labelColor,
-                      ),
-                    ),
+                    content: MyWidgets.getTextWidget(
+                        text: 'Do you want to remove Voucher?',
+                        size: Fonts.heading2_size,
+                        color: colors.labelColor),
                     actions: <Widget>[
                       Container(
                         // width: MediaQuery.of(context).size.width * 0.3,
@@ -88,14 +84,10 @@ class _VoucherItemWidgetState extends State<VoucherItemWidget> {
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text(
-                            'No',
-                            style: TextStyle(
-                              fontFamily: Fonts.default_font,
-                              fontSize: Fonts.label_size,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: MyWidgets.getTextWidget(
+                              text: 'No',
+                              size: Fonts.label_size,
+                              color: colors.buttonTextColor),
                         ),
                       ),
                       Container(
@@ -119,14 +111,10 @@ class _VoucherItemWidgetState extends State<VoucherItemWidget> {
                                   "Voucher delete unsuccessful");
                             }
                           },
-                          child: Text(
-                            'Yes',
-                            style: TextStyle(
-                              fontFamily: Fonts.default_font,
-                              fontSize: Fonts.label_size,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child: MyWidgets.getTextWidget(
+                              text: 'Yes',
+                              size: Fonts.label_size,
+                              color: colors.buttonTextColor),
                         ),
                       ),
                     ],
@@ -148,46 +136,29 @@ class _VoucherItemWidgetState extends State<VoucherItemWidget> {
                             children: <Widget>[
                               Row(
                                 children: [
-                                  Text(
-                                    widget.title,
-                                    style: TextStyle(
-                                      fontFamily: Fonts.default_font,
-                                      fontSize: Fonts.dishName_font,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                  MyWidgets.getTextWidget(
+                                      text: widget.title,
+                                      size: Fonts.dishName_font,
+                                      weight: FontWeight.bold,
+                                      overflow: TextOverflow.ellipsis),
                                   Spacer(flex: 2),
                                   Padding(
                                     padding: const EdgeInsets.only(right: 5.0),
-                                    child: Text(
-                                      '${widget.expiryDate}',
-                                      style: TextStyle(
-                                        fontFamily: Fonts.default_font,
-                                        fontSize: Fonts.dishDescription_font,
-                                        // fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    child: MyWidgets.getTextWidget(
+                                        text: widget.expiryDate,
+                                        size: Fonts.dishDescription_font,
+                                        overflow: TextOverflow.ellipsis),
                                   ),
                                 ],
                               ),
-                              Text(
-                                'Minimum Spend: ${widget.minimumSpend}',
-                                style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  fontSize: Fonts.dishDescription_font,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                'Discount: ${widget.discount}',
-                                style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  fontSize: Fonts.dishDescription_font,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              MyWidgets.getTextWidget(
+                                  text: 'Minimum Spend: ${widget.minimumSpend}',
+                                  size: Fonts.dishDescription_font,
+                                  overflow: TextOverflow.ellipsis),
+                              MyWidgets.getTextWidget(
+                                  text: 'Discount: ${widget.discount}',
+                                  size: Fonts.dishDescription_font,
+                                  overflow: TextOverflow.ellipsis),
                             ],
                           ),
                         ),
@@ -204,21 +175,6 @@ class _VoucherItemWidgetState extends State<VoucherItemWidget> {
   }
 
   void _showToast(BuildContext context, var _message) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        backgroundColor: colors.buttonColor,
-        content: Text(
-          '$_message',
-          style: TextStyle(
-            color: colors.textColor,
-            fontFamily: Fonts.default_font,
-            fontSize: Fonts.appBarTitle_size,
-          ),
-        ),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
+    MyWidgets.showToast(context, _message);
   }
 }

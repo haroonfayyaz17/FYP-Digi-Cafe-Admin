@@ -8,6 +8,7 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Views/MenuItemWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'MyWidgets.dart';
 
 class ViewSales extends StatelessWidget {
   @override
@@ -88,53 +89,29 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
             child: ValueListenableBuilder(
                 builder:
                     (BuildContext context, String totalOrderss, Widget child) {
-                  return Text(
-                    '$totalOrderss',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                      fontFamily: Fonts.default_font,
-                    ),
-                  );
+                  return MyWidgets.getTextWidget(
+                      text: totalOrderss,
+                      weight: FontWeight.bold,
+                      size: Fonts.heading3_size - 1,
+                      overflow: TextOverflow.ellipsis);
                 },
                 valueListenable: _totalOrderss),
-
-            // Text(
-            //   '$totalOrders',
-            //   style: TextStyle(
-            //     fontWeight: FontWeight.bold,
-            //     fontSize: 17,
-            //     fontFamily: Fonts.default_font,
-            //   ),
-            // ),
           ),
           Spacer(
             flex: 1,
           ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0, top: 8, bottom: 8),
-            child:
-                // Text(
-                //   '$totalAmount',
-                //   style: TextStyle(
-                //     fontWeight: FontWeight.bold,
-                //     fontSize: 17,
-                //     fontFamily: Fonts.default_font,
-                //   ),
-                // ),
-                ValueListenableBuilder(
-                    builder: (BuildContext context, String totalOAmount,
-                        Widget child) {
-                      return Text(
-                        '$totalOAmount',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 17,
-                          fontFamily: Fonts.default_font,
-                        ),
-                      );
-                    },
-                    valueListenable: _totalOrdersAmount),
+            child: ValueListenableBuilder(
+                builder:
+                    (BuildContext context, String totalOAmount, Widget child) {
+                  return MyWidgets.getTextWidget(
+                      text: totalOAmount,
+                      weight: FontWeight.bold,
+                      size: Fonts.heading3_size - 1,
+                      overflow: TextOverflow.ellipsis);
+                },
+                valueListenable: _totalOrdersAmount),
           ),
         ],
       ),
@@ -190,12 +167,7 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                                   }
                                   listItems.add(items);
                                 }
-                                // for (var x = 0; x < listItems.length; x++) {
-                                //   print(listItems[x].date);
-                                //   print(listItems[x].total);
-                                //   print(listItems[x].orders);
-                                // }
-                                // print(orders);
+
                                 print(totalAmount);
                                 totalOrders = 'Total Orders: ' +
                                     orders.toInt().toString();
@@ -211,14 +183,6 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                                                 .size
                                                 .height),
                                         child: Center(
-                                          // child: Text(
-                                          //   'No data found!',
-                                          //   style: TextStyle(
-                                          //     color: colors.buttonColor,
-                                          //     fontFamily: Fonts.default_font,
-                                          //     fontSize: Fonts.heading2_XL_size,
-                                          //   ),
-                                          // ),
                                           child: Container(
                                             width: MediaQuery.of(context)
                                                     .size
@@ -248,16 +212,7 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                                           data: Theme.of(context).copyWith(
                                               dividerColor: colors.buttonColor),
                                           child: PaginatedDataTable(
-                                            header: Center(
-                                              child: Text(
-                                                'View Sales',
-                                                style: TextStyle(
-                                                  fontSize: Fonts.heading1_size,
-                                                  fontFamily:
-                                                      Fonts.default_font,
-                                                ),
-                                              ),
-                                            ),
+                                            header: Container(),
                                             dataRowHeight:
                                                 MediaQuery.of(context)
                                                         .size
@@ -338,17 +293,13 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                 displayAlertMsg
                     ? Padding(
                         padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                        child: Text(
-                          'Incomplete Fields',
-                          style: TextStyle(
-                              color: Colors.red,
-                              fontSize: Fonts.dialog_heading_size,
-                              fontFamily: Fonts.default_font,
-                              fontWeight: FontWeight.bold),
-                        ),
+                        child: MyWidgets.getTextWidget(
+                            weight: FontWeight.bold,
+                            size: Fonts.dialog_heading_size,
+                            text: 'Incomplete Fields',
+                            color: colors.warningColor),
                       )
                     : Container(),
-                // DialogInstruction.getInstructionRow('Single tap to update Order'),
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: DropdownButtonFormField<String>(
@@ -511,14 +462,10 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                       // height: 30,
                       child: FlatButton(
                         color: colors.buttonColor,
-                        child: Text(
-                          'Apply',
-                          style: TextStyle(
-                            fontSize: Fonts.button_size,
-                            fontFamily: Fonts.default_font,
-                            color: colors.buttonTextColor,
-                          ),
-                        ),
+                        child: MyWidgets.getTextWidget(
+                            text: 'Apply',
+                            size: Fonts.button_size,
+                            color: colors.buttonTextColor),
                         onPressed: () async {
                           DateTime fromDateTemp = fromDate;
                           DateTime toDateTemp = toDate;
@@ -591,13 +538,7 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
       padding: const EdgeInsets.all(15),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text(
-          data,
-          style: TextStyle(
-            fontSize: Fonts.heading1_size,
-            fontFamily: Fonts.default_font,
-          ),
-        ),
+        child: MyWidgets.getTextWidget(text: data, size: Fonts.heading1_size),
       ),
     );
   }
@@ -605,24 +546,18 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
   Widget getSalesAppBar() {
     return AppBar(
       backgroundColor: colors.buttonColor,
-      title: Text(
-        'Digi Café Admin',
-        style: TextStyle(
-          fontFamily: Fonts.default_font,
-          fontSize: Fonts.label_size,
-        ),
-      ),
+      title: MyWidgets.getTextWidget(
+          text: 'View Sales',
+          size: Fonts.label_size,
+          color: colors.appBarColor),
       actions: [
         Padding(
           padding: const EdgeInsets.only(top: 18.0, right: 20),
           child: InkWell(
-            child: Text(
-              'Filter',
-              style: TextStyle(
-                fontFamily: Fonts.default_font,
-                fontSize: Fonts.label_size,
-              ),
-            ),
+            child: MyWidgets.getTextWidget(
+                text: 'Filter',
+                size: Fonts.label_size,
+                color: colors.appBarColor),
             onTap: () {
               createFilterAlert(context);
             },
@@ -655,155 +590,6 @@ String getAlphabeticalMonth(int month, int year) {
   return '';
 }
 
-class SaleItemWidget extends StatefulWidget {
-  String date;
-  String total;
-  String orders;
-  SaleItemWidget({
-    @required this.date,
-    @required this.total,
-    @required this.orders,
-  });
-  @override
-  _SaleItemWidgetState createState() => _SaleItemWidgetState();
-}
-
-class _SaleItemWidgetState extends State<SaleItemWidget> {
-  OrderUIController _OrderUIController;
-  // int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
-  int _rowsPerPage = 5;
-
-  List<SalesViewItems> nominateItems;
-  BuildContext _buildContext;
-
-  @override
-  void initState() {
-    _OrderUIController = new OrderUIController();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    this._buildContext = context;
-
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            child: InkWell(
-              child: Column(
-                children: <Widget>[
-                  // ye table hai
-                  // Padding(
-                  //   padding: EdgeInsets.all(8.0),
-                  //   child: Text(
-                  //     "TOTAL SALES",
-                  //     // textScaleFactor: 2.0,
-                  //     style: TextStyle(
-                  //       fontSize: Fonts.heading1_size,
-                  //       fontFamily: Fonts.default_font,
-                  //     ),
-                  //   ),
-                  // ),
-                  // Padding(
-                  //   padding: EdgeInsets.all(10.0),
-                  //   child: Table(
-                  //     border: TableBorder.all(
-                  //         width: 1.5, color: colors.buttonColor),
-                  //     children: [
-                  //       TableRow(children: [
-                  //         Padding(
-                  //           padding: const EdgeInsets.only(),
-                  //           child: Text(
-                  //             "Date",
-                  //             style: TextStyle(
-                  //               fontWeight: FontWeight.bold,
-                  //               fontSize: Fonts.heading2_size,
-                  //               fontFamily: Fonts.default_font,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //         Text(
-                  //           "Orders",
-                  //           style: TextStyle(
-                  //             fontWeight: FontWeight.bold,
-                  //             fontSize: Fonts.heading2_size,
-                  //             fontFamily: Fonts.default_font,
-                  //           ),
-                  //         ),
-                  //         Text(
-                  //           "Sale",
-                  //           style: TextStyle(
-                  //             fontWeight: FontWeight.bold,
-                  //             fontSize: Fonts.heading2_size,
-                  //             fontFamily: Fonts.default_font,
-                  //           ),
-                  //         ),
-                  //       ]),
-                  //       TableRow(children: [
-                  //         Text(
-                  //           widget.date,
-                  //           style: TextStyle(
-                  //             fontFamily: Fonts.default_font,
-                  //             fontSize: Fonts.heading2_XL_size,
-                  //             // fontWeight: FontWeight.bold,
-                  //           ),
-                  //           overflow: TextOverflow.ellipsis,
-                  //         ),
-                  //         // Spacer(flex: 2),
-                  //         Text(
-                  //           widget.orders,
-                  //           style: TextStyle(
-                  //             fontFamily: Fonts.default_font,
-                  //             fontSize: Fonts.heading2_XL_size,
-                  //           ),
-                  //           overflow: TextOverflow.ellipsis,
-                  //         ),
-                  //         // Spacer(flex: 2),
-                  //         Text(
-                  //           widget.total,
-                  //           style: TextStyle(
-                  //             fontFamily: Fonts.default_font,
-                  //             fontSize: Fonts.heading2_XL_size,
-                  //           ),
-                  //           overflow: TextOverflow.ellipsis,
-                  //         ),
-                  //         //Spacer(flex: 2),
-                  //       ]),
-                  //     ],
-                  //   ),
-                  // )
-                ],
-                //   ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showToast(BuildContext context, var _message) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        backgroundColor: colors.buttonColor,
-        content: Text(
-          '$_message',
-          style: TextStyle(
-            color: colors.textColor,
-            fontFamily: Fonts.default_font,
-            fontSize: Fonts.appBarTitle_size,
-          ),
-        ),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-  }
-}
-
-//idr se paginated shuru ho gya
 ////// Columns in table.
 const kTableColumns = <DataColumn>[
   DataColumn(
@@ -875,37 +661,24 @@ class NominateItemsDataSource extends DataTableSource {
           DataCell(
             Container(
               constraints: BoxConstraints(minWidth: 50, maxWidth: 100),
-              child: Text(
-                _nominateItems.date,
-                style: TextStyle(
-                  fontSize: Fonts.heading3_size,
-                  fontFamily: Fonts.default_font,
-                ),
-              ),
+              child: MyWidgets.getTextWidget(
+                  text: _nominateItems.date, size: Fonts.heading3_size),
             ),
           ),
           DataCell(
             Container(
               constraints: BoxConstraints(minWidth: 35, maxWidth: 60),
-              child: Text(
-                _nominateItems.orders.toString(),
-                style: TextStyle(
-                  fontSize: Fonts.heading3_size,
-                  fontFamily: Fonts.default_font,
-                ),
-              ),
+              child: MyWidgets.getTextWidget(
+                  text: _nominateItems.orders.toString(),
+                  size: Fonts.heading3_size),
             ),
           ),
           DataCell(
             Container(
               constraints: BoxConstraints(minWidth: 70, maxWidth: 100),
-              child: Text(
-                _nominateItems.total.toString(),
-                style: TextStyle(
-                  fontSize: Fonts.heading3_size,
-                  fontFamily: Fonts.default_font,
-                ),
-              ),
+              child: MyWidgets.getTextWidget(
+                  text: _nominateItems.total.toString(),
+                  size: Fonts.heading3_size),
             ),
           ),
         ]);

@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-
+import 'MyWidgets.dart';
 import 'AddFoodMenu.dart';
 
 class MenuItemWidget extends StatefulWidget {
@@ -79,14 +79,10 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) => AlertDialog(
-                    content: Text(
-                      'Do you want to remove Food Item?',
-                      style: TextStyle(
-                        fontFamily: Fonts.default_font,
-                        fontSize: Fonts.heading2_size,
-                        color: colors.labelColor,
-                      ),
-                    ),
+                    content: MyWidgets.getTextWidget(
+                        text: 'Do you want to remove Food Item?',
+                        size: Fonts.heading2_size,
+                        color: colors.labelColor),
                     actions: <Widget>[
                       Container(
                         // width: MediaQuery.of(context).size.width * 0.3,
@@ -95,18 +91,13 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                           color: colors.buttonColor,
                         ),
                         child: FlatButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            'No',
-                            style: TextStyle(
-                              fontFamily: Fonts.default_font,
-                              fontSize: Fonts.label_size,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: MyWidgets.getTextWidget(
+                                text: 'No',
+                                color: colors.buttonTextColor,
+                                size: Fonts.label_size)),
                       ),
                       Container(
                         // width: MediaQuery.of(context).size.width * 0.3,
@@ -115,29 +106,24 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                           color: colors.buttonColor,
                         ),
                         child: FlatButton(
-                          onPressed: () async {
-                            //TODO: Delete Food
-                            Navigator.pop(context);
-                            bool result = await _foodMenuUIController
-                                .deleteFoodItem(widget.foodID);
+                            onPressed: () async {
+                              //TODO: Delete Food
+                              Navigator.pop(context);
+                              bool result = await _foodMenuUIController
+                                  .deleteFoodItem(widget.foodID);
 
-                            if (result.toString() == "true") {
-                              _showToast(_buildContext,
-                                  "Food Item deleted successfully");
-                            } else {
-                              _showToast(_buildContext,
-                                  "Food Item delete unsuccessful");
-                            }
-                          },
-                          child: Text(
-                            'Yes',
-                            style: TextStyle(
-                              fontFamily: Fonts.default_font,
-                              fontSize: Fonts.label_size,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                              if (result.toString() == "true") {
+                                _showToast(_buildContext,
+                                    "Food Item deleted successfully");
+                              } else {
+                                _showToast(_buildContext,
+                                    "Food Item delete unsuccessful");
+                              }
+                            },
+                            child: MyWidgets.getTextWidget(
+                                text: 'Yes',
+                                color: colors.buttonTextColor,
+                                size: Fonts.label_size)),
                       ),
                     ],
                   ),
@@ -165,16 +151,10 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                                   Radius.elliptical(15.0, 20.0)),
                             ),
                             child: FittedBox(
-                              child: Text(
-                                'PKR ' + widget.price,
-                                style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  fontSize: Fonts.label_size,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
+                                child: MyWidgets.getTextWidget(
+                                    text: 'PKR ' + widget.price,
+                                    weight: FontWeight.w600,
+                                    size: Fonts.label_size)),
                           ),
                         ],
                       ),
@@ -195,39 +175,27 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                                         maxWidth:
                                             MediaQuery.of(context).size.width *
                                                 0.6),
-                                    child: Text(
-                                      widget.name,
-                                      style: TextStyle(
-                                        fontFamily: Fonts.default_font,
-                                        fontSize: Fonts.dishName_font,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    child: MyWidgets.getTextWidget(
+                                        text: widget.name,
+                                        size: Fonts.dishName_font,
+                                        weight: FontWeight.bold,
+                                        overflow: TextOverflow.ellipsis),
                                   ),
                                   Spacer(flex: 2),
                                   Padding(
                                     padding: const EdgeInsets.only(right: 5.0),
-                                    child: Text(
-                                      'Qty: ${widget.quantity.toInt().toString()}',
-                                      style: TextStyle(
-                                        fontFamily: Fonts.default_font,
-                                        fontSize: Fonts.dishName_font,
-                                        // fontWeight: FontWeight.bold,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                    child: MyWidgets.getTextWidget(
+                                        text:
+                                            'Qty: ${widget.quantity.toInt().toString()}',
+                                        size: Fonts.dishName_font,
+                                        overflow: TextOverflow.ellipsis),
                                   ),
                                 ],
                               ),
-                              Text(
-                                widget.description,
-                                style: TextStyle(
-                                  fontFamily: Fonts.default_font,
-                                  fontSize: Fonts.dishDescription_font,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              MyWidgets.getTextWidget(
+                                  text: widget.description,
+                                  size: Fonts.dishDescription_font,
+                                  overflow: TextOverflow.ellipsis),
                             ],
                           ),
                         ),
@@ -340,22 +308,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
   }
 
   void _showToast(BuildContext context, var _message) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        backgroundColor: colors.buttonColor,
-        content: Text(
-          '$_message',
-          style: TextStyle(
-            color: colors.textColor,
-            fontFamily: Fonts.default_font,
-            fontSize: Fonts.appBarTitle_size,
-          ),
-        ),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
+    MyWidgets.showToast(context, _message);
   }
 }
 

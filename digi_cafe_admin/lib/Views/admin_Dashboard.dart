@@ -1,6 +1,5 @@
 import 'package:digi_cafe_admin/Views/ComplaintSuggestionScreen.dart';
 import 'package:digi_cafe_admin/Views/ViewEmployees.dart';
-import 'package:digi_cafe_admin/Views/EmptyCartScreen.dart';
 import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
 import 'package:digi_cafe_admin/Views/ViewSales.dart';
 import 'package:digi_cafe_admin/Views/ViewVouchers.dart';
@@ -9,6 +8,7 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'MyWidgets.dart';
 import 'package:digi_cafe_admin/Views/NominateItemsScreen.dart';
 import '../style/fonts_style.dart';
 
@@ -54,6 +54,7 @@ class __dashboard extends State<_dashboard> {
     _buildContext = context;
     // TODO: implement build
     return Scaffold(
+      appBar: MyWidgets.getAppBar(),
       body: WillPopScope(
         onWillPop: () async {
           showDialogBox();
@@ -64,9 +65,10 @@ class __dashboard extends State<_dashboard> {
               Row(
                 children: <Widget>[
                   Container(
-                    height: (MediaQuery.of(context).size.width *
-                            Fonts.dashboardItem_heightFactor) -
-                        50,
+                    height: (MediaQuery.of(context).size.height *
+                                Fonts.dashboardItem_heightFactor) *
+                            0.5 -
+                        60,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(100.0),
@@ -280,11 +282,6 @@ class __dashboard extends State<_dashboard> {
                       child: InkWell(
                         onTap: () {
                           //TODO: Check Review click
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      new EmptyCartScreen()));
                         },
                         child: Card(
                           child: Column(children: <Widget>[

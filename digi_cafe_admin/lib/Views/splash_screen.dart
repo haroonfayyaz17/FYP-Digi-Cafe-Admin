@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
-import 'package:digi_cafe_admin/Views/login.dart';
+import 'package:digi_cafe_admin/Views/Login.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'MyWidgets.dart';
 
 class Splash_Screen extends StatefulWidget {
   @override
@@ -36,34 +37,16 @@ class _MyAppState extends State<Splash_Screen> {
               child: Image.asset('images/logo.png'),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text(
-                'Digi Café',
-                style: TextStyle(
-                  fontSize: Fonts.heading1_size,
-                  fontFamily: Fonts.default_font,
-                ),
-              ),
-            ),
+                padding: EdgeInsets.only(top: 10),
+                child: MyWidgets.getTextWidget(
+                    text: 'Digi Café', size: Fonts.heading1_size)),
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                'Admin',
-                style: TextStyle(
-                  fontSize: Fonts.heading2_size,
-                  fontFamily: Fonts.default_font,
-                ),
-              ),
-            ),
+                padding: const EdgeInsets.only(top: 8.0),
+                child: MyWidgets.getTextWidget(text: 'Admin')),
             Container(
               width: 200,
               padding: EdgeInsets.only(top: 50),
               child: SpinKitThreeBounce(color: colors.buttonColor),
-              // LinearProgressIndicator(
-              //   backgroundColor: Colors.white,
-              //   valueColor: new AlwaysStoppedAnimation<Color>(
-              //                     Colors.white),
-              // ),
             ),
           ],
         ),

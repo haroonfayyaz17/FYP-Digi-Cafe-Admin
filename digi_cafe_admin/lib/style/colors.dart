@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 // ignore: camel_case_types
 class colors {
@@ -14,6 +15,7 @@ class colors {
   // static const Color navDrawerColor = Color(0xFFBF752A);
   // static const Color backgroundColor = Color(0xFFBF752A);
 
+  static const Color warningColor = Colors.red;
   static const Color buttonColor = Color(0xFFBF752A);
   static const Color cursorColor = Color(0xFFBF752A);
   static const Color buttonTextColor = Color(0xFFFFFFFF);

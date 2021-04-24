@@ -127,16 +127,11 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                                                         ViewOrderDetails(
                                                             details.orderNo)));
                                       },
-                                      child: Text(
-                                        '${details.orderNo}',
-                                        style: TextStyle(
-                                            fontSize: Fonts.link_size,
-                                            fontFamily: Fonts.default_font,
-                                            decoration:
-                                                TextDecoration.underline,
-                                            color: Colors.blue),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                      child: MyWidgets.getTextWidget(
+                                          text: details.orderNo,
+                                          size: Fonts.link_size,
+                                          color: Colors.blue,
+                                          decoration: TextDecoration.underline),
                                     ),
                                   ],
                                 ),

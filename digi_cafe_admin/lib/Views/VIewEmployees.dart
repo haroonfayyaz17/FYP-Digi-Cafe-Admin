@@ -27,10 +27,8 @@ class ViewEmployees extends StatelessWidget {
           color: Colors.grey,
         ),
       ),
-      titleStyle: TextStyle(
-          fontSize: Fonts.dialog_heading_size,
-          fontFamily: Fonts.default_font,
-          fontWeight: FontWeight.bold),
+      titleStyle: MyWidgets.getTextStyle(
+          size: Fonts.dialog_heading_size, weight: FontWeight.bold),
     );
     Alert(
         context: context,
@@ -50,7 +48,7 @@ class ViewEmployees extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: MyWidgets.getAppBar(),
+      appBar: MyWidgets.getAppBar(text: 'View Employees'),
       body: _ViewEmployees(),
       floatingActionButton: SpeedDial(
           animatedIcon: AnimatedIcons.menu_close,
@@ -63,11 +61,8 @@ class ViewEmployees extends StatelessWidget {
                 color: colors.buttonTextColor,
               ),
               label: 'Add Employee',
-              labelStyle: TextStyle(
-                color: colors.buttonTextColor,
-                fontFamily: Fonts.default_font,
-                fontSize: Fonts.dialog_heading_size,
-              ),
+              labelStyle:
+                  MyWidgets.getTextStyle(size: Fonts.dialog_heading_size),
               labelBackgroundColor: colors.buttonColor,
               backgroundColor: colors.buttonColor,
               onTap: () {
@@ -85,11 +80,8 @@ class ViewEmployees extends StatelessWidget {
               ),
               backgroundColor: colors.backgroundColor,
               label: 'Help',
-              labelStyle: TextStyle(
-                color: colors.buttonTextColor,
-                fontFamily: Fonts.default_font,
-                fontSize: Fonts.dialog_heading_size,
-              ),
+              labelStyle:
+                  MyWidgets.getTextStyle(size: Fonts.dialog_heading_size),
               labelBackgroundColor: colors.buttonColor,
               onTap: () {
                 createHelpAlert(context);
@@ -123,86 +115,76 @@ class __ViewEmployees extends State<_ViewEmployees> {
     _buildContext = context;
 
     return Flex(
-        direction: Axis.vertical,
-        verticalDirection: VerticalDirection.down,
-        children: <Widget>[
-          Flexible(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: querySnapshot,
-              builder: (context, snapshot) {
-                return !snapshot.hasData
-                    ? LoadingWidget()
-                    : ListView.builder(
-                        itemCount: snapshot.data.documents.length,
-                        itemBuilder: (context, index) {
-                          DocumentSnapshot element =
-                              snapshot.data.documents[index];
-                          CafeEmployee employee = new CafeEmployee(
-                              element.data["Name"],
-                              element.data["email"],
-                              element.data["gender"],
-                              element.data["DOB"],
-                              "",
-                              element.data["phoneNo"],
-                              element.data["PType"],
-                              element.data['imgURL']);
-                          // print('${element.data['imgURL']}');
-                          employee.id = element.documentID;
-                          return GestureDetector(
-                            onTap: () {
-                              //TODO: Update Employee
-                              debugPrint('${employee.id}');
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          AddEmployeeScreen(
-                                              employee: employee,
-                                              actionType: "update")));
-                            },
-                            onLongPress: () {
-                              //TODO: Delete Employee
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) => AlertDialog(
-                                    content: Text(
-                                      'Do you want to remove Employee?',
-                                      style: TextStyle(
-                                        fontFamily: Fonts.default_font,
-                                        fontSize: Fonts.heading2_size,
-                                        color: colors.labelColor,
+      direction: Axis.vertical,
+      verticalDirection: VerticalDirection.down,
+      children: <Widget>[
+        Flexible(
+          child: StreamBuilder<QuerySnapshot>(
+            stream: querySnapshot,
+            builder: (context, snapshot) {
+              return !snapshot.hasData
+                  ? LoadingWidget()
+                  : ListView.builder(
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot element =
+                            snapshot.data.documents[index];
+                        CafeEmployee employee = new CafeEmployee(
+                            element.data["Name"],
+                            element.data["email"],
+                            element.data["gender"],
+                            element.data["DOB"],
+                            "",
+                            element.data["phoneNo"],
+                            element.data["PType"],
+                            element.data['imgURL']);
+                        // print('${element.data['imgURL']}');
+                        employee.id = element.documentID;
+                        return GestureDetector(
+                          onTap: () {
+                            //TODO: Update Employee
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        AddEmployeeScreen(
+                                            employee: employee,
+                                            actionType: "update")));
+                          },
+                          onLongPress: () {
+                            //TODO: Delete Employee
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                  content: MyWidgets.getTextWidget(
+                                      text: 'Do you want to remove Employee?',
+                                      size: Fonts.heading2_size,
+                                      color: colors.labelColor),
+                                  actions: <Widget>[
+                                    Container(
+                                      // width: MediaQuery.of(context).size.width * 0.3,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                        color: colors.buttonColor,
+                                      ),
+                                      child: FlatButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: MyWidgets.getTextWidget(
+                                            text: 'No',
+                                            color: colors.buttonTextColor,
+                                            size: Fonts.label_size),
                                       ),
                                     ),
-                                    actions: <Widget>[
-                                      Container(
-                                        // width: MediaQuery.of(context).size.width * 0.3,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10)),
-                                          color: colors.buttonColor,
-                                        ),
-                                        child: FlatButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'No',
-                                            style: TextStyle(
-                                              fontFamily: Fonts.default_font,
-                                              fontSize: Fonts.label_size,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                        color: colors.buttonColor,
                                       ),
-                                      Container(
-                                        // width: MediaQuery.of(context).size.width * 0.3,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10)),
-                                          color: colors.buttonColor,
-                                        ),
-                                        child: FlatButton(
+                                      child: FlatButton(
                                           onPressed: () async {
                                             //TODO: Delete Employee
 
@@ -218,102 +200,71 @@ class __ViewEmployees extends State<_ViewEmployees> {
                                                   "Employee delete unsuccessful");
                                             }
                                           },
-                                          child: Text(
-                                            'Yes',
-                                            style: TextStyle(
-                                              fontFamily: Fonts.default_font,
-                                              fontSize: Fonts.label_size,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ]),
-                              );
-                            },
-                            child: Container(
-                              constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width - 10,
-                              ),
-                              child: Card(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(
-                                      margin: EdgeInsets.all(10.0),
-                                      height: 120.0,
-                                      width: 120,
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                          child: employee.imgURL == null
-                                              ? Image.asset(
-                                                  'images/profile_pic.png')
-                                              : Image.network(employee.imgURL)),
+                                          child: MyWidgets.getTextWidget(
+                                              text: 'Yes',
+                                              color: colors.buttonTextColor,
+                                              size: Fonts.label_size)),
                                     ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Container(
+                                  ]),
+                            );
+                          },
+                          child: Container(
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width - 10,
+                            ),
+                            child: Card(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    margin: EdgeInsets.all(10.0),
+                                    height: 120.0,
+                                    width: 120,
+                                    child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100.0),
+                                        child: employee.imgURL == null
+                                            ? Image.asset(
+                                                'images/profile_pic.png')
+                                            : Image.network(employee.imgURL)),
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Container(
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width -
                                               150,
-                                          child: Text(
-                                            employee.Name,
-                                            style: TextStyle(
-                                                fontFamily: Fonts.default_font,
-                                                fontSize: 28,
-                                                fontWeight: FontWeight.w500),
-                                            overflow: TextOverflow.visible,
-                                          ),
-                                        ),
-                                        Container(
+                                          child: MyWidgets.getTextWidget(
+                                              text: employee.Name,
+                                              size: Fonts.heading1_size,
+                                              weight: FontWeight.w500)),
+                                      Container(
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width -
                                               150,
-                                          child: Text(
-                                            employee.userType,
-                                            style: TextStyle(
-                                              fontFamily: Fonts.default_font,
-                                              fontSize: 21,
-                                            ),
-                                            overflow: TextOverflow.visible,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                          child: MyWidgets.getTextWidget(
+                                            text: employee.userType,
+                                            size: Fonts.heading2_size,
+                                          )),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                          );
-                        });
-              },
-            ),
+                          ),
+                        );
+                      });
+            },
           ),
-        ]);
+        ),
+      ],
+    );
   }
 
   void _showToast(BuildContext context, var _message) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        backgroundColor: colors.buttonColor,
-        content: Text(
-          '$_message',
-          style: TextStyle(
-            color: colors.textColor,
-            fontFamily: Fonts.default_font,
-            fontSize: Fonts.appBarTitle_size,
-          ),
-        ),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
+    MyWidgets.showToast(context, _message);
   }
 }

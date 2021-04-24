@@ -6,6 +6,7 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'MyWidgets.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -82,25 +83,17 @@ class _LoginScreenState extends State<_LoginScreen> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Text(
-                    'Digi Café',
-                    style: TextStyle(
-                      fontSize: Fonts.heading1_size,
-                      fontFamily: Fonts.default_font,
-                    ),
-                  ),
+                  child: MyWidgets.getTextWidget(
+                      text: 'Digi Café', size: Fonts.heading1_size),
                 ),
                 _displayLabel
                     ? Padding(
                         padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-                        child: Text(
-                          '$errorHeading',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontFamily: Fonts.default_font,
-                            fontSize: Fonts.dialog_heading_size,
-                          ),
-                        ))
+                        child: MyWidgets.getTextWidget(
+                            text: errorHeading,
+                            size: Fonts.dialog_heading_size,
+                            color: colors.warningColor),
+                      )
                     : Container(),
                 Padding(
                   padding: EdgeInsets.all(20),
@@ -162,20 +155,15 @@ class _LoginScreenState extends State<_LoginScreen> {
                     obscureText: _passwordHide,
                   ),
                 ),
-
                 Align(
                   alignment: Alignment.topRight,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20.0),
                     child: InkWell(
-                      child: Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                          fontFamily: Fonts.default_font,
-                          fontSize: Fonts.heading3_size,
-                          color: colors.buttonColor,
-                        ),
-                      ),
+                      child: MyWidgets.getTextWidget(
+                          text: 'Forgot Password?',
+                          size: Fonts.heading3_size,
+                          color: colors.buttonColor),
                       onTap: () {
                         Navigator.push(
                             context,
@@ -185,7 +173,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                     ),
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(top: 30.0),
                   child: Container(
@@ -200,13 +187,10 @@ class _LoginScreenState extends State<_LoginScreen> {
                         children: <Widget>[
                           Visibility(
                             visible: !_buttonPressed,
-                            child: Text(
-                              'Sign In',
-                              style: TextStyle(
-                                fontFamily: Fonts.default_font,
-                                color: colors.buttonTextColor,
-                              ),
-                            ),
+                            child: MyWidgets.getTextWidget(
+                                text: 'Sign In',
+                                size: Fonts.button_size,
+                                color: colors.buttonTextColor),
                           ),
                           Visibility(
                             visible: _buttonPressed,
@@ -229,31 +213,6 @@ class _LoginScreenState extends State<_LoginScreen> {
                 SizedBox(
                   height: 20,
                 ),
-                // Container(
-                //   decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.all(Radius.circular(10)),
-                //       border: Border.all(
-                //         width: 1.0,
-                //         style: BorderStyle.solid,
-                //       )),
-                //   width: 200,
-                //   height: 50,
-                //   child: FlatButton(
-                //     onPressed: () {
-                //       Navigator.push(
-                //           context,
-                //           MaterialPageRoute(
-                //               builder: (context) => SignUpScreen()));
-                //     },
-                //     child: Text(
-                //       'Create new Account',
-                //       style: TextStyle(
-                //         fontFamily: Fonts.default_font,
-                //         color: colors.buttonColor,
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),

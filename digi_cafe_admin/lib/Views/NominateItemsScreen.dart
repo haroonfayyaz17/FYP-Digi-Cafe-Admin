@@ -59,7 +59,7 @@ class _NominateItemsState extends State<NominateItemsState> {
     _buildContext = context;
     return Scaffold(
       key: _scaffoldKey,
-      appBar: MyWidgets.getAppBar(),
+      appBar: MyWidgets.getAppBar(text: 'Nominate Items'),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 120, right: 120, bottom: 5),
         child: ClipPath(
@@ -74,17 +74,15 @@ class _NominateItemsState extends State<NominateItemsState> {
             height: 30,
             child: FlatButton(
               color: colors.buttonColor,
-              child: Text(
-                'Nominate Items',
-                style: TextStyle(
-                  fontSize: Fonts.button_size,
-                  fontFamily: Fonts.default_font,
-                  color: colors.buttonTextColor,
-                ),
-              ),
+              child: MyWidgets.getTextWidget(
+                  text: 'Nominate Items',
+                  size: Fonts.button_size,
+                  color: colors.buttonTextColor),
               onPressed: () {
                 FutureBuilder<bool>(
                   builder: (context, snapshot) {
+                    if (snapshot.hasData) if (snapshot.data) {}
+                    // _showToast(context, 'Items Nom')
                     return Container();
                   },
                   future: _nominateSelectedItems(context),
@@ -123,15 +121,7 @@ class _NominateItemsState extends State<NominateItemsState> {
                           data: Theme.of(context)
                               .copyWith(dividerColor: colors.buttonColor),
                           child: PaginatedDataTable(
-                            header: Center(
-                              child: Text(
-                                'Nominate Items',
-                                style: TextStyle(
-                                  fontSize: Fonts.heading1_size,
-                                  fontFamily: Fonts.default_font,
-                                ),
-                              ),
-                            ),
+                            header: Container(),
                             dataRowHeight: MediaQuery.of(context).size.height *
                                 0.7 /
                                 _rowsPerPage,
@@ -161,22 +151,7 @@ class _NominateItemsState extends State<NominateItemsState> {
   }
 
   void _showToast(BuildContext context, var _message) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        backgroundColor: colors.buttonColor,
-        content: Text(
-          '$_message',
-          style: TextStyle(
-            color: colors.textColor,
-            fontFamily: Fonts.default_font,
-            fontSize: Fonts.appBarTitle_size,
-          ),
-        ),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
+    MyWidgets.showToast(context, _message);
   }
 
   Future<bool> _nominateSelectedItems(context) async {
@@ -200,14 +175,11 @@ class _NominateItemsState extends State<NominateItemsState> {
       });
       if (result) {
         _scaffoldKey.currentState.showSnackBar(SnackBar(
-          content: Text(
-            'Items nominated successfully',
-            style: TextStyle(
+          backgroundColor: colors.buttonColor,
+          content: MyWidgets.getTextWidget(
+              text: 'Items nominated successfully',
               color: colors.textColor,
-              fontFamily: Fonts.default_font,
-              fontSize: Fonts.appBarTitle_size,
-            ),
-          ),
+              size: Fonts.appBarTitle_size),
           duration: Duration(seconds: 3),
         ));
       }
@@ -215,13 +187,7 @@ class _NominateItemsState extends State<NominateItemsState> {
     setState(() {
       _displayLoadingWidget = false;
     });
-    //  else {
-    //   _scaffoldKey.currentState.showSnackBar(SnackBar(
-    //     content: Text('No Item Selected'),
-    //     duration: Duration(seconds: 3),
-    //   ));
-    //   // _showToast(context, 'No Item Selected');
-    // }
+
     return Future.value(true);
   }
 }
@@ -298,10 +264,10 @@ class NominateItemsDataSource extends DataTableSource {
         selected: _nominateItems.selected,
         onSelectChanged: (bool value) {
           // allow only 4 selections
-          if (_selectedCount > 3 && value) {
-            print('Selection limit reached');
-            return;
-          }
+          // if (_selectedCount > 3 && value) {
+          //   print('Selection limit reached');
+          //   return;
+          // }
           if (_nominateItems.selected != value) {
             _selectedCount += value ? 1 : -1;
             assert(_selectedCount >= 0);
@@ -311,31 +277,18 @@ class NominateItemsDataSource extends DataTableSource {
         },
         cells: <DataCell>[
           DataCell(
-            Text(
-              _nominateItems.itemName,
-              style: TextStyle(
-                fontSize: Fonts.heading3_size,
-                fontFamily: Fonts.default_font,
-              ),
-            ),
+            MyWidgets.getTextWidget(
+                text: _nominateItems.itemName, size: Fonts.heading3_size),
           ),
           DataCell(
-            Text(
-              _nominateItems.price.toStringAsFixed(1),
-              style: TextStyle(
-                fontSize: Fonts.heading3_size,
-                fontFamily: Fonts.default_font,
-              ),
-            ),
+            MyWidgets.getTextWidget(
+                text: _nominateItems.price.toStringAsFixed(1),
+                size: Fonts.heading3_size),
           ),
           DataCell(
-            Text(
-              _nominateItems.quantity.toStringAsFixed(1),
-              style: TextStyle(
-                fontSize: Fonts.heading3_size,
-                fontFamily: Fonts.default_font,
-              ),
-            ),
+            MyWidgets.getTextWidget(
+                text: _nominateItems.quantity.toStringAsFixed(1),
+                size: Fonts.heading3_size),
           ),
         ]);
   }

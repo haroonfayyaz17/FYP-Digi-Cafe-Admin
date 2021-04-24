@@ -21,9 +21,6 @@ class AddEmployeeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyWidgets.getAppBar(),
-      // backgroundColor: colors.buttonColor,
-      backgroundColor: colors.backgroundColor,
       body: _AddEmployeeScreen(
         employee: employee,
         actionType: actionType,
@@ -140,14 +137,6 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
     _fillPersonTypesDropDown();
   }
 
-  // void _emailValue() {
-  //   _email = edtControllerEmail.text;
-  // }
-
-  // void _passwordValue() {
-  //   _password = edtControllerPassword.text;
-  // }
-
   void _fillGendersDropDown() {
     genderOptionList = <String>['Male', 'Female', 'Other'];
   }
@@ -168,9 +157,6 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       setFieldsForUpdate();
       screenHeader = 'Update Employee';
     }
-    // else {
-    //   screenHeader = 'Add Employee';
-    // }
 
     Widget widget = Stack(children: [
       _displayLoadingWidget
@@ -184,20 +170,9 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                     controller: controller,
                     children: [
                       SingleChildScrollView(
-                        // physics: NeverScrollableScrollPhysics(),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(top: 35),
-                              child: Text(
-                                '$screenHeader',
-                                style: TextStyle(
-                                  fontSize: Fonts.heading1_size,
-                                  fontFamily: Fonts.default_font,
-                                ),
-                              ),
-                            ),
                             SizedBox(
                               height: 10,
                             ),
@@ -220,13 +195,9 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                               child: Padding(
                                 padding: EdgeInsets.only(
                                     left: 20, top: 20, bottom: 10),
-                                child: Text(
-                                  'Personal Information',
-                                  style: TextStyle(
-                                    fontSize: Fonts.heading_SampleText_size,
-                                    fontFamily: Fonts.default_font,
-                                  ),
-                                ),
+                                child: MyWidgets.getTextWidget(
+                                    text: 'Personal Information',
+                                    size: Fonts.heading_SampleText_size),
                               ),
                             ),
                             SizedBox(
@@ -397,36 +368,6 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                       ContactDetailsWidget(),
                       if (actionType != 'update') ImageWidget(),
                       if (actionType != 'update') EmailDetails(),
-
-                      // Container(
-                      //   child: Center(
-                      //     child: Column(
-                      //       mainAxisSize: MainAxisSize.min,
-                      //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: [
-                      //         Text(
-                      //           'Just Finishing Up!',
-                      //           style: TextStyle(
-                      //             fontSize: Fonts.heading_SampleText_size,
-                      //             fontFamily: Fonts.default_font,
-                      //           ),
-                      //         ),
-                      //         SizedBox(
-                      //           height: 50,
-                      //         ),
-                      //         Text(
-                      //           'We have emailed you a link.\nClick on that link to verify your account',
-                      //           style: TextStyle(
-                      //             color: colors.buttonColor,
-                      //             fontSize: Fonts.heading2_size,
-                      //             fontFamily: Fonts.default_font,
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
@@ -437,33 +378,25 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Indicator(
-                        positionIndex: 0,
-                        currentIndex: currentIndex,
-                      ),
+                      MyWidgets.getIndicator(
+                          positionIndex: 0, currentIndex: currentIndex),
                       SizedBox(
                         width: 10,
                       ),
-                      Indicator(
-                        positionIndex: 1,
-                        currentIndex: currentIndex,
-                      ),
+                      MyWidgets.getIndicator(
+                          positionIndex: 1, currentIndex: currentIndex),
                       SizedBox(
                         width: 10,
                       ),
                       if (actionType != 'update')
-                        Indicator(
-                          positionIndex: 2,
-                          currentIndex: currentIndex,
-                        ),
+                        MyWidgets.getIndicator(
+                            positionIndex: 3, currentIndex: currentIndex),
                       SizedBox(
                         width: 10,
                       ),
                       if (actionType != 'update')
-                        Indicator(
-                          positionIndex: 3,
-                          currentIndex: currentIndex,
-                        )
+                        MyWidgets.getIndicator(
+                            positionIndex: 4, currentIndex: currentIndex),
                     ],
                   ),
                 ),
@@ -477,13 +410,10 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                       children: <Widget>[
                         InkWell(
                           onTap: () => previousFunction(),
-                          child: Text(
-                            '<Previous',
-                            style: TextStyle(
-                              fontSize: Fonts.heading2_size,
-                              color: colors.buttonColor,
-                            ),
-                          ),
+                          child: MyWidgets.getTextWidget(
+                              text: '<Previous',
+                              size: Fonts.heading2_size,
+                              color: colors.buttonColor),
                         ),
                         SizedBox(
                           width: 50,
@@ -491,15 +421,11 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                         InkWell(
                           onTap: () {
                             nextFunction();
-                            // print(code + ' ' + edtControllerPhoneNo.text);
                           },
-                          child: Text(
-                            '$_nextLabel',
-                            style: TextStyle(
-                              fontSize: Fonts.heading2_size,
-                              color: colors.buttonColor,
-                            ),
-                          ),
+                          child: MyWidgets.getTextWidget(
+                              text: '$_nextLabel',
+                              size: Fonts.heading2_size,
+                              color: colors.buttonColor),
                         ),
                       ],
                     ),
@@ -508,19 +434,11 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
               ],
             )
     ]);
-    // if (actionType == 'update') {
-    //   setFieldsForUpdate();
-    //   debugPrint('dfffd');
-    // }
+
+    return Scaffold(
+        appBar: MyWidgets.getAppBar(text: '$screenHeader'), body: widget);
     return widget;
   }
-
-  // @override
-  // void dispose() {
-  //   // TODO: implement dispose
-  //
-  //   super.dispose();
-  // }
 
   void _textEditingControllerListener() {
     _dateControllerText.text = date;
@@ -571,9 +489,6 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       } else {
         _functionSignUp();
       }
-      // _functionSignUp();
-      // Navigator.push(context,
-      //     MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
     } else if (controller.page == image) {
       if (_image == null) {
         _showToast(context, 'Choose Profile Pic');
@@ -583,15 +498,10 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
           _nextLabel = "Add";
         });
         controller.nextPage(duration: _kDuration, curve: _kCurve);
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (BuildContext context) => LoginScreen()));
       }
     } else {
       controller.nextPage(duration: _kDuration, curve: _kCurve);
     }
-    // controller.nextPage(duration: _kDuration, curve: _kCurve);
   }
 
   previousFunction() {
@@ -616,10 +526,6 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
 
   Future<void> _functionSignUp() async {
     try {
-      //   // Navigator.push(
-      //   //   context,
-      //   //   MaterialPageRoute(builder: (context) => DentistSetupProfile('_email')),
-      //   // );
       setState(() {
         _displayLoadingWidget = true;
       });
@@ -669,28 +575,11 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
     setState(() {
       _displayLoadingWidget = false;
     });
-    // Navigator.push(context,
-    //     MaterialPageRoute(builder: (BuildContext context) => ViewEmployees()));
     Navigator.pop(context);
   }
 
   void _showToast(BuildContext context, var _message) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        backgroundColor: colors.buttonColor,
-        content: Text(
-          '$_message',
-          style: TextStyle(
-            color: colors.textColor,
-            fontFamily: Fonts.default_font,
-            fontSize: Fonts.appBarTitle_size,
-          ),
-        ),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
+    MyWidgets.showToast(context, _message);
   }
 
   void _valueChanged(String value) {
@@ -710,13 +599,9 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: EdgeInsets.only(left: 20),
-                child: Text(
-                  'Contact Details',
-                  style: TextStyle(
-                    fontSize: Fonts.heading_SampleText_size,
-                    fontFamily: Fonts.default_font,
-                  ),
-                ),
+                child: MyWidgets.getTextWidget(
+                    text: 'Contact Details',
+                    size: Fonts.heading_SampleText_size),
               ),
             ),
             SizedBox(
@@ -836,16 +721,6 @@ class ImageWidget extends StatefulWidget {
 }
 
 class _ImageWidgetState extends State<ImageWidget> {
-  // Future<File> getImageFileFromAssets(String path) async {
-  //   final byteData = await rootBundle.load('images/$path');
-
-  //   final file = File('${(await getTemporaryDirectory()).path}/$path');
-  //   await file.writeAsBytes(byteData.buffer
-  //       .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-  //   print('yes');
-  //   return file;
-  // }
-
   File _image;
   String _imagePath = null;
   var _msg = "Select Profile Pic";
@@ -862,7 +737,6 @@ class _ImageWidgetState extends State<ImageWidget> {
     // TODO: implement build
     return Container(
       child: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
         child: ConstrainedBox(
           constraints:
               BoxConstraints(minHeight: MediaQuery.of(context).size.height),
@@ -874,22 +748,14 @@ class _ImageWidgetState extends State<ImageWidget> {
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: EdgeInsets.only(left: 20),
-                    child: Text(
-                      'Upload Employee Profile Pic',
-                      style: TextStyle(
-                        fontSize: Fonts.heading_SampleText_size,
-                        fontFamily: Fonts.default_font,
-                      ),
-                    ),
+                    child: MyWidgets.getTextWidget(
+                        text: 'Upload Employee Profile Pic',
+                        size: Fonts.heading_SampleText_size),
                   ),
                 ),
-                // SizedBox(
-                //   height: 50,
-                // ),
                 SizedBox(
                   height: 50,
                 ),
-
                 _image != null
                     ? Image.asset(
                         _image.path,
@@ -897,7 +763,6 @@ class _ImageWidgetState extends State<ImageWidget> {
                         height: 275,
                       )
                     : Container(),
-
                 if (_image == null)
                   Padding(
                     padding: EdgeInsets.only(top: 50),
@@ -910,13 +775,10 @@ class _ImageWidgetState extends State<ImageWidget> {
                         width: 150,
                         height: 50,
                         child: Center(
-                          child: Text(
-                            'Choose Profile Pic',
-                            style: TextStyle(
-                              fontFamily: Fonts.default_font,
-                              color: colors.buttonTextColor,
-                            ),
-                          ),
+                          child: MyWidgets.getTextWidget(
+                              text: 'Choose Profile Pic',
+                              size: Fonts.button_size,
+                              color: colors.buttonTextColor),
                         ),
                       ),
                       onTap: () {
@@ -924,7 +786,6 @@ class _ImageWidgetState extends State<ImageWidget> {
                       },
                     ),
                   ),
-
                 SizedBox(
                   height: 50,
                 ),
@@ -938,13 +799,10 @@ class _ImageWidgetState extends State<ImageWidget> {
                           width: 150,
                           height: 50,
                           child: Center(
-                            child: Text(
-                              'Remove',
-                              style: TextStyle(
-                                fontFamily: Fonts.default_font,
-                                color: colors.buttonTextColor,
-                              ),
-                            ),
+                            child: MyWidgets.getTextWidget(
+                                text: 'Remove',
+                                size: Fonts.button_size,
+                                color: colors.buttonTextColor),
                           ),
                         ),
                         onTap: clearSelection,
@@ -970,14 +828,10 @@ class _ImageWidgetState extends State<ImageWidget> {
                   new ListTile(
                       leading: new Icon(Icons.photo_library,
                           color: colors.buttonTextColor),
-                      title: new Text(
-                        'Photo Library',
-                        style: TextStyle(
-                          color: colors.buttonTextColor,
-                          fontFamily: Fonts.default_font,
-                          fontSize: Fonts.dialog_heading_size,
-                        ),
-                      ),
+                      title: MyWidgets.getTextWidget(
+                          text: 'Photo Library',
+                          size: Fonts.dialog_heading_size,
+                          color: colors.buttonTextColor),
                       onTap: () {
                         _imgFromGallery();
                         Navigator.of(context).pop();
@@ -987,14 +841,10 @@ class _ImageWidgetState extends State<ImageWidget> {
                       Icons.photo_camera,
                       color: colors.buttonTextColor,
                     ),
-                    title: new Text(
-                      'Camera',
-                      style: TextStyle(
-                        color: colors.buttonTextColor,
-                        fontFamily: Fonts.default_font,
-                        fontSize: Fonts.dialog_heading_size,
-                      ),
-                    ),
+                    title: MyWidgets.getTextWidget(
+                        text: 'Camera',
+                        size: Fonts.dialog_heading_size,
+                        color: colors.buttonTextColor),
                     onTap: () {
                       _imgFromCamera();
                       Navigator.of(context).pop();
@@ -1168,13 +1018,9 @@ class _EmailDetailsState extends State<EmailDetails> {
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: EdgeInsets.only(left: 20),
-                    child: Text(
-                      'Login Information(Optional)',
-                      style: TextStyle(
-                        fontSize: Fonts.heading_SampleText_size,
-                        fontFamily: Fonts.default_font,
-                      ),
-                    ),
+                    child: MyWidgets.getTextWidget(
+                        text: 'Login Information(Optional)',
+                        size: Fonts.heading_SampleText_size),
                   ),
                 ),
                 SizedBox(
@@ -1334,23 +1180,5 @@ class _EmailDetailsState extends State<EmailDetails> {
     _addEmployeeScreen.setState(() {
       _addEmployeeScreen._confirmPassword = _confirmPassword;
     });
-  }
-}
-
-class Indicator extends StatelessWidget {
-  final int positionIndex, currentIndex;
-  const Indicator({this.currentIndex, this.positionIndex});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 12,
-      width: 12,
-      decoration: BoxDecoration(
-          border: Border.all(color: colors.buttonColor),
-          color: positionIndex == currentIndex
-              ? colors.buttonColor
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(100)),
-    );
   }
 }

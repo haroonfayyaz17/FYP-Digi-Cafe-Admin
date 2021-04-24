@@ -1,21 +1,18 @@
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
+import 'MyWidgets.dart';
 
 class DialogInstruction {
   static Widget getInstructionRow(var instruction) {
     return Row(
       children: [
-        Indicator(),
+        MyWidgets.getIndicator(height: 8, width: 8),
+        // Indicator(),
         Padding(
           padding: EdgeInsets.only(left: 5),
-          child: Text(
-            '$instruction',
-            style: TextStyle(
-              fontSize: Fonts.dialog_heading_size,
-              fontFamily: Fonts.default_font,
-            ),
-          ),
+          child: MyWidgets.getTextWidget(
+              text: instruction, size: Fonts.dialog_heading_size),
         ),
       ],
     );

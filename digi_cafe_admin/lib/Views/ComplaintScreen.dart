@@ -7,7 +7,7 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Model/Complaint.dart';
 import 'LoadingWidget.dart';
 import 'package:intl/intl.dart';
-
+import 'MyWidgets.dart';
 import 'ViewFeedbackDetails.dart';
 
 class ComplaintScreen extends StatefulWidget {
@@ -81,10 +81,10 @@ class _ComplaintScreen extends State<ComplaintScreen> {
                     borderSide:
                         BorderSide(color: colors.buttonColor, width: 1.3),
                   ),
-                  hintText: 'FilterType',
+                  hintText: 'Complaint Category',
                   filled: true,
                   fillColor: colors.backgroundColor,
-                  labelText: 'FilterType',
+                  labelText: 'Complaint Category',
                 ),
                 onChanged: (String newValue) {
                   setState(() {
@@ -163,28 +163,21 @@ class _ComplaintScreen extends State<ComplaintScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
-                                            Text(
-                                              complaint.category,
-                                              style: TextStyle(
-                                                fontFamily: Fonts.default_font,
-                                                fontSize: Fonts.heading2_size,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
+                                            MyWidgets.getTextWidget(
+                                                text: complaint.category,
+                                                weight: FontWeight.bold,
+                                                overflow:
+                                                    TextOverflow.ellipsis),
                                             Align(
                                               alignment: Alignment.topRight,
-                                              child: Text(
-                                                convertDateTimeDisplay(
-                                                    complaint.time.toString()),
-                                                style: TextStyle(
-                                                  fontSize: Fonts.label_size,
-                                                  fontFamily:
-                                                      Fonts.default_font,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
+                                              child: MyWidgets.getTextWidget(
+                                                  text: convertDateTimeDisplay(
+                                                      complaint.time
+                                                          .toString()),
+                                                  weight: FontWeight.bold,
+                                                  size: Fonts.label_size,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
                                             ),
                                           ],
                                         ),
@@ -193,14 +186,10 @@ class _ComplaintScreen extends State<ComplaintScreen> {
                                               const EdgeInsets.only(top: 8.0),
                                           child: Align(
                                             alignment: Alignment.bottomLeft,
-                                            child: Text(
-                                              complaint.text,
-                                              style: TextStyle(
-                                                fontSize: Fonts.heading2_size,
-                                                fontFamily: Fonts.default_font,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
+                                            child: MyWidgets.getTextWidget(
+                                                text: complaint.text,
+                                                overflow:
+                                                    TextOverflow.ellipsis),
                                           ),
                                         ),
                                         Spacer(flex: 2),

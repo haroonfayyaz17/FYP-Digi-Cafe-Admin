@@ -6,7 +6,7 @@ import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'MyWidgets.dart';
 import '../style/colors.dart';
 import 'LoadingWidget.dart';
 
@@ -83,257 +83,228 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Stack(
-        children: [
-          _displayLoadingWidget
-              ? LoadingWidget()
-              : SingleChildScrollView(
-                  // physics: NeverScrollableScrollPhysics(),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        minHeight: MediaQuery.of(context).size.height),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: Text(
-                              '$screenHeader',
-                              style: TextStyle(
-                                fontSize: Fonts.heading1_size,
-                                fontFamily: Fonts.default_font,
+    return Scaffold(
+      appBar: MyWidgets.getAppBar(text: screenHeader),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            _displayLoadingWidget
+                ? LoadingWidget()
+                : SingleChildScrollView(
+                    // physics: NeverScrollableScrollPhysics(),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                              minHeight: MediaQuery.of(context).size.height) *
+                          0.8,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 75,
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                  padding: EdgeInsets.only(left: 20),
+                                  child: MyWidgets.getTextWidget(
+                                      text: 'Voucher Details',
+                                      size: Fonts.heading2_XL_size)),
+                            ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                              child: TextFormField(
+                                autofocus: true,
+                                controller: _edtTitleController,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (_) =>
+                                    FocusScope.of(context).nextFocus(),
+                                onChanged: _voucherTitleChanged,
+                                textCapitalization: TextCapitalization.words,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  hintText: 'Title',
+                                  filled: true,
+                                  fillColor: colors.backgroundColor,
+                                  labelText: 'Title',
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 75,
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 20),
-                              child: Text(
-                                'Voucher Details',
-                                style: TextStyle(
-                                  fontSize: Fonts.heading2_XL_size,
-                                  fontFamily: Fonts.default_font,
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                              child: TextFormField(
+                                controller: _dateControllerText,
+                                readOnly: true,
+                                autofocus: true,
+                                onChanged: _validityChanged,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (_) =>
+                                    FocusScope.of(context).nextFocus(),
+                                textCapitalization: TextCapitalization.words,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  hintText: 'Expiry Date',
+                                  filled: true,
+                                  fillColor: colors.backgroundColor,
+                                  labelText: 'Expiry Date',
                                 ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                            child: TextFormField(
-                              autofocus: true,
-                              controller: _edtTitleController,
-                              textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (_) =>
-                                  FocusScope.of(context).nextFocus(),
-                              onChanged: _voucherTitleChanged,
-                              textCapitalization: TextCapitalization.words,
-                              decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: colors.buttonColor, width: 1.3),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: colors.buttonColor, width: 1.3),
-                                ),
-                                hintText: 'Title',
-                                filled: true,
-                                fillColor: colors.backgroundColor,
-                                labelText: 'Title',
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                            child: TextFormField(
-                              controller: _dateControllerText,
-                              readOnly: true,
-                              autofocus: true,
-                              onChanged: _validityChanged,
-                              textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (_) =>
-                                  FocusScope.of(context).nextFocus(),
-                              textCapitalization: TextCapitalization.words,
-                              decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: colors.buttonColor, width: 1.3),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: colors.buttonColor, width: 1.3),
-                                ),
-                                hintText: 'Expiry Date',
-                                filled: true,
-                                fillColor: colors.backgroundColor,
-                                labelText: 'Expiry Date',
-                              ),
-                              onTap: () {
-                                showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2100),
-                                ).then((value) {
-                                  if (value != null) {
-                                    var current = DateTime.now();
-                                    var newDate = new DateTime(
-                                        current.year,
-                                        current.month,
-                                        current.day,
-                                        0,
-                                        0,
-                                        0,
-                                        0,
-                                        0);
+                                onTap: () {
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2000),
+                                    lastDate: DateTime(2100),
+                                  ).then((value) {
+                                    if (value != null) {
+                                      var current = DateTime.now();
+                                      var newDate = new DateTime(
+                                          current.year,
+                                          current.month,
+                                          current.day,
+                                          0,
+                                          0,
+                                          0,
+                                          0,
+                                          0);
 
-                                    if (value.compareTo(newDate) < 0) {
-                                      _showToast(context,
-                                          'Date should not be less than current date');
-                                      _dateControllerText.text = '';
+                                      if (value.compareTo(newDate) < 0) {
+                                        _showToast(context,
+                                            'Date should not be less than current date');
+                                        _dateControllerText.text = '';
+
+                                        setState(() {
+                                          _dateControllerText.text = '';
+                                          _validity = '';
+                                        });
+                                        return;
+                                      }
+                                      String day = value.day.toString();
+                                      String month = value.month.toString();
+                                      String year = value.year.toString();
+                                      String date = '${day}-${month}-${year}';
+
+                                      _dateControllerText.text = date;
 
                                       setState(() {
-                                        _dateControllerText.text = '';
-                                        _validity = '';
+                                        _dateControllerText.text = date;
+                                        _validity = date;
                                       });
-                                      return;
                                     }
-                                    String day = value.day.toString();
-                                    String month = value.month.toString();
-                                    String year = value.year.toString();
-                                    String date = '${day}-${month}-${year}';
-
-                                    _dateControllerText.text = date;
-
-                                    setState(() {
-                                      _dateControllerText.text = date;
-                                      _validity = date;
-                                    });
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                            child: TextFormField(
-                              autofocus: true,
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                              inputFormatters: [
-                                DecimalTextInputFormatter(decimalRange: 2)
-                              ],
-                              controller: edtMinimumAmount,
-                              onFieldSubmitted: (_) =>
-                                  FocusScope.of(context).nextFocus(),
-                              onChanged: _minimumSpendChanged,
-                              textCapitalization: TextCapitalization.words,
-                              decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: colors.buttonColor, width: 1.3),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: colors.buttonColor, width: 1.3),
-                                ),
-                                hintText: 'Minimum Spend Amount',
-                                filled: true,
-                                fillColor: colors.backgroundColor,
-                                labelText: 'Minimum Spend Amount',
+                                  });
+                                },
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                            child: TextFormField(
-                              autofocus: true,
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (_) =>
-                                  FocusScope.of(context).nextFocus(),
-                              onChanged: _discountChanged,
-                              inputFormatters: [
-                                DecimalTextInputFormatter(decimalRange: 2)
-                              ],
-                              controller: edtDiscountController,
-                              textCapitalization: TextCapitalization.words,
-                              decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: colors.buttonColor, width: 1.3),
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                              child: TextFormField(
+                                autofocus: true,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
+                                inputFormatters: [
+                                  DecimalTextInputFormatter(decimalRange: 2)
+                                ],
+                                controller: edtMinimumAmount,
+                                onFieldSubmitted: (_) =>
+                                    FocusScope.of(context).nextFocus(),
+                                onChanged: _minimumSpendChanged,
+                                textCapitalization: TextCapitalization.words,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  hintText: 'Minimum Spend Amount',
+                                  filled: true,
+                                  fillColor: colors.backgroundColor,
+                                  labelText: 'Minimum Spend Amount',
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: colors.buttonColor, width: 1.3),
-                                ),
-                                hintText: 'Discount',
-                                filled: true,
-                                fillColor: colors.backgroundColor,
-                                labelText: 'Discount',
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 50),
-                            child: InkWell(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(50)),
-                                  color: colors.buttonColor,
+                            Padding(
+                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                              child: TextFormField(
+                                autofocus: true,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (_) =>
+                                    FocusScope.of(context).nextFocus(),
+                                onChanged: _discountChanged,
+                                inputFormatters: [
+                                  DecimalTextInputFormatter(decimalRange: 2)
+                                ],
+                                controller: edtDiscountController,
+                                textCapitalization: TextCapitalization.words,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: colors.buttonColor, width: 1.3),
+                                  ),
+                                  hintText: 'Discount',
+                                  filled: true,
+                                  fillColor: colors.backgroundColor,
+                                  labelText: 'Discount',
                                 ),
-                                width: 100,
-                                height: 50,
-                                child: Center(
-                                  child: Text(
-                                    '$btnText',
-                                    style: TextStyle(
-                                      fontFamily: Fonts.default_font,
-                                      color: colors.buttonTextColor,
-                                    ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 50),
+                              child: InkWell(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(50)),
+                                    color: colors.buttonColor,
+                                  ),
+                                  width: 100,
+                                  height: 50,
+                                  child: Center(
+                                    child: MyWidgets.getTextWidget(
+                                        text: btnText,
+                                        size: Fonts.button_size,
+                                        color: colors.buttonTextColor),
                                   ),
                                 ),
+                                onTap: _addVoucher,
                               ),
-                              onTap: _addVoucher,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   void _showToast(BuildContext context, var _message) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        backgroundColor: colors.buttonColor,
-        content: Text(
-          '$_message',
-          style: TextStyle(
-            color: colors.textColor,
-            fontFamily: Fonts.default_font,
-            fontSize: Fonts.appBarTitle_size,
-          ),
-        ),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
+    MyWidgets.showToast(context, _message);
   }
 
   void stopLoading() {

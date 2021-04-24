@@ -8,6 +8,7 @@ import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:intl/intl.dart';
 import 'LoadingWidget.dart';
+import 'MyWidgets.dart';
 import 'ViewFeedbackDetails.dart';
 
 class SuggestionScreen extends StatefulWidget {
@@ -113,17 +114,14 @@ class _SuggestionScreen extends State<SuggestionScreen> {
                                           children: <Widget>[
                                             Align(
                                               alignment: Alignment.topLeft,
-                                              child: Text(
-                                                convertDateTimeDisplay(
-                                                    complaint.time.toString()),
-                                                style: TextStyle(
-                                                  fontSize: Fonts.label_size,
-                                                  fontFamily:
-                                                      Fonts.default_font,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
+                                              child: MyWidgets.getTextWidget(
+                                                  text: convertDateTimeDisplay(
+                                                      complaint.time
+                                                          .toString()),
+                                                  weight: FontWeight.bold,
+                                                  size: Fonts.label_size,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
                                             ),
                                           ],
                                         ),
@@ -132,14 +130,10 @@ class _SuggestionScreen extends State<SuggestionScreen> {
                                               const EdgeInsets.only(top: 8.0),
                                           child: Align(
                                             alignment: Alignment.bottomLeft,
-                                            child: Text(
-                                              complaint.text,
-                                              style: TextStyle(
-                                                fontSize: Fonts.heading2_size,
-                                                fontFamily: Fonts.default_font,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
+                                            child: MyWidgets.getTextWidget(
+                                                text: complaint.text,
+                                                overflow:
+                                                    TextOverflow.ellipsis),
                                           ),
                                         ),
                                         Spacer(flex: 2),

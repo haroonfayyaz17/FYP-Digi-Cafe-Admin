@@ -136,17 +136,6 @@ class _NoInternetScreenState extends State<_NoInternetScreen> {
       ],
     );
   }
-
-  void _showToast(BuildContext context, var _message) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        content: Text('$_message'),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
-  }
 }
 
 class Indicator extends StatelessWidget {

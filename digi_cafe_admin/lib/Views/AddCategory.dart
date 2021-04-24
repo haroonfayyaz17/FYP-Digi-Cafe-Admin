@@ -1,4 +1,4 @@
-import 'package:digi_cafe_admin/Views/login.dart';
+import 'package:digi_cafe_admin/Views/Login.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
@@ -7,14 +7,14 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'MyWidgets.dart';
 import '../style/colors.dart';
 
 class AddCategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: colors.buttonColor,
+      appBar: MyWidgets.getAppBar(text: 'Add Category'),
       backgroundColor: colors.backgroundColor,
       body: _AddCategoryScreen(),
     );
@@ -49,20 +49,18 @@ class _AddCategoryScreenState extends State<_AddCategoryScreen> {
         // physics: NeverScrollableScrollPhysics(),
         child: ConstrainedBox(
           constraints:
-              BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+              BoxConstraints(minHeight: MediaQuery.of(context).size.height) *
+                  0.8,
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Text(
-                    'Add Category',
-                    style: TextStyle(
-                      fontSize: Fonts.heading1_size,
-                      fontFamily: Fonts.default_font,
-                    ),
-                  ),
+                  child: MyWidgets.getTextWidget(
+                      text: 'Add Category',
+                      size: Fonts.heading1_size,
+                      color: colors.buttonTextColor),
                 ),
                 SizedBox(
                   height: 75,
@@ -70,15 +68,9 @@ class _AddCategoryScreenState extends State<_AddCategoryScreen> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Text(
-                      'Category Name',
-                      style: TextStyle(
-                        fontSize: Fonts.heading2_size,
-                        fontFamily: Fonts.default_font,
-                      ),
-                    ),
-                  ),
+                      padding: EdgeInsets.only(left: 20),
+                      child: MyWidgets.getTextWidget(
+                          text: 'Category Name', size: Fonts.heading2_size)),
                 ),
                 SizedBox(
                   height: 15,
@@ -121,13 +113,10 @@ class _AddCategoryScreenState extends State<_AddCategoryScreen> {
                       width: 100,
                       height: 50,
                       child: Center(
-                        child: Text(
-                          'Add',
-                          style: TextStyle(
-                            fontFamily: Fonts.default_font,
-                            color: colors.buttonTextColor,
-                          ),
-                        ),
+                        child: MyWidgets.getTextWidget(
+                            size: Fonts.button_size,
+                            text: 'Add',
+                            color: colors.buttonTextColor),
                       ),
                     ),
                     onTap: _addCategory,
@@ -142,14 +131,7 @@ class _AddCategoryScreenState extends State<_AddCategoryScreen> {
   }
 
   void _showToast(BuildContext context, var _message) {
-    final scaffold = Scaffold.of(context);
-    scaffold.showSnackBar(
-      SnackBar(
-        content: Text('$_message'),
-        // action: SnackBarAction(
-        //     label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
-      ),
-    );
+    MyWidgets.showToast(context, _message);
   }
 
   void _categoryNameChanged(String value) {
