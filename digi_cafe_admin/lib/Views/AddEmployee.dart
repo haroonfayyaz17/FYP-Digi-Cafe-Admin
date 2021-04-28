@@ -78,7 +78,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   CreateFormFieldDropDown genderType;
   CreateFormFieldDropDown staffType;
 
-  TextFormDate fullNameWidget;
+  TextForm fullNameWidget;
 
   String _nextLabel = 'Next>';
 
@@ -91,6 +91,15 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       dropDownList: <String>['Male', 'Female', 'Other'],
       icon: Icons.person_outline,
       title: 'Gender',
+    );
+    fullNameWidget = new TextForm(
+      label: 'Full Name',
+      icon: Icons.person_add,
+    );
+    staffType = new CreateFormFieldDropDown(
+      dropDownList: <String>['Kitchen', 'Serving'],
+      icon: Icons.person,
+      title: 'Staff Type',
     );
     if (actionType == 'update') {
       screenHeader = 'Update Employee';
@@ -166,10 +175,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: fullNameWidget = new TextFormDate(
-                                label: 'Full Name',
-                                icon: Icons.person_add,
-                              ),
+                              child: fullNameWidget,
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
@@ -181,11 +187,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: staffType = new CreateFormFieldDropDown(
-                                dropDownList: <String>['Kitchen', 'Serving'],
-                                icon: Icons.person,
-                                title: 'Staff Type',
-                              ),
+                              child: staffType,
                             ),
                           ],
                         ),

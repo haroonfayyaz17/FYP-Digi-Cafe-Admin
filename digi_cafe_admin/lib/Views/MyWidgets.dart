@@ -172,6 +172,53 @@ class _CreateFormFieldDropDown extends State<CreateFormFieldDropDown> {
   }
 }
 
+class TextForm extends StatefulWidget {
+  TextForm({this.label = 'date', this.icon = Icons.calendar_today});
+  String label;
+  final IconData icon;
+  TextEditingController controller;
+
+  _TextForm state;
+  @override
+  State<StatefulWidget> createState() => state = _TextForm();
+}
+
+class _TextForm extends State<TextForm> {
+  // TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller = new TextEditingController();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      autofocus: true,
+      textInputAction: TextInputAction.next,
+      onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
+      controller: widget.controller,
+      textCapitalization: TextCapitalization.words,
+      decoration: InputDecoration(
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
+        ),
+        hintText: 'Full Name',
+        filled: true,
+        fillColor: colors.backgroundColor,
+        labelText: 'Full Name',
+        icon: Icon(
+          Icons.person_add,
+        ),
+      ),
+    );
+  }
+}
+
 class TextFormDate extends StatefulWidget {
   TextFormDate(
       {this.label = 'date',
@@ -219,7 +266,9 @@ class _TextFormDate extends State<TextFormDate> {
           icon: Icon(widget.icon),
         ),
         onTap: widget.type != 'date'
-            ? null
+            ? () {
+                print('yes');
+              }
             : () {
                 displayDatePicker(context);
               });
