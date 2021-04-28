@@ -44,6 +44,7 @@ class _ComplaintScreen extends State<ComplaintScreen> {
     "Management",
     "Others",
   ];
+  CreateFormFieldDropDown filterType;
 
   final ValueNotifier<Stream<QuerySnapshot>> _counter =
       ValueNotifier<Stream<QuerySnapshot>>(null);
@@ -54,6 +55,16 @@ class _ComplaintScreen extends State<ComplaintScreen> {
     super.initState();
     orderUIController = new OrderUIController();
     _counter.value = orderUIController.getComplaintsSnapshot();
+    filterType = new CreateFormFieldDropDown(
+      dropDownList: complaintCategories,
+      icon: Icons.feedback,
+      title: 'Complaint Category',
+      type: 'complaint',
+      chosenType: 'All',
+      complaintCallback: () {
+        getQuerySnapshot(filterType.chosenType);
+      },
+    );
   }
 
   @override
@@ -65,44 +76,7 @@ class _ComplaintScreen extends State<ComplaintScreen> {
         children: [
           Padding(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-            child: Container(
-              height: 57,
-              child: DropdownButtonFormField<String>(
-                value: chosenComplaint,
-                autofocus: true,
-                icon: Icon(Icons.arrow_drop_down),
-                iconSize: 24,
-                decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: colors.buttonColor, width: 1.3),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: colors.buttonColor, width: 1.3),
-                  ),
-                  hintText: 'Complaint Category',
-                  filled: true,
-                  fillColor: colors.backgroundColor,
-                  labelText: 'Complaint Category',
-                ),
-                onChanged: (String newValue) {
-                  setState(() {
-                    chosenComplaint = newValue;
-                  });
-                  getQuerySnapshot(newValue);
-                },
-                items: complaintCategories
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
+            child: Container(height: 57, child: filterType),
           ),
           ValueListenableBuilder(
             builder: (BuildContext context, Stream<QuerySnapshot> querySnapshot,

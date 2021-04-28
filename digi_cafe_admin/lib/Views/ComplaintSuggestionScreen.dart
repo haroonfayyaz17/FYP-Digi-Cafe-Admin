@@ -17,7 +17,6 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
     with TickerProviderStateMixin {
   BuildContext _buildContext;
 
-  String chosenFilterType;
   String chosenFilterCategory;
   AnimationController _controller;
 
@@ -44,6 +43,10 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
   ];
   ComplaintScreen _complaintScreen;
   SuggestionScreen _suggestionScreen;
+  TextFormDate fromDateWidget;
+  TextFormDate toDateWidget;
+
+  var _alertMessage = 'Incomplete Fields';
 
   @override
   void initState() {
@@ -51,6 +54,12 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
     _complaintScreen = new ComplaintScreen();
     _suggestionScreen = new SuggestionScreen();
     _tabController = new TabController(vsync: this, length: _kTabs.length);
+    fromDateWidget = new TextFormDate(
+      label: 'From Date',
+    );
+    toDateWidget = new TextFormDate(
+      label: 'To Date',
+    );
   }
 
   Widget build(BuildContext context) {
@@ -79,27 +88,9 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
   void createFilterAlert(context) async {
     // _fromDateController.text = _toDateController.text = '';
     displayAlertMsg = false;
-    var alertStyle = AlertStyle(
-      animationType: AnimationType.fromTop,
-      isCloseButton: true,
-      isButtonVisible: false,
-      isOverlayTapDismiss: true,
-      descStyle: TextStyle(fontWeight: FontWeight.bold),
-      animationDuration: Duration(milliseconds: 1000),
-      alertBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-        side: BorderSide(
-          color: Colors.grey,
-        ),
-      ),
-      titleStyle: TextStyle(
-          fontSize: Fonts.dialog_heading_size,
-          fontFamily: Fonts.default_font,
-          fontWeight: FontWeight.bold),
-    );
     Alert(
       context: context,
-      style: alertStyle,
+      style: MyWidgets.getAlertStyle(),
       title: 'Filter Results',
       content: StatefulBuilder(
         // You need this, notice the parameters below:
@@ -113,112 +104,20 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
                       child: MyWidgets.getTextWidget(
                           weight: FontWeight.bold,
                           size: Fonts.dialog_heading_size,
-                          text: 'Incomplete Fields',
+                          text: _alertMessage,
                           color: colors.warningColor),
-                      
                     )
                   : Container(),
+
+              //From Date
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                child: TextFormField(
-                  controller: _fromDateController,
-                  readOnly: true,
-                  autofocus: true,
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: colors.buttonColor, width: 1.3),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: colors.buttonColor, width: 1.3),
-                    ),
-                    filled: true,
-                    fillColor: colors.backgroundColor,
-                    labelText: 'From Date',
-                    icon: Icon(
-                      Icons.calendar_today,
-                    ),
-                  ),
-                  onTap: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime(2100),
-                    ).then((value) {
-                      if (value != null) {
-                        String day = value.day.toString();
-                        String month = value.month.toString();
-                        String year = value.year.toString();
-                        String date = '${day}-${month}-${year}';
-
-                        _fromDateController.text = date;
-
-                        setState(() {
-                          fromDate = value;
-                          _fromDateController.text = date;
-                        });
-                      }
-                    });
-                  },
-                ),
+                child: fromDateWidget,
               ),
+              // toDtate,
               Padding(
                 padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                child: TextFormField(
-                  controller: _toDateController,
-                  readOnly: true,
-                  autofocus: true,
-                  textInputAction: TextInputAction.next,
-                  onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: colors.buttonColor, width: 1.3),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: colors.buttonColor, width: 1.3),
-                    ),
-                    filled: true,
-                    fillColor: colors.backgroundColor,
-                    labelText: 'To Date',
-                    icon: Icon(
-                      Icons.calendar_today,
-                    ),
-                  ),
-                  onTap: () {
-                    showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(1900),
-                      lastDate: DateTime(2100),
-                    ).then((value) {
-                      if (value != null) {
-                        String day = value.day.toString();
-                        String month = value.month.toString();
-                        String year = value.year.toString();
-                        String date = '${day}-${month}-${year}';
-                        toDate = value;
-
-                        if (value.compareTo(fromDate) >= 0) {
-                          setState(() {
-                            _toDateController.text = date;
-                          });
-                        } else {
-                          setState(() {
-                            _toDateController.text = '';
-                          });
-                        }
-                      }
-                    });
-                  },
-                ),
+                child: toDateWidget,
               ),
               Padding(
                 padding: const EdgeInsets.only(
@@ -238,9 +137,27 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
                           size: Fonts.button_size,
                           color: colors.buttonTextColor),
                       onPressed: () async {
+                        fromDate = fromDateWidget.date;
+                        toDate = toDateWidget.date;
+
                         DateTime fromDateTemp = fromDate;
                         DateTime toDateTemp = toDate;
+
                         if (fromDate != null && toDate != null) {
+                          if (toDate.compareTo(fromDate) >= 0) {
+                            setState(() {
+                              displayAlertMsg = false;
+                            });
+                          } else {
+                            setState(() {
+                              displayAlertMsg = true;
+                              _alertMessage =
+                                  'To date must be greater than or equal to From Date';
+                            });
+                            return;
+                          }
+                          print(fromDate);
+                          print(toDate);
                           fromDateTemp = new DateTime(fromDate.year,
                               fromDate.month, fromDate.day, 0, 0, 0, 0, 0);
                           toDateTemp = new DateTime(toDate.year, toDate.month,

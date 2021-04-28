@@ -31,8 +31,7 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
   int _rowsPerPage = PaginatedDataTable.defaultRowsPerPage;
 
   Stream<QuerySnapshot> querySnapshot;
-  List<String> filterTypeOptionList = <String>['Daily', 'Monthly', 'Yearly'];
-  String chosenFilterType;
+
   AnimationController _controller;
   BuildContext _buildContext;
   OrderUIController uiController;
@@ -65,6 +64,12 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
 
   DateTime toDate;
 
+  TextFormDate fromDateWidget;
+  TextFormDate toDateWidget;
+  CreateFormFieldDropDown filterType;
+
+  var _alertMessage = 'Incomplete Fields';
+
   @override
   void initState() {
     super.initState();
@@ -74,6 +79,17 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
     _counter.value = uiController.getOrdersSnapshot();
     _totalOrdersAmount.value = "0";
     _totalOrderss.value = "0";
+    fromDateWidget = new TextFormDate(
+      label: 'From Date',
+    );
+    toDateWidget = new TextFormDate(
+      label: 'To Date',
+    );
+    filterType = new CreateFormFieldDropDown(
+      dropDownList: <String>['Daily', 'Monthly', 'Yearly'],
+      icon: Icons.filter,
+      title: 'Filter Type',
+    );
   }
 
   @override
@@ -145,7 +161,7 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                                       snapshot.data.documents[count];
                                   String docID = element.documentID;
                                   // print(docID.split('-')[0]);
-                                  if (chosenFilterType == 'Monthly') {
+                                  if (filterType.chosenType == 'Monthly') {
                                     DateTime date =
                                         element.data['date'].toDate();
 
@@ -261,28 +277,13 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
 
   void createFilterAlert(context) async {
     // _fromDateController.text = _toDateController.text = '';
+    fromDateWidget.date = null;
+    toDateWidget.date = null;
     displayAlertMsg = false;
-    var alertStyle = AlertStyle(
-      animationType: AnimationType.fromTop,
-      isCloseButton: true,
-      isButtonVisible: false,
-      isOverlayTapDismiss: true,
-      descStyle: TextStyle(fontWeight: FontWeight.bold),
-      animationDuration: Duration(milliseconds: 1000),
-      alertBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-        side: BorderSide(
-          color: Colors.grey,
-        ),
-      ),
-      titleStyle: TextStyle(
-          fontSize: Fonts.dialog_heading_size,
-          fontFamily: Fonts.default_font,
-          fontWeight: FontWeight.bold),
-    );
+
     Alert(
         context: context,
-        style: alertStyle,
+        style: MyWidgets.getAlertStyle(),
         title: 'Filter Results',
         content: StatefulBuilder(
           // You need this, notice the parameters below:
@@ -296,155 +297,24 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                         child: MyWidgets.getTextWidget(
                             weight: FontWeight.bold,
                             size: Fonts.dialog_heading_size,
-                            text: 'Incomplete Fields',
+                            text: _alertMessage,
                             color: colors.warningColor),
                       )
                     : Container(),
+                //Filter Type
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  child: DropdownButtonFormField<String>(
-                    value: chosenFilterType,
-                    autofocus: true,
-                    icon: Icon(Icons.arrow_drop_down),
-                    iconSize: 24,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      hintText: 'FilterType',
-                      filled: true,
-                      fillColor: colors.backgroundColor,
-                      labelText: 'FilterType',
-                      icon: Icon(
-                        Icons.person_outline,
-                      ),
-                    ),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        chosenFilterType = newValue;
-                      });
-                    },
-                    items: filterTypeOptionList
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                          value,
-                        ),
-                      );
-                    }).toList(),
-                  ),
+                  child: filterType,
                 ),
+                //From Date
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                  child: TextFormField(
-                    controller: _fromDateController,
-                    readOnly: true,
-                    autofocus: true,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      filled: true,
-                      fillColor: colors.backgroundColor,
-                      labelText: 'From Date',
-                      icon: Icon(
-                        Icons.calendar_today,
-                      ),
-                    ),
-                    onTap: () {
-                      showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime(2100),
-                      ).then((value) {
-                        if (value != null) {
-                          String day = value.day.toString();
-                          String month = value.month.toString();
-                          String year = value.year.toString();
-                          String date = '${day}-${month}-${year}';
-
-                          _fromDateController.text = date;
-
-                          setState(() {
-                            fromDate = value;
-                            _fromDateController.text = date;
-                          });
-                        }
-                      });
-                    },
-                  ),
+                  child: fromDateWidget,
                 ),
+                // toDtate,
                 Padding(
                   padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                  child: TextFormField(
-                    controller: _toDateController,
-                    readOnly: true,
-                    autofocus: true,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      filled: true,
-                      fillColor: colors.backgroundColor,
-                      labelText: 'To Date',
-                      icon: Icon(
-                        Icons.calendar_today,
-                      ),
-                    ),
-                    onTap: () {
-                      showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime(2100),
-                      ).then((value) {
-                        if (value != null) {
-                          String day = value.day.toString();
-                          String month = value.month.toString();
-                          String year = value.year.toString();
-                          String date = '${day}-${month}-${year}';
-                          toDate = value;
-                          // // _toDateController.text = date;
-                          // print(_fromDateController.text);
-                          // print(date);
-                          // // if()
-                          // // print(date.compareTo(_fromDateController.text));
-                          if (value.compareTo(fromDate) >= 0) {
-                            setState(() {
-                              _toDateController.text = date;
-                            });
-                          } else {
-                            setState(() {
-                              _toDateController.text = '';
-                            });
-                          }
-                        }
-                      });
-                    },
-                  ),
+                  child: toDateWidget,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
@@ -467,23 +337,33 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                             size: Fonts.button_size,
                             color: colors.buttonTextColor),
                         onPressed: () async {
+                          fromDate = fromDateWidget.date;
+                          toDate = toDateWidget.date;
+
                           DateTime fromDateTemp = fromDate;
                           DateTime toDateTemp = toDate;
 
-                          if (chosenFilterType != null &&
-                              (_fromDateController.text != null ||
-                                  _fromDateController.text != '') &&
-                              (_toDateController.text != null ||
-                                  _toDateController.text != '')) {
+                          if (filterType.chosenType != null &&
+                              (fromDate != null) &&
+                              (toDate != null)) {
+                            if (toDate.compareTo(fromDate) >= 0) {
+                            } else {
+                              setState(() {
+                                displayAlertMsg = true;
+                                _alertMessage =
+                                    'To date must be greater than or equal to From Date';
+                              });
+                              return;
+                            }
                             String type;
-                            if (chosenFilterType == 'Daily') {
+                            if (filterType.chosenType == 'Daily') {
                               type = 'Date';
 
                               fromDateTemp = new DateTime(fromDate.year,
                                   fromDate.month, fromDate.day, 0, 0, 0, 0, 0);
                               toDateTemp = new DateTime(toDate.year,
                                   toDate.month, toDate.day, 0, 0, 0, 0, 0);
-                            } else if (chosenFilterType == 'Monthly') {
+                            } else if (filterType.chosenType == 'Monthly') {
                               type = 'Month';
                               fromDateTemp = new DateTime(fromDate.year,
                                   fromDate.month, 1, 0, 0, 0, 0, 0);
@@ -512,16 +392,10 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                             _counter.value = querySnapshot1;
                           } else {
                             setState(() {
+                              _alertMessage = 'Incomplete Fields';
                               displayAlertMsg = true;
                             });
                           }
-                          // Navigator.pop(context);
-                          // FutureBuilder<bool>(
-                          //   builder: (context, snapshot) {
-                          //     return Container();
-                          //   },
-                          //   future: _nominateSelectedItems(context),
-                          // );
                         },
                       ),
                     ),
@@ -567,6 +441,8 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
     );
   }
 }
+
+void func(value) {}
 
 String getAlphabeticalMonth(int month, int year) {
   if (month != null) {

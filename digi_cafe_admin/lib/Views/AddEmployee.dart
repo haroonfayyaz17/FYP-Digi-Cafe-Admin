@@ -49,26 +49,20 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   _AddEmployeeScreen3State({this.employee, this.actionType});
   CafeEmployee employee;
   String actionType;
-  bool _buttonPressed = false;
   File _image;
   var edtPhoneController = new TextEditingController();
   var _displayLoadingWidget = false;
 
-  TextEditingController _dateControllerText = new TextEditingController();
   PageController controller = PageController();
   String date;
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
 
-  List<String> genderOptionList;
-  List<String> staffType;
   int count = 0;
   var _phoneNo = '';
   var _email = '';
   var _password = '';
 
-  String chosenGender;
-  String choosenstaffType;
   String chosenDegree;
   int currentIndex = 0;
 
@@ -76,73 +70,33 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
 
   String code = '+92';
 
-  var edtControllerName = new TextEditingController();
+  TextFormDate dateOfBirthWidget = new TextFormDate(
+    label: 'Date Of Birth',
+    icon: Icons.calendar_today,
+  );
 
-  String _name;
+  CreateFormFieldDropDown genderType;
+  CreateFormFieldDropDown staffType;
+
+  TextFormDate fullNameWidget;
 
   String _nextLabel = 'Next>';
 
   String _confirmPassword;
 
-  void setFieldsForUpdate() {
-    setState(() {
-      _dateControllerText.text = employee.Dob;
-      edtControllerName.text = employee.Name;
-      chosenGender = employee.Gender;
-      choosenstaffType = employee.userType;
-    });
-    // debugPrint(__contactDetailsState.mounted.toString());
-  }
-
-  void setPhoneNo() {
-    setState(() {
-      if (employee != null) {
-        List<String> x = employee.PhoneNo.split(' ');
-        if (x.length > 0) {
-          code = x[0];
-        } else {
-          code = '';
-        }
-        if (x.length > 1) {
-          _phoneNo = x[1];
-        } else {
-          _phoneNo = '';
-        }
-        edtPhoneController.text = _phoneNo;
-      }
-    });
-
-    count++;
-  }
-
   @override
   void initState() {
     super.initState();
+    genderType = new CreateFormFieldDropDown(
+      dropDownList: <String>['Male', 'Female', 'Other'],
+      icon: Icons.person_outline,
+      title: 'Gender',
+    );
     if (actionType == 'update') {
       screenHeader = 'Update Employee';
       // setFieldsForUpdate();
       // setPhoneNo();
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (actionType == 'update') {
-        // setState(() {
-        //   screenHeader = 'Update Employee';
-        // });
-        setFieldsForUpdate();
-        setPhoneNo();
-      }
-    });
-
-    _fillGendersDropDown();
-    _fillPersonTypesDropDown();
-  }
-
-  void _fillGendersDropDown() {
-    genderOptionList = <String>['Male', 'Female', 'Other'];
-  }
-
-  void _fillPersonTypesDropDown() {
-    staffType = <String>['Kitchen', 'Serving'];
   }
 
   onChangedFunction(int index) {
@@ -153,11 +107,18 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (actionType == 'update' && count < 1) {
-      setFieldsForUpdate();
-      screenHeader = 'Update Employee';
-    }
-
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (actionType == 'update') {
+        // setState(() {
+        //   screenHeader = 'Update Employee';
+        // });
+        if (actionType == 'update' && count < 1) {
+          print(count);
+          setFieldsForUpdate();
+          screenHeader = 'Update Employee';
+        }
+      }
+    });
     Widget widget = Stack(children: [
       _displayLoadingWidget
           ? LoadingWidget()
@@ -205,161 +166,25 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (_) =>
-                                    FocusScope.of(context).nextFocus(),
-                                onChanged: (text) {
-                                  _name = text;
-                                },
-                                controller: edtControllerName,
-                                textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  hintText: 'Full Name',
-                                  filled: true,
-                                  fillColor: colors.backgroundColor,
-                                  labelText: 'Full Name',
-                                  icon: Icon(
-                                    Icons.person_add,
-                                  ),
-                                ),
+                              child: fullNameWidget = new TextFormDate(
+                                label: 'Full Name',
+                                icon: Icons.person_add,
                               ),
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: TextFormField(
-                                controller: _dateControllerText,
-                                readOnly: true,
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (_) =>
-                                    FocusScope.of(context).nextFocus(),
-                                textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  hintText: 'Date Of Birth',
-                                  filled: true,
-                                  fillColor: colors.backgroundColor,
-                                  labelText: 'Date Of Birth',
-                                  icon: Icon(
-                                    Icons.calendar_today,
-                                  ),
-                                ),
-                                onTap: () {
-                                  showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime(2100),
-                                  ).then((value) {
-                                    String day = value.day.toString();
-                                    String month = value.month.toString();
-                                    String year = value.year.toString();
-                                    String date = '${day}-${month}-${year}';
-                                    _dateControllerText.text = date;
-
-                                    setState(() {
-                                      _dateControllerText.text = date;
-                                    });
-                                  });
-                                },
-                              ),
+                              child: dateOfBirthWidget,
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: DropdownButtonFormField<String>(
-                                value: chosenGender,
-                                autofocus: true,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconSize: 24,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  hintText: 'Gender',
-                                  filled: true,
-                                  fillColor: colors.backgroundColor,
-                                  labelText: 'Gender',
-                                  icon: Icon(
-                                    Icons.person_outline,
-                                  ),
-                                ),
-                                onChanged: (String newValue) {
-                                  setState(() {
-                                    chosenGender = newValue;
-                                  });
-                                },
-                                items: genderOptionList
-                                    .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
+                              child: genderType,
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: DropdownButtonFormField<String>(
-                                value: choosenstaffType,
-                                autofocus: true,
-                                icon: Icon(Icons.arrow_drop_down),
-                                iconSize: 24,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  hintText: 'Staff Type',
-                                  filled: true,
-                                  fillColor: colors.backgroundColor,
-                                  labelText: 'Staff Type',
-                                  icon: Icon(
-                                    Icons.person,
-                                  ),
-                                ),
-                                onChanged: (String newValue) {
-                                  setState(() {
-                                    choosenstaffType = newValue;
-                                  });
-                                },
-                                items: staffType.map<DropdownMenuItem<String>>(
-                                    (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                    ),
-                                  );
-                                }).toList(),
+                              child: staffType = new CreateFormFieldDropDown(
+                                dropDownList: <String>['Kitchen', 'Serving'],
+                                icon: Icons.person,
+                                title: 'Staff Type',
                               ),
                             ),
                           ],
@@ -440,8 +265,46 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
     return widget;
   }
 
-  void _textEditingControllerListener() {
-    _dateControllerText.text = date;
+  void setFieldsForUpdate() {
+    setState(() {
+      dateOfBirthWidget.state.setState(() {
+        dateOfBirthWidget.controller.text = employee.Dob;
+      });
+      fullNameWidget.state.setState(() {
+        fullNameWidget.controller.text = employee.Name;
+      });
+      genderType.state.setState(() {
+        genderType.chosenType = employee.Gender;
+      });
+      staffType.state.setState(() {
+        staffType.chosenType = employee.userType;
+      });
+      setPhoneNo();
+      count++;
+    });
+    // debugPrint(__contactDetailsState.mounted.toString());
+  }
+
+  void setPhoneNo() {
+    setState(() {
+      if (employee != null) {
+        List<String> x = employee.PhoneNo.split(' ');
+        print(x);
+        if (x.length > 0) {
+          code = x[0];
+        } else {
+          code = '';
+        }
+        if (x.length > 1) {
+          _phoneNo = x[1];
+        } else {
+          _phoneNo = '';
+        }
+        edtPhoneController.text = _phoneNo;
+      }
+    });
+
+    count++;
   }
 
   nextFunction() {
@@ -450,13 +313,13 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       setPhoneNo();
     }
     if (controller.page == personal) {
-      if (edtControllerName.text == '') {
+      if (fullNameWidget.controller.text == '') {
         _showToast(context, 'Enter full Name');
-      } else if (_dateControllerText.text == '') {
+      } else if (dateOfBirthWidget.controller.text == '') {
         _showToast(context, 'Select Date Of Birth');
-      } else if (chosenGender == null) {
+      } else if (genderType.chosenType == null) {
         _showToast(context, 'Choose Gender');
-      } else if (choosenstaffType == null) {
+      } else if (staffType.chosenType == null) {
         _showToast(context, 'Choose Person Type');
       } else {
         if (actionType == 'update') {
@@ -536,10 +399,10 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
         print(_email + _password + _phoneNo);
 
         bool result = await _employeeUIController.addEmployee(
-            edtControllerName.text,
-            _dateControllerText.text,
-            chosenGender,
-            choosenstaffType,
+            fullNameWidget.controller.text,
+            dateOfBirthWidget.controller.text,
+            genderType.chosenType,
+            staffType.chosenType,
             '${code}' + ' ' + '${_phoneNo}',
             _email,
             _password,
@@ -565,11 +428,11 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       _displayLoadingWidget = true;
     });
     print(code);
-    employee.Dob = _dateControllerText.text;
-    employee.Gender = chosenGender;
+    employee.Dob = dateOfBirthWidget.controller.text;
+    employee.Gender = genderType.chosenType;
     employee.PhoneNo = code + ' ' + _phoneNo;
-    employee.Name = edtControllerName.text;
-    employee.userType = choosenstaffType;
+    employee.Name = fullNameWidget.controller.text;
+    employee.userType = staffType.chosenType;
     await _employeeUIController.updateEmployeeData(employee);
     _showToast(context, "Data updated Successfully");
     setState(() {
