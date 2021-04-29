@@ -64,61 +64,17 @@ class _VoucherItemWidgetState extends State<VoucherItemWidget> {
                             AddVoucherScreen(_voucher, "update")));
               },
               onLongPress: () {
-                //TODO: Delete Voucher
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    content: MyWidgets.getTextWidget(
-                        text: 'Do you want to remove Voucher?',
-                        size: Fonts.heading2_size,
-                        color: colors.labelColor),
-                    actions: <Widget>[
-                      Container(
-                        // width: MediaQuery.of(context).size.width * 0.3,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: colors.buttonColor,
-                        ),
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: MyWidgets.getTextWidget(
-                              text: 'No',
-                              size: Fonts.label_size,
-                              color: colors.buttonTextColor),
-                        ),
-                      ),
-                      Container(
-                        // width: MediaQuery.of(context).size.width * 0.3,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: colors.buttonColor,
-                        ),
-                        child: FlatButton(
-                          onPressed: () async {
-                            //TODO: Delete Voucher
-                            bool result = await _foodMenuUIController
-                                .deleteVoucher(widget.voucherID);
-                            print(result);
-                            Navigator.pop(context);
-                            if (result.toString() == "true") {
-                              _showToast(widget.context,
-                                  "Voucher deleted successfully");
-                            } else {
-                              _showToast(widget.context,
-                                  "Voucher delete unsuccessful");
-                            }
-                          },
-                          child: MyWidgets.getTextWidget(
-                              text: 'Yes',
-                              size: Fonts.label_size,
-                              color: colors.buttonTextColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                MyWidgets.showConfirmationDialog(context,
+                    text: 'Do you want to remove Voucher?', callback: () async {
+                  //TODO: Delete Voucher
+                  bool result = await _foodMenuUIController
+                      .deleteVoucher(widget.voucherID);
+                  if (result.toString() == "true") {
+                    _showToast(widget.context, "Voucher deleted successfully");
+                  } else {
+                    _showToast(widget.context, "Voucher delete unsuccessful");
+                  }
+                });
               },
               child: Card(
                 elevation: 10,

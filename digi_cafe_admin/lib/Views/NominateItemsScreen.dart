@@ -62,35 +62,19 @@ class _NominateItemsState extends State<NominateItemsState> {
       appBar: MyWidgets.getAppBar(text: 'Nominate Items'),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 120, right: 120, bottom: 5),
-        child: ClipPath(
-          clipper: ShapeBorderClipper(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(20)))),
-          child: Container(
-            decoration: BoxDecoration(
-              color: colors.buttonColor,
-            ),
-            width: 50,
-            height: 30,
-            child: FlatButton(
-              color: colors.buttonColor,
-              child: MyWidgets.getTextWidget(
-                  text: 'Nominate Items',
-                  size: Fonts.button_size,
-                  color: colors.buttonTextColor),
-              onPressed: () {
-                FutureBuilder<bool>(
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) if (snapshot.data) {}
-                    // _showToast(context, 'Items Nom')
-                    return Container();
-                  },
-                  future: _nominateSelectedItems(context),
-                );
-              },
-            ),
-          ),
-        ),
+        child: MyWidgets.getButton(
+            text: 'Nominate Items',
+            height: 35,
+            callback: () {
+              FutureBuilder<bool>(
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) if (snapshot.data) {}
+                  // _showToast(context, 'Items Nom')
+                  return Container();
+                },
+                future: _nominateSelectedItems(context),
+              );
+            }),
       ),
       body: SafeArea(
         child: Stack(children: [

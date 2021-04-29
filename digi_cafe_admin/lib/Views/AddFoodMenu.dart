@@ -162,16 +162,6 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                             ),
                                           ),
                                         ),
-                                        //                     this._id = _id;
-                                        // this._name = _name;
-                                        // this._description = _description;
-                                        // this._imgURL = _imgURL;
-                                        // this._price = _price;
-                                        // this._stockLeft = _stockLeft;
-                                        // SizedBox(
-                                        //   // height: 50,
-                                        //   height: 30,
-                                        // ),
                                         Align(
                                           alignment: Alignment.centerLeft,
                                           child: Padding(
@@ -183,7 +173,6 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                             ),
                                           ),
                                         ),
-
                                         SizedBox(
                                           height: 10,
                                         ),
@@ -209,7 +198,6 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                                     icon: Icons.fastfood),
                                           ),
                                         ),
-
                                         Padding(
                                           padding:
                                               EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -377,62 +365,23 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                               ? Padding(
                                                   padding:
                                                       EdgeInsets.only(top: 50),
-                                                  child: InkWell(
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          50)),
-                                                          color: colors
-                                                              .buttonColor,
-                                                        ),
-                                                        width: 150,
-                                                        height: 50,
-                                                        child: Center(
-                                                          child: MyWidgets.getTextWidget(
-                                                              text:
-                                                                  'Choose Food Pic',
-                                                              size: Fonts
-                                                                  .button_size,
-                                                              color: colors
-                                                                  .buttonTextColor),
-                                                        ),
-                                                      ),
-                                                      onTap: () {
-                                                        _showPicker(context);
-                                                      }),
+                                                  child: MyWidgets.getButton(
+                                                    text: 'Choose Food Pic',
+                                                    width: 150,
+                                                    callback: () =>
+                                                        _showPicker(context),
+                                                  ),
                                                 )
                                               : Container(),
                                           SizedBox(
                                             height: 50,
                                           ),
                                           _image != null || _imageURL != null
-                                              ? InkWell(
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  50)),
-                                                      color: Colors.red[400],
-                                                    ),
-                                                    width: 150,
-                                                    height: 50,
-                                                    child: Center(
-                                                      child: MyWidgets
-                                                          .getTextWidget(
-                                                              text: 'Remove',
-                                                              size: Fonts
-                                                                  .button_size,
-                                                              color: colors
-                                                                  .buttonTextColor),
-                                                    ),
-                                                  ),
-                                                  onTap: clearSelection,
-                                                )
+                                              ? MyWidgets.getButton(
+                                                  text: 'Remove',
+                                                  color: Colors.red[400],
+                                                  callback: () =>
+                                                      clearSelection())
                                               : Container(),
                                         ],
                                       ),

@@ -55,17 +55,10 @@ class ViewEmployees extends StatelessWidget {
           animatedIconTheme: IconThemeData(size: 20),
           backgroundColor: colors.buttonColor,
           children: [
-            SpeedDialChild(
-              child: Icon(
-                Icons.fastfood,
-                color: colors.buttonTextColor,
-              ),
-              label: 'Add Employee',
-              labelStyle:
-                  MyWidgets.getTextStyle(size: Fonts.dialog_heading_size),
-              labelBackgroundColor: colors.buttonColor,
-              backgroundColor: colors.buttonColor,
-              onTap: () {
+            MyWidgets.getSpeedDialChild(
+              icon: Icons.fastfood,
+              text: 'Add Employee',
+              callback: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -73,17 +66,12 @@ class ViewEmployees extends StatelessWidget {
                             AddEmployeeScreen()));
               },
             ),
-            SpeedDialChild(
-              child: Icon(
-                Icons.help_outline,
-                color: Colors.blue[800],
-              ),
-              backgroundColor: colors.backgroundColor,
-              label: 'Help',
-              labelStyle:
-                  MyWidgets.getTextStyle(size: Fonts.dialog_heading_size),
-              labelBackgroundColor: colors.buttonColor,
-              onTap: () {
+            MyWidgets.getSpeedDialChild(
+              icon: Icons.help_outline,
+              text: 'Help',
+              bgColor: colors.backgroundColor,
+              iconColor: Colors.blue[800],
+              callback: () {
                 createHelpAlert(context);
               },
             ),
@@ -152,61 +140,21 @@ class __ViewEmployees extends State<_ViewEmployees> {
                                             actionType: "update")));
                           },
                           onLongPress: () {
-                            //TODO: Delete Employee
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                  content: MyWidgets.getTextWidget(
-                                      text: 'Do you want to remove Employee?',
-                                      size: Fonts.heading2_size,
-                                      color: colors.labelColor),
-                                  actions: <Widget>[
-                                    Container(
-                                      // width: MediaQuery.of(context).size.width * 0.3,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                        color: colors.buttonColor,
-                                      ),
-                                      child: FlatButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: MyWidgets.getTextWidget(
-                                            text: 'No',
-                                            color: colors.buttonTextColor,
-                                            size: Fonts.label_size),
-                                      ),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10)),
-                                        color: colors.buttonColor,
-                                      ),
-                                      child: FlatButton(
-                                          onPressed: () async {
-                                            //TODO: Delete Employee
+                            //Delete Employee
+                            MyWidgets.showConfirmationDialog(context,
+                                text: 'Do you want to remove Employee?',
+                                callback: () async {
+                              bool result = await uiController
+                                  .deleteEmployee(employee.id);
 
-                                            bool result = await uiController
-                                                .deleteEmployee(employee.id);
-
-                                            Navigator.pop(context);
-                                            if (result.toString() == "true") {
-                                              _showToast(_buildContext,
-                                                  "Employee deleted successfully");
-                                            } else {
-                                              _showToast(_buildContext,
-                                                  "Employee delete unsuccessful");
-                                            }
-                                          },
-                                          child: MyWidgets.getTextWidget(
-                                              text: 'Yes',
-                                              color: colors.buttonTextColor,
-                                              size: Fonts.label_size)),
-                                    ),
-                                  ]),
-                            );
+                              if (result.toString() == "true") {
+                                _showToast(_buildContext,
+                                    "Employee deleted successfully");
+                              } else {
+                                _showToast(_buildContext,
+                                    "Employee delete unsuccessful");
+                              }
+                            });
                           },
                           child: Container(
                             constraints: BoxConstraints(

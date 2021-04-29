@@ -662,47 +662,20 @@ class _ImageWidgetState extends State<ImageWidget> {
                 if (_image == null)
                   Padding(
                     padding: EdgeInsets.only(top: 50),
-                    child: InkWell(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
-                          color: colors.buttonColor,
-                        ),
-                        width: 150,
-                        height: 50,
-                        child: Center(
-                          child: MyWidgets.getTextWidget(
-                              text: 'Choose Profile Pic',
-                              size: Fonts.button_size,
-                              color: colors.buttonTextColor),
-                        ),
-                      ),
-                      onTap: () {
-                        _showPicker(context);
-                      },
+                    child: MyWidgets.getButton(
+                      text: 'Choose Employee Pic',
+                      width: 175,
+                      callback: () => _showPicker(context),
                     ),
                   ),
                 SizedBox(
                   height: 50,
                 ),
                 _image != null
-                    ? InkWell(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                            color: Colors.red[400],
-                          ),
-                          width: 150,
-                          height: 50,
-                          child: Center(
-                            child: MyWidgets.getTextWidget(
-                                text: 'Remove',
-                                size: Fonts.button_size,
-                                color: colors.buttonTextColor),
-                          ),
-                        ),
-                        onTap: clearSelection,
-                      )
+                    ? MyWidgets.getButton(
+                        text: 'Remove',
+                        color: Colors.red[400],
+                        callback: () => clearSelection())
                     : Container(),
               ],
             ),

@@ -184,26 +184,10 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 50),
-                              child: InkWell(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(50)),
-                                    color: colors.buttonColor,
-                                  ),
-                                  width: 100,
-                                  height: 50,
-                                  child: Center(
-                                    child: MyWidgets.getTextWidget(
-                                        text: btnText,
-                                        size: Fonts.button_size,
-                                        color: colors.buttonTextColor),
-                                  ),
-                                ),
-                                onTap: _addVoucher,
-                              ),
-                            ),
+                                padding: EdgeInsets.only(top: 50),
+                                child: MyWidgets.getButton(
+                                    text: btnText,
+                                    callback: () => _addVoucher())),
                           ],
                         ),
                       ),

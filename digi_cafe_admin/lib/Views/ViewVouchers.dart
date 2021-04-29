@@ -72,41 +72,22 @@ class __ViewVouchers extends State<_ViewVouchers> {
           animatedIconTheme: IconThemeData(size: 20),
           backgroundColor: colors.buttonColor,
           children: [
-            SpeedDialChild(
-              child: Icon(
-                Icons.fastfood,
-                color: colors.buttonTextColor,
-              ),
-              label: 'Add Vouchers',
-              labelStyle: TextStyle(
-                color: colors.buttonTextColor,
-                fontFamily: Fonts.default_font,
-                fontSize: Fonts.dialog_heading_size,
-              ),
-              labelBackgroundColor: colors.buttonColor,
-              backgroundColor: colors.buttonColor,
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            AddVoucherScreen(null, null)));
-              },
-            ),
-            SpeedDialChild(
-              child: Icon(
-                Icons.help_outline,
-                color: Colors.blue[800],
-              ),
-              backgroundColor: colors.backgroundColor,
-              label: 'Help',
-              labelStyle: TextStyle(
-                color: colors.buttonTextColor,
-                fontFamily: Fonts.default_font,
-                fontSize: Fonts.dialog_heading_size,
-              ),
-              labelBackgroundColor: colors.buttonColor,
-              onTap: () {
+            MyWidgets.getSpeedDialChild(
+                icon: Icons.fastfood,
+                text: 'Add Vouchers',
+                callback: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              AddVoucherScreen(null, null)));
+                }),
+            MyWidgets.getSpeedDialChild(
+              icon: Icons.help_outline,
+              text: 'Help',
+              bgColor: colors.backgroundColor,
+              iconColor: Colors.blue[800],
+              callback: () {
                 createHelpAlert(context);
               },
             ),

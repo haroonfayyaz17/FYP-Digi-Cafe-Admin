@@ -75,59 +75,19 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                 createAlert(context);
               },
               onLongPress: () {
-                //TODO: Delete Employee
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => AlertDialog(
-                    content: MyWidgets.getTextWidget(
-                        text: 'Do you want to remove Food Item?',
-                        size: Fonts.heading2_size,
-                        color: colors.labelColor),
-                    actions: <Widget>[
-                      Container(
-                        // width: MediaQuery.of(context).size.width * 0.3,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: colors.buttonColor,
-                        ),
-                        child: FlatButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: MyWidgets.getTextWidget(
-                                text: 'No',
-                                color: colors.buttonTextColor,
-                                size: Fonts.label_size)),
-                      ),
-                      Container(
-                        // width: MediaQuery.of(context).size.width * 0.3,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: colors.buttonColor,
-                        ),
-                        child: FlatButton(
-                            onPressed: () async {
-                              //TODO: Delete Food
-                              Navigator.pop(context);
-                              bool result = await _foodMenuUIController
-                                  .deleteFoodItem(widget.foodID);
+                MyWidgets.showConfirmationDialog(context,
+                    text: 'Do you want to remove Food Item?',
+                    callback: () async {
+                  //TODO: Delete Food
+                  bool result =
+                      await _foodMenuUIController.deleteFoodItem(widget.foodID);
 
-                              if (result.toString() == "true") {
-                                _showToast(_buildContext,
-                                    "Food Item deleted successfully");
-                              } else {
-                                _showToast(_buildContext,
-                                    "Food Item delete unsuccessful");
-                              }
-                            },
-                            child: MyWidgets.getTextWidget(
-                                text: 'Yes',
-                                color: colors.buttonTextColor,
-                                size: Fonts.label_size)),
-                      ),
-                    ],
-                  ),
-                );
+                  if (result.toString() == "true") {
+                    _showToast(_buildContext, "Food Item deleted successfully");
+                  } else {
+                    _showToast(_buildContext, "Food Item delete unsuccessful");
+                  }
+                });
               },
               child: Card(
                 elevation: 10,

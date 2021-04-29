@@ -93,6 +93,12 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
   }
 
   @override
+  dispose() {
+    _controller.dispose(); // you need this
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _buildContext = context;
     // TODO: implement build
@@ -319,87 +325,69 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 30, right: 10, bottom: 5, top: 5),
-                  child: ClipPath(
-                    clipper: ShapeBorderClipper(
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(25)))),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: colors.buttonColor,
-                      ),
-                      // width: 100,
-                      // height: 30,
-                      child: FlatButton(
-                        color: colors.buttonColor,
-                        child: MyWidgets.getTextWidget(
-                            text: 'Apply',
-                            size: Fonts.button_size,
-                            color: colors.buttonTextColor),
-                        onPressed: () async {
-                          fromDate = fromDateWidget.date;
-                          toDate = toDateWidget.date;
+                  child: MyWidgets.getButton(
+                      text: 'Apply',
+                      callback: () async {
+                        fromDate = fromDateWidget.date;
+                        toDate = toDateWidget.date;
 
-                          DateTime fromDateTemp = fromDate;
-                          DateTime toDateTemp = toDate;
+                        DateTime fromDateTemp = fromDate;
+                        DateTime toDateTemp = toDate;
 
-                          if (filterType.chosenType != null &&
-                              (fromDate != null) &&
-                              (toDate != null)) {
-                            if (toDate.compareTo(fromDate) >= 0) {
-                            } else {
-                              setState(() {
-                                displayAlertMsg = true;
-                                _alertMessage =
-                                    'To date must be greater than or equal to From Date';
-                              });
-                              return;
-                            }
-                            String type;
-                            if (filterType.chosenType == 'Daily') {
-                              type = 'Date';
-
-                              fromDateTemp = new DateTime(fromDate.year,
-                                  fromDate.month, fromDate.day, 0, 0, 0, 0, 0);
-                              toDateTemp = new DateTime(toDate.year,
-                                  toDate.month, toDate.day, 0, 0, 0, 0, 0);
-                            } else if (filterType.chosenType == 'Monthly') {
-                              type = 'Month';
-                              fromDateTemp = new DateTime(fromDate.year,
-                                  fromDate.month, 1, 0, 0, 0, 0, 0);
-                              toDateTemp = new DateTime(
-                                  toDate.year, toDate.month, 1, 0, 0, 0, 0, 0);
-                            } else {
-                              type = 'Year';
-                              fromDateTemp = new DateTime(
-                                  fromDate.year, 1, 1, 0, 0, 0, 0, 0);
-                              toDateTemp = new DateTime(
-                                  toDate.year, 1, 1, 0, 0, 0, 0, 0);
-                            }
-                            Stream<QuerySnapshot> querySnapshot1;
-                            await uiController
-                                .getFilteredOrdersSnapshot(
-                                    type, fromDateTemp, toDateTemp)
-                                .then((value) {
-                              querySnapshot1 = value;
-                            });
-                            print(querySnapshot1);
-                            Navigator.of(context, rootNavigator: true).pop();
-                            setState(() {
-                              querySnapshot = querySnapshot1;
-                            });
-                            print(querySnapshot == querySnapshot1);
-                            _counter.value = querySnapshot1;
+                        if (filterType.chosenType != null &&
+                            (fromDate != null) &&
+                            (toDate != null)) {
+                          if (toDate.compareTo(fromDate) >= 0) {
                           } else {
                             setState(() {
-                              _alertMessage = 'Incomplete Fields';
                               displayAlertMsg = true;
+                              _alertMessage =
+                                  'To date must be greater than or equal to From Date';
                             });
+                            return;
                           }
-                        },
-                      ),
-                    ),
-                  ),
+                          String type;
+                          if (filterType.chosenType == 'Daily') {
+                            type = 'Date';
+
+                            fromDateTemp = new DateTime(fromDate.year,
+                                fromDate.month, fromDate.day, 0, 0, 0, 0, 0);
+                            toDateTemp = new DateTime(toDate.year, toDate.month,
+                                toDate.day, 0, 0, 0, 0, 0);
+                          } else if (filterType.chosenType == 'Monthly') {
+                            type = 'Month';
+                            fromDateTemp = new DateTime(fromDate.year,
+                                fromDate.month, 1, 0, 0, 0, 0, 0);
+                            toDateTemp = new DateTime(
+                                toDate.year, toDate.month, 1, 0, 0, 0, 0, 0);
+                          } else {
+                            type = 'Year';
+                            fromDateTemp = new DateTime(
+                                fromDate.year, 1, 1, 0, 0, 0, 0, 0);
+                            toDateTemp =
+                                new DateTime(toDate.year, 1, 1, 0, 0, 0, 0, 0);
+                          }
+                          Stream<QuerySnapshot> querySnapshot1;
+                          await uiController
+                              .getFilteredOrdersSnapshot(
+                                  type, fromDateTemp, toDateTemp)
+                              .then((value) {
+                            querySnapshot1 = value;
+                          });
+                          print(querySnapshot1);
+                          Navigator.of(context, rootNavigator: true).pop();
+                          setState(() {
+                            querySnapshot = querySnapshot1;
+                          });
+                          print(querySnapshot == querySnapshot1);
+                          _counter.value = querySnapshot1;
+                        } else {
+                          setState(() {
+                            _alertMessage = 'Incomplete Fields';
+                            displayAlertMsg = true;
+                          });
+                        }
+                      }),
                 ),
               ],
             );

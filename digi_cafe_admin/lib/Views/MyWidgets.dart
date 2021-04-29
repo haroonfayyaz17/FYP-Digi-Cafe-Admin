@@ -4,6 +4,7 @@ import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -46,6 +47,75 @@ class MyWidgets {
       labelText: title,
       suffixIcon: suffix,
       icon: icon == null ? null : Icon(icon),
+    );
+  }
+
+  static showConfirmationDialog(BuildContext context,
+      {String text = 'Yes', VoidCallback callback = null}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+          content: MyWidgets.getTextWidget(
+              text: text, size: Fonts.heading2_size, color: colors.labelColor),
+          actions: <Widget>[
+            MyWidgets.getButton(
+                text: 'No',
+                width: 60,
+                radius: 10,
+                callback: () {
+                  Navigator.pop(context);
+                }),
+            MyWidgets.getButton(
+                text: 'Yes',
+                width: 60,
+                radius: 10,
+                callback: () {
+                  callback();
+                  Navigator.pop(context);
+                }),
+          ]),
+    );
+  }
+
+  static SpeedDialChild getSpeedDialChild(
+      {String text = 'Add',
+      VoidCallback callback = null,
+      var icon = null,
+      var iconColor = colors.backgroundColor,
+      var btnColor = colors.buttonColor,
+      var bgColor = colors.buttonColor}) {
+    return SpeedDialChild(
+        child: Icon(icon, color: iconColor),
+        label: text,
+        labelStyle: getTextStyle(size: Fonts.dialog_heading_size),
+        labelBackgroundColor: colors.buttonColor,
+        backgroundColor: bgColor,
+        onTap: callback);
+  }
+
+  static Widget getButton(
+      {String text = 'Add',
+      VoidCallback callback = null,
+      var color = colors.buttonColor,
+      double width = 100,
+      double height = 50,
+      double radius = 50}) {
+    return InkWell(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(radius)),
+          color: color,
+        ),
+        width: width,
+        height: height,
+        child: Center(
+          child: getTextWidget(
+              size: Fonts.button_size,
+              text: '$text',
+              color: colors.buttonTextColor),
+        ),
+      ),
+      onTap: callback,
     );
   }
 

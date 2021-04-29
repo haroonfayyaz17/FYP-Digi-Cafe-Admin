@@ -16,18 +16,6 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 // ViewFoodMenu todaysMenu;
 
 class ViewFoodMenu extends StatelessWidget {
-  // var fm;
-
-  // ViewFoodMenu() {
-  //   final foodList = [
-  //     FoodItem('1', 'Biryani', 'Chicken Biryani', null, 120, 3),
-  //     FoodItem('1', 'Shawarma', 'Zinger Shawarma', null, 60, 5),
-  //     FoodItem('1', 'Sandwich', 'Egg & Chicken', null, 80, 10),
-  //     FoodItem('1', 'Sandwich', 'Vegetable & Chicken', null, 50, 3),
-  //   ];
-  //   todaysMenu = new ViewFoodMenu('All', foodList);
-  // }
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -68,20 +56,10 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
           animatedIconTheme: IconThemeData(size: 20),
           backgroundColor: colors.buttonColor,
           children: [
-            SpeedDialChild(
-              child: Icon(
-                Icons.fastfood,
-                color: colors.buttonTextColor,
-              ),
-              label: 'Add Food Item',
-              labelStyle: TextStyle(
-                color: colors.buttonTextColor,
-                fontFamily: Fonts.default_font,
-                fontSize: Fonts.dialog_heading_size,
-              ),
-              labelBackgroundColor: colors.buttonColor,
-              backgroundColor: colors.buttonColor,
-              onTap: () {
+            MyWidgets.getSpeedDialChild(
+              icon: Icons.fastfood,
+              text: 'Add Food Item',
+              callback: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -89,20 +67,10 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
                             AddFoodMenuScreen()));
               },
             ),
-            SpeedDialChild(
-              child: Icon(
-                Icons.category_sharp,
-                color: colors.buttonTextColor,
-              ),
-              label: 'Add Category',
-              labelStyle: TextStyle(
-                color: colors.buttonTextColor,
-                fontFamily: Fonts.default_font,
-                fontSize: Fonts.dialog_heading_size,
-              ),
-              labelBackgroundColor: colors.buttonColor,
-              backgroundColor: colors.buttonColor,
-              onTap: () {
+            MyWidgets.getSpeedDialChild(
+              icon: Icons.fastfood,
+              text: 'Add Category',
+              callback: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -110,20 +78,12 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
                             AddCategoryScreen()));
               },
             ),
-            SpeedDialChild(
-              child: Icon(
-                Icons.help_outline,
-                color: Colors.blue[800],
-              ),
-              backgroundColor: colors.backgroundColor,
-              label: 'Help',
-              labelStyle: TextStyle(
-                color: colors.buttonTextColor,
-                fontFamily: Fonts.default_font,
-                fontSize: Fonts.dialog_heading_size,
-              ),
-              labelBackgroundColor: colors.buttonColor,
-              onTap: () {
+            MyWidgets.getSpeedDialChild(
+              icon: Icons.help_outline,
+              text: 'Help',
+              bgColor: colors.backgroundColor,
+              iconColor: Colors.blue[800],
+              callback: () {
                 createHelpAlert(context);
               },
             ),
