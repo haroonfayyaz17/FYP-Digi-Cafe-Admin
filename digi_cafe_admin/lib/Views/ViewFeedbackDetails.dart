@@ -188,11 +188,10 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                               maxLength: 400,
                               enabled: details.reply == null ? true : false,
                               textCapitalization: TextCapitalization.sentences,
-                              decoration: InputDecoration(
-                                labelText: 'Write Reply',
-                                hintText: 'Your text here',
-                                border: OutlineInputBorder(),
-                              ),
+                              decoration: MyWidgets.getTextFormDecoration(
+                                  title: 'Write Reply',
+                                  hint: 'Your text here',
+                                  icon: null),
                               style: TextStyle(
                                 fontSize: Fonts.heading2_size,
                                 fontFamily: Fonts.default_font,

@@ -236,21 +236,18 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
         content: Column(
           children: [
             Padding(
-              padding: EdgeInsets.all(0),
-              child: TextFormField(
-                inputFormatters: [DecimalTextInputFormatter(decimalRange: 0)],
-                keyboardType: TextInputType.number,
-                controller: quantityController,
-                textCapitalization: TextCapitalization.words,
-                decoration: InputDecoration(
-                  border: UnderlineInputBorder(),
-                  filled: true,
-                  fillColor: colors.backgroundColor,
-                  labelText: 'Quantity',
-                  icon: Icon(Icons.format_list_numbered),
-                ),
-              ),
-            ),
+                padding: EdgeInsets.all(0),
+                child: TextFormField(
+                  inputFormatters: [DecimalTextInputFormatter(decimalRange: 0)],
+                  keyboardType: TextInputType.number,
+                  controller: quantityController,
+                  textCapitalization: TextCapitalization.words,
+                  decoration: MyWidgets.getTextFormDecoration(
+                      title: 'Quantity',
+                      border: UnderlineInputBorder(),
+                      addBorder: false,
+                      icon: Icons.format_list_numbered),
+                )),
           ],
         ),
         buttons: [

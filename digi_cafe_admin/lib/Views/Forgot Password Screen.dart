@@ -4,6 +4,7 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'MyWidgets.dart';
 
 class ForgotPasswordScreen extends StatelessWidget {
   @override
@@ -88,21 +89,14 @@ class _ForgotPasswordScreenState extends State<_ForgotPasswordScreen> {
                 Padding(
                   padding: EdgeInsets.all(20),
                   child: TextFormField(
-                    autofocus: true,
-                    controller: edtTextControllerEmail,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                    textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      border: UnderlineInputBorder(),
-                      filled: true,
-                      fillColor: colors.backgroundColor,
-                      labelText: 'Email',
-                      icon: Icon(
-                        Icons.email,
-                      ),
-                    ),
-                  ),
+                      autofocus: true,
+                      controller: edtTextControllerEmail,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) =>
+                          FocusScope.of(context).nextFocus(),
+                      textCapitalization: TextCapitalization.words,
+                      decoration: MyWidgets.getTextFormDecoration(
+                          title: 'Email', icon: Icons.email)),
                 ),
 
                 Padding(

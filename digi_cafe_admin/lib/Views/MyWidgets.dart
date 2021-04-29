@@ -24,15 +24,23 @@ class MyWidgets {
   static InputDecoration getTextFormDecoration(
       {String title = 'Name',
       IconData icon = Icons.person,
-      var suffix = null}) {
+      var suffix = null,
+      var border = null,
+      var addBorder = true,
+      String hint = null}) {
     return InputDecoration(
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-      ),
-      hintText: title,
+      focusedBorder: addBorder
+          ? OutlineInputBorder(
+              borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
+            )
+          : null,
+      enabledBorder: addBorder
+          ? OutlineInputBorder(
+              borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
+            )
+          : null,
+      border: border,
+      hintText: hint == null ? title : hint,
       filled: true,
       fillColor: colors.backgroundColor,
       labelText: title,

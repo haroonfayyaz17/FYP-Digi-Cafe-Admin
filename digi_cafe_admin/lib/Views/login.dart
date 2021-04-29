@@ -35,7 +35,7 @@ class _LoginScreenState extends State<_LoginScreen> {
   bool _passwordHide = true;
 
   Icon _passwordIcon = Icon(
-    Icons.remove_red_eye,
+    PasswordCross.eye_slash,
     size: 22,
   );
   TextEditingController edtTextControllerEmail;
@@ -103,15 +103,11 @@ class _LoginScreenState extends State<_LoginScreen> {
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      border: UnderlineInputBorder(),
-                      filled: true,
-                      fillColor: colors.backgroundColor,
-                      labelText: 'Email',
-                      icon: Icon(
-                        Icons.email,
-                      ),
-                    ),
+                    decoration: MyWidgets.getTextFormDecoration(
+                        title: 'Email',
+                        icon: Icons.email,
+                        border: UnderlineInputBorder(),
+                        addBorder: false),
                   ),
                 ),
                 Padding(
@@ -122,33 +118,29 @@ class _LoginScreenState extends State<_LoginScreen> {
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
+                    decoration: MyWidgets.getTextFormDecoration(
+                      title: 'Password',
+                      icon: Icons.vpn_key,
                       border: UnderlineInputBorder(),
-                      filled: true,
-                      fillColor: colors.backgroundColor,
-                      suffixIcon: InkWell(
+                      addBorder: false,
+                      suffix: InkWell(
                         child: _passwordIcon,
                         onTap: () {
                           setState(() {
                             _passwordHide = !_passwordHide;
                             if (_passwordHide) {
                               _passwordIcon = Icon(
-                                Icons.remove_red_eye,
+                                PasswordCross.eye_slash,
                                 size: 22,
                               );
                             } else {
                               _passwordIcon = Icon(
-                                PasswordCross.eye_slash,
+                                Icons.remove_red_eye,
                                 size: 22,
                               );
                             }
                           });
                         },
-                      ),
-                      labelText: 'Password',
-                      icon: Icon(
-                        Icons.lock,
-//                    color: colors.iconButtonColor,
                       ),
                     ),
                     keyboardType: TextInputType.text,
