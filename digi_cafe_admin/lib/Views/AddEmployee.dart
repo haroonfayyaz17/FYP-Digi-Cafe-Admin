@@ -53,36 +53,72 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   var edtPhoneController = new TextEditingController();
   var _displayLoadingWidget = false;
 
+  TextEditingController _dateControllerText = new TextEditingController();
   PageController controller = PageController();
   String date;
   static const _kDuration = const Duration(milliseconds: 300);
   static const _kCurve = Curves.ease;
+
+  CreateFormFieldDropDown genderType;
+  CreateFormFieldDropDown staffType;
 
   int count = 0;
   var _phoneNo = '';
   var _email = '';
   var _password = '';
 
-  String chosenDegree;
   int currentIndex = 0;
 
   EmployeeUIController _employeeUIController = new EmployeeUIController();
 
   String code = '+92';
 
-  TextFormDate dateOfBirthWidget = new TextFormDate(
-    label: 'Date Of Birth',
-    icon: Icons.calendar_today,
-  );
+  var edtControllerName = new TextEditingController();
 
-  CreateFormFieldDropDown genderType;
-  CreateFormFieldDropDown staffType;
-
-  TextForm fullNameWidget;
+  String _name;
 
   String _nextLabel = 'Next>';
 
   String _confirmPassword;
+
+  void setFieldsForUpdate() {
+    setState(() {
+      _dateControllerText.text = employee.Dob;
+      edtControllerName.text = employee.Name;
+      genderType.state.setState(() {
+        genderType.chosenType = employee.Gender;
+      });
+      staffType.state.setState(() {
+        staffType.chosenType = employee.userType;
+      });
+      setState(() {
+        setPhoneNo();
+        count++;
+      });
+    });
+    // debugPrint(__contactDetailsState.mounted.toString());
+  }
+
+  void setPhoneNo() {
+    setState(() {
+      if (employee != null) {
+        List<String> x = employee.PhoneNo.split(' ');
+        if (x.length > 0) {
+          code = x[0];
+        } else {
+          code = '';
+        }
+        if (x.length > 1) {
+          _phoneNo = x[1];
+        } else {
+          _phoneNo = '';
+        }
+        edtPhoneController.text = _phoneNo;
+      }
+    });
+
+    count++;
+  }
 
   @override
   void initState() {
@@ -92,10 +128,7 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       icon: Icons.person_outline,
       title: 'Gender',
     );
-    fullNameWidget = new TextForm(
-      label: 'Full Name',
-      icon: Icons.person_add,
-    );
+
     staffType = new CreateFormFieldDropDown(
       dropDownList: <String>['Kitchen', 'Serving'],
       icon: Icons.person,
@@ -122,12 +155,12 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
         //   screenHeader = 'Update Employee';
         // });
         if (actionType == 'update' && count < 1) {
-          print(count);
           setFieldsForUpdate();
           screenHeader = 'Update Employee';
         }
       }
     });
+
     Widget widget = Stack(children: [
       _displayLoadingWidget
           ? LoadingWidget()
@@ -175,11 +208,52 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: fullNameWidget,
+                              child: TextFormField(
+                                autofocus: true,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (_) =>
+                                    FocusScope.of(context).nextFocus(),
+                                onChanged: (text) {
+                                  _name = text;
+                                },
+                                controller: edtControllerName,
+                                textCapitalization: TextCapitalization.words,
+                                decoration: MyWidgets.getTextFormDecoration(
+                                    title: 'Full Name', icon: Icons.person_add),
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: dateOfBirthWidget,
+                              child: TextFormField(
+                                controller: _dateControllerText,
+                                readOnly: true,
+                                autofocus: true,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (_) =>
+                                    FocusScope.of(context).nextFocus(),
+                                textCapitalization: TextCapitalization.words,
+                                decoration: MyWidgets.getTextFormDecoration(
+                                    title: 'Date Of Birth',
+                                    icon: Icons.calendar_today),
+                                onTap: () {
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime(2100),
+                                  ).then((value) {
+                                    String day = value.day.toString();
+                                    String month = value.month.toString();
+                                    String year = value.year.toString();
+                                    String date = '${day}-${month}-${year}';
+                                    _dateControllerText.text = date;
+
+                                    setState(() {
+                                      _dateControllerText.text = date;
+                                    });
+                                  });
+                                },
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
@@ -267,46 +341,8 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
     return widget;
   }
 
-  void setFieldsForUpdate() {
-    setState(() {
-      dateOfBirthWidget.state.setState(() {
-        dateOfBirthWidget.controller.text = employee.Dob;
-      });
-      fullNameWidget.state.setState(() {
-        fullNameWidget.controller.text = employee.Name;
-      });
-      genderType.state.setState(() {
-        genderType.chosenType = employee.Gender;
-      });
-      staffType.state.setState(() {
-        staffType.chosenType = employee.userType;
-      });
-      setPhoneNo();
-      count++;
-    });
-    // debugPrint(__contactDetailsState.mounted.toString());
-  }
-
-  void setPhoneNo() {
-    setState(() {
-      if (employee != null) {
-        List<String> x = employee.PhoneNo.split(' ');
-        print(x);
-        if (x.length > 0) {
-          code = x[0];
-        } else {
-          code = '';
-        }
-        if (x.length > 1) {
-          _phoneNo = x[1];
-        } else {
-          _phoneNo = '';
-        }
-        edtPhoneController.text = _phoneNo;
-      }
-    });
-
-    count++;
+  void _textEditingControllerListener() {
+    _dateControllerText.text = date;
   }
 
   nextFunction() {
@@ -315,9 +351,9 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       setPhoneNo();
     }
     if (controller.page == personal) {
-      if (fullNameWidget.controller.text == '') {
+      if (edtControllerName.text == '') {
         _showToast(context, 'Enter full Name');
-      } else if (dateOfBirthWidget.controller.text == '') {
+      } else if (_dateControllerText.text == '') {
         _showToast(context, 'Select Date Of Birth');
       } else if (genderType.chosenType == null) {
         _showToast(context, 'Choose Gender');
@@ -401,8 +437,8 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
         print(_email + _password + _phoneNo);
 
         bool result = await _employeeUIController.addEmployee(
-            fullNameWidget.controller.text,
-            dateOfBirthWidget.controller.text,
+            edtControllerName.text,
+            _dateControllerText.text,
             genderType.chosenType,
             staffType.chosenType,
             '${code}' + ' ' + '${_phoneNo}',
@@ -430,10 +466,10 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       _displayLoadingWidget = true;
     });
     print(code);
-    employee.Dob = dateOfBirthWidget.controller.text;
+    employee.Dob = _dateControllerText.text;
     employee.Gender = genderType.chosenType;
     employee.PhoneNo = code + ' ' + _phoneNo;
-    employee.Name = fullNameWidget.controller.text;
+    employee.Name = edtControllerName.text;
     employee.userType = staffType.chosenType;
     await _employeeUIController.updateEmployeeData(employee);
     _showToast(context, "Data updated Successfully");
@@ -792,13 +828,13 @@ class _EmailDetailsState extends State<EmailDetails> {
   bool _confirmPasswordHide = true;
 
   Icon _passwordIcon = Icon(
-    Icons.remove_red_eye,
+    PasswordCross.eye_slash,
     size: 22,
   );
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Icon _confirmIcon = Icon(Icons.remove_red_eye, size: 22);
+  Icon _confirmIcon = Icon(PasswordCross.eye_slash, size: 22);
   var _email;
   var _confirmPassword;
   var _password;
@@ -901,23 +937,8 @@ class _EmailDetailsState extends State<EmailDetails> {
                     validator: validateEmail,
                     onChanged: _emailValueChanged,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      hintText: 'Email Address',
-                      filled: true,
-                      fillColor: colors.backgroundColor,
-                      labelText: 'Email Address',
-                      icon: Icon(
-                        Icons.email,
-                      ),
-                    ),
+                    decoration: MyWidgets.getTextFormDecoration(
+                        title: 'Email Address', icon: Icons.email),
                   ),
                 ),
                 Padding(
@@ -930,39 +951,28 @@ class _EmailDetailsState extends State<EmailDetails> {
                     validator: validatePassword,
                     onChanged: _passwordValueChanged,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      hintText: 'Password',
-                      filled: true,
-                      suffixIcon: InkWell(
+                    decoration: MyWidgets.getTextFormDecoration(
+                      title: 'Password',
+                      icon: Icons.vpn_key,
+                      suffix: InkWell(
                         child: _passwordIcon,
                         onTap: () {
                           setState(() {
                             _passwordHide = !_passwordHide;
                             if (_passwordHide) {
                               _passwordIcon = Icon(
-                                Icons.remove_red_eye,
+                                PasswordCross.eye_slash,
                                 size: 22,
                               );
                             } else {
                               _passwordIcon = Icon(
-                                PasswordCross.eye_slash,
+                                Icons.remove_red_eye,
                                 size: 22,
                               );
                             }
                           });
                         },
                       ),
-                      fillColor: colors.backgroundColor,
-                      labelText: 'Password',
-                      icon: Icon(Icons.vpn_key),
                     ),
                   ),
                 ),
@@ -976,39 +986,28 @@ class _EmailDetailsState extends State<EmailDetails> {
                     validator: validateconfirmPassword,
                     onChanged: _confirmPasswordValueChanged,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      hintText: 'Confirm Password',
-                      filled: true,
-                      suffixIcon: InkWell(
+                    decoration: MyWidgets.getTextFormDecoration(
+                      title: 'Confirm Password',
+                      icon: Icons.vpn_key,
+                      suffix: InkWell(
                         child: _confirmIcon,
                         onTap: () {
                           setState(() {
                             _confirmPasswordHide = !_confirmPasswordHide;
                             if (_confirmPasswordHide) {
                               _confirmIcon = Icon(
-                                Icons.remove_red_eye,
+                                PasswordCross.eye_slash,
                                 size: 22,
                               );
                             } else {
                               _confirmIcon = Icon(
-                                PasswordCross.eye_slash,
+                                Icons.remove_red_eye,
                                 size: 22,
                               );
                             }
                           });
                         },
                       ),
-                      fillColor: colors.backgroundColor,
-                      labelText: 'Confirm Password',
-                      icon: Icon(Icons.vpn_key),
                     ),
                   ),
                 ),

@@ -20,6 +20,26 @@ class MyWidgets {
     );
   }
 
+  static InputDecoration getTextFormDecoration(
+      {String title = 'Name',
+      IconData icon = Icons.person,
+      var suffix = null}) {
+    return InputDecoration(
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
+      ),
+      hintText: title,
+      filled: true,
+      fillColor: colors.backgroundColor,
+      labelText: title,
+      suffixIcon: suffix,
+      icon: Icon(icon),
+    );
+  }
+
   static Widget getTextWidget({
     String text = '',
     var size = Fonts.heading2_size,
@@ -141,19 +161,8 @@ class _CreateFormFieldDropDown extends State<CreateFormFieldDropDown> {
       autofocus: true,
       icon: Icon(Icons.arrow_drop_down),
       iconSize: 24,
-      decoration: InputDecoration(
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-        ),
-        hintText: widget.title,
-        filled: true,
-        fillColor: colors.backgroundColor,
-        labelText: widget.title,
-        icon: Icon(widget.icon),
-      ),
+      decoration: MyWidgets.getTextFormDecoration(
+          title: widget.title, icon: widget.icon),
       onChanged: (String newValue) {
         setState(() {
           widget.chosenType = newValue;
@@ -173,7 +182,11 @@ class _CreateFormFieldDropDown extends State<CreateFormFieldDropDown> {
 }
 
 class TextForm extends StatefulWidget {
-  TextForm({this.label = 'date', this.icon = Icons.calendar_today});
+  String value;
+
+  // MyCustomForm({ Key key }) : super(key: key);
+  TextForm({this.label = 'date', this.icon = Icons.calendar_today, Key key})
+      : super(key: key);
   String label;
   final IconData icon;
   TextEditingController controller;
@@ -199,31 +212,21 @@ class _TextForm extends State<TextForm> {
       textInputAction: TextInputAction.next,
       onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
       controller: widget.controller,
+      onChanged: (value) {
+        setState(() {
+          widget.value = value;
+        });
+      },
       textCapitalization: TextCapitalization.words,
-      decoration: InputDecoration(
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-        ),
-        hintText: 'Full Name',
-        filled: true,
-        fillColor: colors.backgroundColor,
-        labelText: 'Full Name',
-        icon: Icon(
-          Icons.person_add,
-        ),
-      ),
+      decoration: MyWidgets.getTextFormDecoration(
+          title: widget.label, icon: widget.icon),
     );
   }
 }
 
 class TextFormDate extends StatefulWidget {
-  TextFormDate(
-      {this.label = 'date',
-      this.type = 'date',
-      this.icon = Icons.calendar_today});
+  TextFormDate({this.label = 'date', this.icon = Icons.calendar_today, Key key})
+      : super(key: key);
   String type;
   String label;
   final IconData icon;
@@ -253,25 +256,11 @@ class _TextFormDate extends State<TextFormDate> {
         textInputAction: TextInputAction.next,
         onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
         textCapitalization: TextCapitalization.words,
-        decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: colors.buttonColor, width: 1.3),
-          ),
-          filled: true,
-          fillColor: colors.backgroundColor,
-          labelText: widget.label,
-          icon: Icon(widget.icon),
-        ),
-        onTap: widget.type != 'date'
-            ? () {
-                print('yes');
-              }
-            : () {
-                displayDatePicker(context);
-              });
+        decoration: MyWidgets.getTextFormDecoration(
+            title: widget.label, icon: widget.icon),
+        onTap: () {
+          displayDatePicker(context);
+        });
   }
 
   void displayDatePicker(context) {
