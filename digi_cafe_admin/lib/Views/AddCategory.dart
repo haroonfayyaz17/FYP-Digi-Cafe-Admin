@@ -79,27 +79,10 @@ class _AddCategoryScreenState extends State<_AddCategoryScreen> {
                   padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
                   child: TextFormField(
                     autofocus: true,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
                     onChanged: _categoryNameChanged,
                     textCapitalization: TextCapitalization.words,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: colors.buttonColor, width: 1.3),
-                      ),
-                      hintText: 'Category Name',
-                      filled: true,
-                      fillColor: colors.backgroundColor,
-                      labelText: 'Category Name',
-                      icon: Icon(
-                        Icons.person_add,
-                      ),
-                    ),
+                    decoration: MyWidgets.getTextFormDecoration(
+                        title: 'Category Name', icon: Icons.category),
                   ),
                 ),
                 Padding(

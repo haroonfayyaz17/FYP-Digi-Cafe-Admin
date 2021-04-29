@@ -1,8 +1,9 @@
 import 'dart:ui';
-
+import 'dart:math' as math;
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -284,5 +285,64 @@ class _TextFormDate extends State<TextFormDate> {
         });
       }
     });
+  }
+}
+
+class DecimalTextInputFormatter extends TextInputFormatter {
+  DecimalTextInputFormatter({this.decimalRange})
+      : assert(decimalRange == null || decimalRange == 0);
+
+  final int decimalRange;
+  bool isNumeric(String s) {
+    if (s == null) {
+      return false;
+    }
+    return double.parse(s, (e) => null) != null;
+  }
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue, // unused.
+    TextEditingValue newValue,
+  ) {
+    TextSelection newSelection = newValue.selection;
+    String truncated = newValue.text;
+
+    if (decimalRange != null) {
+      String value = newValue.text;
+      if (isNumeric(value)) {
+        // if (value.contains(".")) {
+        //   // if (value.substring(value.indexOf(".") + 1).contains(".")) {
+        //   //   truncated = oldValue.text;
+        //   //   newSelection = oldValue.selection;
+        //   // }
+        //   truncated = oldValue.text;
+        //   newSelection = oldValue.selection;
+        // }
+        if (value.contains(".") &&
+            value.substring(value.indexOf(".") + 1).length > decimalRange) {
+          truncated = oldValue.text;
+          newSelection = oldValue.selection;
+        } else if (value == ".") {
+          truncated = "0.";
+
+          newSelection = newValue.selection.copyWith(
+            baseOffset: math.min(truncated.length, truncated.length + 1),
+            extentOffset: math.min(truncated.length, truncated.length + 1),
+          );
+        }
+      } else {
+        if (value != '') {
+          truncated = oldValue.text;
+          newSelection = oldValue.selection;
+        }
+      }
+      return TextEditingValue(
+        text: truncated,
+        selection: newSelection,
+        composing: TextRange.empty,
+      );
+    }
+    return newValue;
   }
 }

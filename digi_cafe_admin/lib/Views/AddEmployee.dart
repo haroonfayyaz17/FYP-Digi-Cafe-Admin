@@ -150,14 +150,9 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (actionType == 'update') {
-        // setState(() {
-        //   screenHeader = 'Update Employee';
-        // });
-        if (actionType == 'update' && count < 1) {
-          setFieldsForUpdate();
-          screenHeader = 'Update Employee';
-        }
+      if (actionType == 'update' && count < 1) {
+        setFieldsForUpdate();
+        screenHeader = 'Update Employee';
       }
     });
 

@@ -11,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
-import 'dart:math' as math;
 import '../style/colors.dart';
 
 class AddFoodMenuScreen extends StatelessWidget {
@@ -204,23 +203,10 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                             controller: edtControllerItemName,
                                             textCapitalization:
                                                 TextCapitalization.words,
-                                            decoration: InputDecoration(
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: colors.buttonColor,
-                                                    width: 1.3),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: colors.buttonColor,
-                                                    width: 1.3),
-                                              ),
-                                              hintText: 'Item Name',
-                                              filled: true,
-                                              fillColor: colors.backgroundColor,
-                                              labelText: 'Item Name',
-                                              icon: Icon(Icons.fastfood),
-                                            ),
+                                            decoration:
+                                                MyWidgets.getTextFormDecoration(
+                                                    title: 'Item Name',
+                                                    icon: Icons.fastfood),
                                           ),
                                         ),
 
@@ -240,25 +226,10 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                                     .nextFocus(),
                                             textCapitalization:
                                                 TextCapitalization.words,
-                                            decoration: InputDecoration(
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: colors.buttonColor,
-                                                    width: 1.3),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: colors.buttonColor,
-                                                    width: 1.3),
-                                              ),
-                                              hintText: 'Item Description',
-                                              filled: true,
-                                              fillColor: colors.backgroundColor,
-                                              labelText: 'Item Description',
-                                              icon: Icon(
-                                                Icons.description,
-                                              ),
-                                            ),
+                                            decoration:
+                                                MyWidgets.getTextFormDecoration(
+                                                    title: 'Item Description',
+                                                    icon: Icons.description),
                                           ),
                                         ),
                                         Padding(
@@ -347,23 +318,10 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                             controller: edtControllerItemPrice,
                                             textCapitalization:
                                                 TextCapitalization.words,
-                                            decoration: InputDecoration(
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: colors.buttonColor,
-                                                    width: 1.3),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: colors.buttonColor,
-                                                    width: 1.3),
-                                              ),
-                                              hintText: 'Price',
-                                              filled: true,
-                                              fillColor: colors.backgroundColor,
-                                              labelText: 'Price',
-                                              icon: Icon(Icons.money),
-                                            ),
+                                            decoration:
+                                                MyWidgets.getTextFormDecoration(
+                                                    title: 'Price',
+                                                    icon: Icons.money),
                                           ),
                                         ),
                                       ],
@@ -752,64 +710,5 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
     } else {
       _showToast(context, 'Data update unsuccessfully');
     }
-  }
-}
-
-class DecimalTextInputFormatter extends TextInputFormatter {
-  DecimalTextInputFormatter({this.decimalRange})
-      : assert(decimalRange == null || decimalRange == 0);
-
-  final int decimalRange;
-  bool isNumeric(String s) {
-    if (s == null) {
-      return false;
-    }
-    return double.parse(s, (e) => null) != null;
-  }
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue, // unused.
-    TextEditingValue newValue,
-  ) {
-    TextSelection newSelection = newValue.selection;
-    String truncated = newValue.text;
-
-    if (decimalRange != null) {
-      String value = newValue.text;
-      if (isNumeric(value)) {
-        // if (value.contains(".")) {
-        //   // if (value.substring(value.indexOf(".") + 1).contains(".")) {
-        //   //   truncated = oldValue.text;
-        //   //   newSelection = oldValue.selection;
-        //   // }
-        //   truncated = oldValue.text;
-        //   newSelection = oldValue.selection;
-        // }
-        if (value.contains(".") &&
-            value.substring(value.indexOf(".") + 1).length > decimalRange) {
-          truncated = oldValue.text;
-          newSelection = oldValue.selection;
-        } else if (value == ".") {
-          truncated = "0.";
-
-          newSelection = newValue.selection.copyWith(
-            baseOffset: math.min(truncated.length, truncated.length + 1),
-            extentOffset: math.min(truncated.length, truncated.length + 1),
-          );
-        }
-      } else {
-        if (value != '') {
-          truncated = oldValue.text;
-          newSelection = oldValue.selection;
-        }
-      }
-      return TextEditingValue(
-        text: truncated,
-        selection: newSelection,
-        composing: TextRange.empty,
-      );
-    }
-    return newValue;
   }
 }
