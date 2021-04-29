@@ -38,6 +38,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
   var quantityController = new TextEditingController();
   @override
   void initState() {
+    super.initState();
     _foodMenuUIController = new FoodMenuUIController();
   }
 

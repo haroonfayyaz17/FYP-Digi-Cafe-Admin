@@ -2,7 +2,6 @@ import 'package:digi_cafe_admin/Model/Voucher.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,6 @@ class AddVoucherScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: colors.buttonColor,
       backgroundColor: colors.backgroundColor,
       body: _AddVoucherScreen(_voucher, actionType),
     );

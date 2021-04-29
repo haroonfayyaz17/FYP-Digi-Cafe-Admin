@@ -87,11 +87,6 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
       _imageURL = item.imgURL;
     }
     querySnapshot = _foodMenuUIController.getCategorySnapshot();
-    // _fillCategoriesDropDown();
-  }
-
-  void _fillCategoriesDropDown() {
-    categoryOptionList = <String>['Drinks', 'Continental', 'Pakistani'];
   }
 
   onChangedFunction(int index) {
@@ -121,9 +116,7 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                         listItems.add(dish.data['name']);
                       }
                       categoryOptionList = listItems;
-                      // setState(() {
-                      //   categoryOptionList = listItems;
-                      // });
+
                       return Column(
                         children: [
                           Expanded(
@@ -340,7 +333,6 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                               ),
                                             ),
                                           ),
-
                                           SizedBox(
                                             height: 50,
                                           ),
@@ -358,9 +350,6 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                                   height: 225,
                                                 )
                                               : Container(),
-                                          // SizedBox(
-                                          //   height: 50,
-                                          // ),
                                           _image == null && _imageURL == null
                                               ? Padding(
                                                   padding:
@@ -590,7 +579,6 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
       setState(() {
         _image = image;
         _imageP = _image.path;
-        // print(_image.path);
       });
     });
   }
@@ -638,15 +626,10 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
     String description = _itemDescriptionController.text;
     String price = edtControllerItemPrice.text;
     bool result;
-    // print('image: $_imageP');
-    // print('imgURL: ${_imageURL.toString()}');
     if (_imageURL != null) {
       result = await _foodMenuUIController.updateFoodMenu(
           itemID, itemName, description, chosencategory, price, null);
     } else {
-      // print(_image.path)
-      // print('kn');
-      // print('image: $_imageP');
       result = await _foodMenuUIController.updateFoodMenu(
           itemID, itemName, description, chosencategory, price, _imageP);
     }

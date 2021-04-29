@@ -166,7 +166,6 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                                   DocumentSnapshot element =
                                       snapshot.data.documents[count];
                                   String docID = element.documentID;
-                                  // print(docID.split('-')[0]);
                                   if (filterType.chosenType == 'Monthly') {
                                     DateTime date =
                                         element.data['date'].toDate();
@@ -267,12 +266,6 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                         valueListenable: _counter,
                         child: const Text('Good job!'),
                       ),
-                // Builder(builder: (BuildContext context) {
-                //   _totalOrderss.value = totalOrders.toString();
-
-                //   _totalOrdersAmount.value = totalAmount.toString();
-                //   return Container();
-                // }),
               ],
             ),
           ),
@@ -282,7 +275,6 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
   }
 
   void createFilterAlert(context) async {
-    // _fromDateController.text = _toDateController.text = '';
     fromDateWidget.date = null;
     toDateWidget.date = null;
     displayAlertMsg = false;
