@@ -42,11 +42,7 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
 
   String _voucherTitle = '';
 
-  var _dateControllerText;
-
   String _minimumSpend = '';
-
-  String _validity = '';
 
   String _discount = '';
 
@@ -62,28 +58,47 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
 
   var _displayLoadingWidget = false;
 
+  TextFormDate expiryDateWidget;
+
+  var count = 0;
+
   @override
   void initState() {
     super.initState();
     _foodMenuUIController = new FoodMenuUIController();
-    _dateControllerText = new TextEditingController();
-    if (widget.actionType == 'update') {
-      screenHeader = 'Update Voucher';
-
-      _edtTitleController.text = _voucherTitle = widget._voucher.getTitle;
-      _dateControllerText.text = _validity = widget._voucher.getValidity;
-      edtMinimumAmount.text = _minimumSpend = widget._voucher.getMinimumSpend;
-      edtDiscountController.text = _discount = widget._voucher.getDiscount;
-      btnText = 'Update';
-    } else {
-      screenHeader = 'Add Voucher';
-      btnText = 'Add';
-    }
+    screenHeader = 'Add Voucher';
+    btnText = 'Add';
+    expiryDateWidget = new TextFormDate(
+      label: 'Expiry Date',
+      icon: null,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.actionType == 'update' && count < 1) {
+        expiryDateWidget.state.setState(() {
+          expiryDateWidget.controller.text = widget._voucher.getValidity;
+          List<String> data = expiryDateWidget.controller.text.split('-');
+          var newDate = new DateTime(int.parse(data[2]), int.parse(data[1]),
+              int.parse(data[0]), 0, 0, 0, 0, 0);
+          expiryDateWidget.date = newDate;
+        });
+
+        setState(() {
+          screenHeader = 'Update Voucher';
+          _edtTitleController.text = _voucherTitle = widget._voucher.getTitle;
+          edtMinimumAmount.text =
+              _minimumSpend = widget._voucher.getMinimumSpend;
+          edtDiscountController.text = _discount = widget._voucher.getDiscount;
+          btnText = 'Update';
+          count++;
+        });
+      }
+    });
     return Scaffold(
+      backgroundColor: colors.backgroundColor,
       appBar: MyWidgets.getAppBar(text: screenHeader),
       body: SafeArea(
         child: Stack(
@@ -124,92 +139,13 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
                                     FocusScope.of(context).nextFocus(),
                                 onChanged: _voucherTitleChanged,
                                 textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  hintText: 'Title',
-                                  filled: true,
-                                  fillColor: colors.backgroundColor,
-                                  labelText: 'Title',
-                                ),
+                                decoration: MyWidgets.getTextFormDecoration(
+                                    title: 'Title', icon: null),
                               ),
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: TextFormField(
-                                controller: _dateControllerText,
-                                readOnly: true,
-                                autofocus: true,
-                                onChanged: _validityChanged,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (_) =>
-                                    FocusScope.of(context).nextFocus(),
-                                textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  hintText: 'Expiry Date',
-                                  filled: true,
-                                  fillColor: colors.backgroundColor,
-                                  labelText: 'Expiry Date',
-                                ),
-                                onTap: () {
-                                  showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(2000),
-                                    lastDate: DateTime(2100),
-                                  ).then((value) {
-                                    if (value != null) {
-                                      var current = DateTime.now();
-                                      var newDate = new DateTime(
-                                          current.year,
-                                          current.month,
-                                          current.day,
-                                          0,
-                                          0,
-                                          0,
-                                          0,
-                                          0);
-
-                                      if (value.compareTo(newDate) < 0) {
-                                        _showToast(context,
-                                            'Date should not be less than current date');
-                                        _dateControllerText.text = '';
-
-                                        setState(() {
-                                          _dateControllerText.text = '';
-                                          _validity = '';
-                                        });
-                                        return;
-                                      }
-                                      String day = value.day.toString();
-                                      String month = value.month.toString();
-                                      String year = value.year.toString();
-                                      String date = '${day}-${month}-${year}';
-
-                                      _dateControllerText.text = date;
-
-                                      setState(() {
-                                        _dateControllerText.text = date;
-                                        _validity = date;
-                                      });
-                                    }
-                                  });
-                                },
-                              ),
+                              child: expiryDateWidget,
                             ),
                             Padding(
                               padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
@@ -218,27 +154,15 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
                                 keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.next,
                                 inputFormatters: [
-                                  DecimalTextInputFormatter(decimalRange: 2)
+                                  DecimalTextInputFormatter(decimalRange: 0)
                                 ],
                                 controller: edtMinimumAmount,
                                 onFieldSubmitted: (_) =>
                                     FocusScope.of(context).nextFocus(),
                                 onChanged: _minimumSpendChanged,
                                 textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  hintText: 'Minimum Spend Amount',
-                                  filled: true,
-                                  fillColor: colors.backgroundColor,
-                                  labelText: 'Minimum Spend Amount',
-                                ),
+                                decoration: MyWidgets.getTextFormDecoration(
+                                    title: 'Minimum Spend Amount', icon: null),
                               ),
                             ),
                             Padding(
@@ -251,24 +175,12 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
                                     FocusScope.of(context).nextFocus(),
                                 onChanged: _discountChanged,
                                 inputFormatters: [
-                                  DecimalTextInputFormatter(decimalRange: 2)
+                                  DecimalTextInputFormatter(decimalRange: 0)
                                 ],
                                 controller: edtDiscountController,
                                 textCapitalization: TextCapitalization.words,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: colors.buttonColor, width: 1.3),
-                                  ),
-                                  hintText: 'Discount',
-                                  filled: true,
-                                  fillColor: colors.backgroundColor,
-                                  labelText: 'Discount',
-                                ),
+                                decoration: MyWidgets.getTextFormDecoration(
+                                    title: 'Discount', icon: null),
                               ),
                             ),
                             Padding(
@@ -322,11 +234,24 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
       stopLoading();
       return;
     }
-    if (_validity.trim() == '') {
+
+    if (expiryDateWidget.controller.text.trim() == '') {
       _showToast(context, "Enter Expiry Date");
       stopLoading();
       return;
     }
+
+    DateTime date = expiryDateWidget.date;
+    var current = DateTime.now();
+    var newDate =
+        new DateTime(current.year, current.month, current.day, 0, 0, 0, 0, 0);
+
+    if (date.compareTo(newDate) < 0) {
+      _showToast(context, 'Date should not be less than current date');
+      stopLoading();
+      return;
+    }
+
     if (_minimumSpend.trim() == '') {
       _showToast(context, "Enter Minimum Spend Amount");
       stopLoading();
@@ -344,8 +269,8 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
       return;
     }
     if (widget.actionType != 'update') {
-      var value = await _foodMenuUIController.addVoucher(
-          _voucherTitle, _validity, _minimumSpend, _discount);
+      var value = await _foodMenuUIController.addVoucher(_voucherTitle,
+          expiryDateWidget.controller.text, _minimumSpend, _discount);
       if (value) {
         await new Future.delayed(const Duration(seconds: 2));
         _showToast(context, "Record Added");
@@ -361,8 +286,12 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
         });
       }
     } else {
-      var value = await _foodMenuUIController.updateVoucher(_voucherTitle,
-          _validity, _minimumSpend, _discount, widget._voucher.getId);
+      var value = await _foodMenuUIController.updateVoucher(
+          _voucherTitle,
+          expiryDateWidget.controller.text,
+          _minimumSpend,
+          _discount,
+          widget._voucher.getId);
       if (value) {
         _showToast(context, "Record updated");
         await new Future.delayed(const Duration(seconds: 2));
@@ -391,72 +320,7 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
     _minimumSpend = value;
   }
 
-  void _validityChanged(String value) {
-    _validity = value;
-    print('vsv' + '$_validity');
-  }
-
   void _discountChanged(String value) {
     _discount = value;
-  }
-}
-
-class DecimalTextInputFormatter extends TextInputFormatter {
-  DecimalTextInputFormatter({this.decimalRange})
-      : assert(decimalRange == null || decimalRange > 0);
-
-  final int decimalRange;
-  bool isNumeric(String s) {
-    if (s == null) {
-      return false;
-    }
-    return double.parse(s, (e) => null) != null;
-  }
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue, // unused.
-    TextEditingValue newValue,
-  ) {
-    TextSelection newSelection = newValue.selection;
-    String truncated = newValue.text;
-
-    if (decimalRange != null) {
-      String value = newValue.text;
-      if (isNumeric(value)) {
-        if (value.contains(".")) {
-          // if (value.substring(value.indexOf(".") + 1).contains(".")) {
-          //   truncated = oldValue.text;
-          //   newSelection = oldValue.selection;
-          // }
-          truncated = oldValue.text;
-          newSelection = oldValue.selection;
-          print('cxzcx');
-        }
-        if (value.contains(".") &&
-            value.substring(value.indexOf(".") + 1).length > decimalRange) {
-          truncated = oldValue.text;
-          newSelection = oldValue.selection;
-        } else if (value == ".") {
-          truncated = "0.";
-
-          newSelection = newValue.selection.copyWith(
-            baseOffset: math.min(truncated.length, truncated.length + 1),
-            extentOffset: math.min(truncated.length, truncated.length + 1),
-          );
-        }
-      } else {
-        if (value != '') {
-          truncated = oldValue.text;
-          newSelection = oldValue.selection;
-        }
-      }
-      return TextEditingValue(
-        text: truncated,
-        selection: newSelection,
-        composing: TextRange.empty,
-      );
-    }
-    return newValue;
   }
 }

@@ -20,11 +20,7 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
   String chosenFilterCategory;
   AnimationController _controller;
 
-  var _fromDateController = new TextEditingController();
-  var _toDateController = new TextEditingController();
   StateSetter _setState;
-
-  var _displayLoadingWidget = false;
 
   var displayAlertMsg = false;
 
@@ -32,7 +28,6 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
 
   DateTime toDate;
   TabController _tabController;
-  bool _buttonPressed = false;
   final _kTabs = <Widget>[
     Tab(
       text: 'Complaints',

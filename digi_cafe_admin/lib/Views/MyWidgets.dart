@@ -37,7 +37,7 @@ class MyWidgets {
       fillColor: colors.backgroundColor,
       labelText: title,
       suffixIcon: suffix,
-      icon: Icon(icon),
+      icon: icon == null ? null : Icon(icon),
     );
   }
 
@@ -311,14 +311,14 @@ class DecimalTextInputFormatter extends TextInputFormatter {
     if (decimalRange != null) {
       String value = newValue.text;
       if (isNumeric(value)) {
-        // if (value.contains(".")) {
-        //   // if (value.substring(value.indexOf(".") + 1).contains(".")) {
-        //   //   truncated = oldValue.text;
-        //   //   newSelection = oldValue.selection;
-        //   // }
-        //   truncated = oldValue.text;
-        //   newSelection = oldValue.selection;
-        // }
+        if (value.contains(".")) {
+          // if (value.substring(value.indexOf(".") + 1).contains(".")) {
+          //   truncated = oldValue.text;
+          //   newSelection = oldValue.selection;
+          // }
+          truncated = oldValue.text;
+          newSelection = oldValue.selection;
+        }
         if (value.contains(".") &&
             value.substring(value.indexOf(".") + 1).length > decimalRange) {
           truncated = oldValue.text;
