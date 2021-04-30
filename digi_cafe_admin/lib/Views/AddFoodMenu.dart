@@ -357,7 +357,7 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                                   child: MyWidgets.getButton(
                                                     text: 'Choose Food Pic',
                                                     width: 150,
-                                                    callback: () =>
+                                                    onTap: () =>
                                                         _showPicker(context),
                                                   ),
                                                 )
@@ -369,7 +369,7 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                               ? MyWidgets.getButton(
                                                   text: 'Remove',
                                                   color: Colors.red[400],
-                                                  callback: () =>
+                                                  onTap: () =>
                                                       clearSelection())
                                               : Container(),
                                         ],

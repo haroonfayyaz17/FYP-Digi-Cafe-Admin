@@ -60,22 +60,16 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
               icon: Icons.fastfood,
               text: 'Add Food Item',
               callback: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            AddFoodMenuScreen()));
+                MyWidgets.changeScreen(
+                    context: context, screen: AddFoodMenuScreen());
               },
             ),
             MyWidgets.getSpeedDialChild(
               icon: Icons.fastfood,
               text: 'Add Category',
               callback: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            AddCategoryScreen()));
+                MyWidgets.changeScreen(
+                    context: context, screen: AddCategoryScreen());
               },
             ),
             MyWidgets.getSpeedDialChild(

@@ -59,11 +59,8 @@ class ViewEmployees extends StatelessWidget {
               icon: Icons.fastfood,
               text: 'Add Employee',
               callback: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            AddEmployeeScreen()));
+                MyWidgets.changeScreen(
+                    context: context, screen: AddEmployeeScreen());
               },
             ),
             MyWidgets.getSpeedDialChild(
@@ -131,13 +128,10 @@ class __ViewEmployees extends State<_ViewEmployees> {
                         return GestureDetector(
                           onTap: () {
                             //TODO: Update Employee
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        AddEmployeeScreen(
-                                            employee: employee,
-                                            actionType: "update")));
+                            MyWidgets.changeScreen(
+                                context: context,
+                                screen: AddEmployeeScreen(
+                                    employee: employee, actionType: "update"));
                           },
                           onLongPress: () {
                             //Delete Employee

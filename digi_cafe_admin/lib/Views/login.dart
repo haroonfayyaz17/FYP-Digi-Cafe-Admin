@@ -1,5 +1,5 @@
 import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
-import 'package:digi_cafe_admin/Views/admin_Dashboard.dart';
+import 'package:digi_cafe_admin/Views/Dashboard.dart';
 import 'package:digi_cafe_admin/Views/Forgot Password Screen.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
@@ -246,7 +246,7 @@ class _LoginScreenState extends State<_LoginScreen> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => dashboard(email: email)));
+                    builder: (context) => Dashboard(email: email)));
           }
         });
       } else {

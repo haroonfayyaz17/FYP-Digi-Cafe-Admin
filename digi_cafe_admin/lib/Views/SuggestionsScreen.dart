@@ -92,12 +92,10 @@ class _SuggestionScreen extends State<SuggestionScreen> {
                                           .changeSuggestionStatus(
                                               complaint.id, 'read')
                                       : null;
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              ViewFeedbackDetails(
-                                                  'suggestion', complaint.id)));
+                                  MyWidgets.changeScreen(
+                                      context: context,
+                                      screen: ViewFeedbackDetails(
+                                          'suggestion', complaint.id));
                                 },
                                 child: Card(
                                   elevation: 8,

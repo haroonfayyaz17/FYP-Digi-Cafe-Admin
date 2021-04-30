@@ -9,6 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class MyWidgets {
+  static void changeScreen(
+      {@required BuildContext context, @required var screen}) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (BuildContext context) => screen));
+  }
+
   static Widget getAppBar({String text = 'Digi Café Admin'}) {
     return AppBar(
       backgroundColor: colors.buttonColor,
@@ -62,18 +68,47 @@ class MyWidgets {
                 text: 'No',
                 width: 60,
                 radius: 10,
-                callback: () {
+                onTap: () {
                   Navigator.pop(context);
                 }),
             MyWidgets.getButton(
                 text: 'Yes',
                 width: 60,
                 radius: 10,
-                callback: () {
+                onTap: () {
                   callback();
                   Navigator.pop(context);
                 }),
           ]),
+    );
+  }
+
+  static Widget getDashboardItem(
+      {String text = '',
+      double width = 0,
+      double height = 0,
+      double childWidth = 0,
+      Widget child = null,
+      VoidCallback onTap = null}) {
+    return Container(
+      width: width,
+      height: height,
+      child: InkWell(
+        child: Card(
+          child: Column(children: <Widget>[
+            Container(
+              width: width - childWidth,
+              height: height - 30,
+              child: child,
+            ),
+            getTextWidget(
+                text: text,
+                color: colors.labelColor,
+                size: Fonts.label_size - 1),
+          ]),
+        ),
+        onTap: onTap,
+      ),
     );
   }
 
@@ -95,7 +130,7 @@ class MyWidgets {
 
   static Widget getButton(
       {String text = 'Add',
-      VoidCallback callback = null,
+      VoidCallback onTap = null,
       var color = colors.buttonColor,
       double width = 100,
       double height = 50,
@@ -115,7 +150,7 @@ class MyWidgets {
               color: colors.buttonTextColor),
         ),
       ),
-      onTap: callback,
+      onTap: onTap,
     );
   }
 

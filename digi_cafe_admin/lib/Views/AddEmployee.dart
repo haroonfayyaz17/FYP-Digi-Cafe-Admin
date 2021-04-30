@@ -665,7 +665,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                     child: MyWidgets.getButton(
                       text: 'Choose Employee Pic',
                       width: 175,
-                      callback: () => _showPicker(context),
+                      onTap: () => _showPicker(context),
                     ),
                   ),
                 SizedBox(
@@ -675,7 +675,7 @@ class _ImageWidgetState extends State<ImageWidget> {
                     ? MyWidgets.getButton(
                         text: 'Remove',
                         color: Colors.red[400],
-                        callback: () => clearSelection())
+                        onTap: () => clearSelection())
                     : Container(),
               ],
             ),

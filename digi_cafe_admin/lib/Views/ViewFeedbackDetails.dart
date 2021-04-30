@@ -119,13 +119,10 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                                     ),
                                     InkWell(
                                       onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        ViewOrderDetails(
-                                                            details.orderNo)));
+                                        MyWidgets.changeScreen(
+                                            context: context,
+                                            screen: ViewOrderDetails(
+                                                details.orderNo));
                                       },
                                       child: MyWidgets.getTextWidget(
                                           text: details.orderNo,

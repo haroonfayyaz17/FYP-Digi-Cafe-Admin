@@ -116,13 +116,10 @@ class _ComplaintScreen extends State<ComplaintScreen> {
                                           .changeComplaintStatus(
                                               complaint.id, 'read')
                                       : null;
-
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              ViewFeedbackDetails(
-                                                  'complaint', complaint.id)));
+                                  MyWidgets.changeScreen(
+                                      context: context,
+                                      screen: ViewFeedbackDetails(
+                                          'complaint', complaint.id));
                                 },
                                 child: Card(
                                   elevation: 8,

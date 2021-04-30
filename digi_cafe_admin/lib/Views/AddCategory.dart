@@ -92,7 +92,7 @@ class _AddCategoryScreenState extends State<_AddCategoryScreen> {
                             padding: EdgeInsets.only(top: 50),
                             child: MyWidgets.getButton(
                               text: 'Add',
-                              callback: () => _addCategory(),
+                              onTap: () => _addCategory(),
                             ),
                           )
                         ],

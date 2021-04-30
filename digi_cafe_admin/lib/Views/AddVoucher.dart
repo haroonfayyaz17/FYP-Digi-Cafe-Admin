@@ -185,7 +185,7 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
                                 padding: EdgeInsets.only(top: 50),
                                 child: MyWidgets.getButton(
                                     text: btnText,
-                                    callback: () => _addVoucher())),
+                                    onTap: () => _addVoucher())),
                           ],
                         ),
                       ),

@@ -65,11 +65,10 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                 List<FoodItem> list = new List();
                 list.add(foodItem);
                 FoodMenu menu = new FoodMenu(widget.category, list);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => AddFoodMenuScreen(
-                            foodItem: menu, actionType: "update")));
+                MyWidgets.changeScreen(
+                    context: context,
+                    screen: AddFoodMenuScreen(
+                        foodItem: menu, actionType: "update"));
               },
               onDoubleTap: () {
                 //TODO: UpdateQuantity

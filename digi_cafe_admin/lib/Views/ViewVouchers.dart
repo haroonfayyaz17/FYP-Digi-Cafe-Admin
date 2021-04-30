@@ -76,11 +76,8 @@ class __ViewVouchers extends State<_ViewVouchers> {
                 icon: Icons.fastfood,
                 text: 'Add Vouchers',
                 callback: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              AddVoucherScreen(null, null)));
+                  MyWidgets.changeScreen(
+                      context: context, screen: AddVoucherScreen(null, null));
                 }),
             MyWidgets.getSpeedDialChild(
               icon: Icons.help_outline,

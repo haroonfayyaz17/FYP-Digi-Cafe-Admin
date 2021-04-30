@@ -65,7 +65,7 @@ class _NominateItemsState extends State<NominateItemsState> {
         child: MyWidgets.getButton(
             text: 'Nominate Items',
             height: 35,
-            callback: () {
+            onTap: () {
               FutureBuilder<bool>(
                 builder: (context, snapshot) {
                   if (snapshot.hasData) if (snapshot.data) {}

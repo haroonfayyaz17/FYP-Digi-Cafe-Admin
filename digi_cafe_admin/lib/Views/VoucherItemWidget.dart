@@ -56,12 +56,9 @@ class _VoucherItemWidgetState extends State<VoucherItemWidget> {
                   discount: widget.discount,
                   usedOn: null,
                 );
-
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            AddVoucherScreen(_voucher, "update")));
+                MyWidgets.changeScreen(
+                    context: context,
+                    screen: AddVoucherScreen(_voucher, "update"));
               },
               onLongPress: () {
                 MyWidgets.showConfirmationDialog(context,

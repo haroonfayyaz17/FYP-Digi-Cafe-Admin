@@ -319,7 +319,7 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                       left: 30, right: 10, bottom: 5, top: 5),
                   child: MyWidgets.getButton(
                       text: 'Apply',
-                      callback: () async {
+                      onTap: () async {
                         fromDate = fromDateWidget.date;
                         toDate = toDateWidget.date;
 
