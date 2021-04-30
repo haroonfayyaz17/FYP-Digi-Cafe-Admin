@@ -15,6 +15,25 @@ class MyWidgets {
         context, MaterialPageRoute(builder: (BuildContext context) => screen));
   }
 
+  static Widget getFilterAppBar(
+      {String text, VoidCallback onTap, Widget bottom = null}) {
+    return AppBar(
+      bottom: bottom,
+      backgroundColor: colors.buttonColor,
+      title: getTextWidget(
+          text: text, size: Fonts.label_size, color: colors.appBarColor),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(top: 0, right: 25),
+          child: InkWell(
+            child: Icon(Icons.filter_list),
+            onTap: onTap,
+          ),
+        ),
+      ],
+    );
+  }
+
   static Widget getAppBar({String text = 'Digi Café Admin'}) {
     return AppBar(
       backgroundColor: colors.buttonColor,

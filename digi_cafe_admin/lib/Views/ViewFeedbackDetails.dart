@@ -231,15 +231,16 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                                 onPressed: _feedbackDetails.reply != null
                                     ? null
                                     : () async {
-                                        print('hjds');
                                         setState(() {
                                           _buttonPressed = true;
                                         });
                                         await _orderUIController
                                             .submitReply(
+                                              text:details.text,
                                                 feedbackID: details.id,
                                                 reply: replyController.text,
-                                                type: widget.type)
+                                                type: widget.type,
+                                                email: details.email)
                                             .then((value) {
                                           setState(() {
                                             _buttonPressed = false;

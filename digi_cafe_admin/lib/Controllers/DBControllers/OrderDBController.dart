@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:digi_cafe_admin/Model/Order.dart';
 import 'package:digi_cafe_admin/Model/OrderItem.dart';
 import 'package:digi_cafe_admin/Model/FoodItem.dart';
+import 'FirebaseCloudMessaging.dart';
 import 'package:intl/intl.dart';
 
 class OrderDBController {
@@ -262,7 +263,11 @@ class OrderDBController {
   }
 
   Future<void> submitReply(
-      {String feedbackID, String reply, String type}) async {
+      {String feedbackID,
+      String reply,
+      String type,
+      String email,
+      String text}) async {
     type == 'complaint'
         ? await firestoreInstance
             .collection('Complaints')
@@ -276,5 +281,24 @@ class OrderDBController {
             .updateData({
             "reply": reply,
           });
+
+    QuerySnapshot querySnapshot = await firestoreInstance
+        .collection('Person')
+        .where('email', isEqualTo: '$email')
+        .limit(1)
+        .getDocuments();
+
+    for (DocumentSnapshot element in querySnapshot.documents) {
+      sendNotifications('Admin\'s Response', element['tokenID'],
+          'Complain: $text\n' + 'Reply: $reply');
+      // sendNotifications('Complain: $text', element['tokenID'], 'Reply: $reply');
+    }
+  }
+
+  Future<void> sendNotifications(String title, var tokenId, String msg) async {
+    FirebaseCloudMessaging firebaseCloudMessaging =
+        new FirebaseCloudMessaging();
+
+    firebaseCloudMessaging.sendAndRetrieveMessage(title, msg, tokenId);
   }
 }

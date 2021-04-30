@@ -153,7 +153,6 @@ class FoodMenuDBController {
   }
 
   Future<void> sendNotifications() async {
-    print('yes');
     FirebaseCloudMessaging firebaseCloudMessaging =
         new FirebaseCloudMessaging();
     QuerySnapshot value = await firestoreInstance

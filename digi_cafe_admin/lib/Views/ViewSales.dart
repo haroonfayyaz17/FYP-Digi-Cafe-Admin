@@ -398,27 +398,8 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
   }
 
   Widget getSalesAppBar() {
-    return AppBar(
-      backgroundColor: colors.buttonColor,
-      title: MyWidgets.getTextWidget(
-          text: 'View Sales',
-          size: Fonts.label_size,
-          color: colors.appBarColor),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(top: 18.0, right: 20),
-          child: InkWell(
-            child: MyWidgets.getTextWidget(
-                text: 'Filter',
-                size: Fonts.label_size,
-                color: colors.appBarColor),
-            onTap: () {
-              createFilterAlert(context);
-            },
-          ),
-        ),
-      ],
-    );
+    return MyWidgets.getFilterAppBar(
+        text: 'View Sales', onTap: () => createFilterAlert(context));
   }
 }
 

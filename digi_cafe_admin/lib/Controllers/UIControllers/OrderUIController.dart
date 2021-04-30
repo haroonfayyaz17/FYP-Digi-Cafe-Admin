@@ -50,9 +50,17 @@ class OrderUIController {
   }
 
   Future<void> submitReply(
-      {String feedbackID, String reply, String type}) async {
+      {String feedbackID,
+      String reply,
+      String type,
+      String email,
+      String text}) async {
     await _orderDBController.submitReply(
-        feedbackID: feedbackID, reply: reply, type: type);
+        feedbackID: feedbackID,
+        reply: reply,
+        type: type,
+        email: email,
+        text: text);
   }
 
   Future<Order> fetchOrderData(String orderNo) async {

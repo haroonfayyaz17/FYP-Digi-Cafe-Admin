@@ -10,7 +10,6 @@ class FirebaseCloudMessaging {
   final String serverToken = ApiKeys.fcmServerToken;
   Future<Map<String, dynamic>> sendAndRetrieveMessage(
       String title, String body, String token) async {
-    print(token);
     await _firebaseMessaging.requestNotificationPermissions(
       const IosNotificationSettings(
           sound: true, badge: true, alert: true, provisional: false),

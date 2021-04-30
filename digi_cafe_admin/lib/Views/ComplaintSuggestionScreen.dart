@@ -18,7 +18,6 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
   BuildContext _buildContext;
 
   String chosenFilterCategory;
-  AnimationController _controller;
 
   StateSetter _setState;
 
@@ -191,26 +190,9 @@ class _ComplaintSuggestionScreen extends State<ComplaintSuggestionScreen>
   }
 
   Widget getSalesAppBar() {
-    return AppBar(
-      backgroundColor: colors.buttonColor,
-      title: MyWidgets.getTextWidget(
-          text: 'Complaints/Suggestions',
-          color: colors.appBarColor,
-          size: Fonts.label_size),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(top: 18.0, right: 20),
-          child: InkWell(
-            child: MyWidgets.getTextWidget(
-                text: 'Filter',
-                size: Fonts.label_size,
-                color: colors.appBarColor),
-            onTap: () {
-              createFilterAlert(context);
-            },
-          ),
-        ),
-      ],
+    return MyWidgets.getFilterAppBar(
+      text: 'Complaints/Suggestions',
+      onTap: () => createFilterAlert(context),
       bottom: TabBar(
         controller: _tabController,
         tabs: _kTabs,
