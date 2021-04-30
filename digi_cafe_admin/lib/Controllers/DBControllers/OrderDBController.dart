@@ -317,4 +317,13 @@ class OrderDBController {
       return value;
     });
   }
+
+  Stream<QuerySnapshot> getDuesDetailSnapshot({String docId}) {
+    Stream<QuerySnapshot> querySnapshot = firestoreInstance
+        .collection('Faculty')
+        .document(docId)
+        .collection('Dues')
+        .snapshots();
+    return querySnapshot;
+  }
 }

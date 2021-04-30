@@ -78,4 +78,8 @@ class OrderUIController {
   Future<void> sendNotifications(String title, var tokenId, String msg) async {
     _orderDBController.sendNotifications(title, tokenId, msg);
   }
+
+  Stream<QuerySnapshot> getDuesDetailSnapshot({String docId}) {
+    return _orderDBController.getDuesDetailSnapshot(docId: docId);
+  }
 }

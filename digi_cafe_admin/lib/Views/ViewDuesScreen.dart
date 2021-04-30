@@ -6,6 +6,7 @@ import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'LoadingWidget.dart';
 import 'MyWidgets.dart';
+import 'ViewDuesDetailScreen.dart';
 
 class ViewDuesScreen extends StatefulWidget {
   @override
@@ -64,8 +65,6 @@ class _ViewDuesScreen extends State<ViewDuesScreen> {
                         Dues dues = new Dues(
                             docID: duesDoc.documentID,
                             duesTotal: duesDoc.data['dues'].toDouble());
-                        // dues.setDocID = duesDoc.documentID;
-                        // print(dues.docID);
                         return FutureBuilder<DocumentSnapshot>(
                             future: uiController.getPersonData(dues.docID),
                             builder: (context, snap) {
@@ -86,11 +85,10 @@ class _ViewDuesScreen extends State<ViewDuesScreen> {
                                       MediaQuery.of(context).size.width * 0.31,
                                   child: InkWell(
                                     onTap: () async {
-                                      print(dues.getName);
-                                      // MyWidgets.changeScreen(
-                                      //     context: context,
-                                      //     screen: ViewFeedbackDetails(
-                                      //         'complaint', complaint.id));
+                                      MyWidgets.changeScreen(
+                                          context: context,
+                                          screen: ViewDuesDetailScreen(
+                                              docId: dues.docID));
                                     },
                                     child: Card(
                                       elevation: 8,
