@@ -6,8 +6,10 @@ import 'package:digi_cafe_admin/Views/ViewVouchers.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart';
 import 'package:flutter/cupertino.dart';
+import 'ViewDuesScreen.dart';
 import 'package:flutter/material.dart';
 import 'MyWidgets.dart';
+import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/Views/NominateItemsScreen.dart';
 import '../style/fonts_style.dart';
 
@@ -51,6 +53,7 @@ class __Dashboard extends State<_Dashboard> {
     _buildContext = context;
     // TODO: implement build
     return Scaffold(
+      backgroundColor: colors.backgroundColor,
       appBar: MyWidgets.getAppBar(),
       body: WillPopScope(
         onWillPop: () async {
@@ -143,6 +146,28 @@ class __Dashboard extends State<_Dashboard> {
                         onTap: () => MyWidgets.changeScreen(
                             context: context, screen: new ViewSales())),
                   ]),
+              Row(children: <Widget>[
+                MyWidgets.getDashboardItem(
+                    childWidth: 30,
+                    width: MediaQuery.of(context).size.width *
+                        Fonts.dashboardItem_widthFactor,
+                    height: MediaQuery.of(context).size.width *
+                        Fonts.dashboardItem_heightFactor,
+                    text: 'Manage Vouchers',
+                    child: Image.asset('images/manage_voucher.png'),
+                    onTap: () => MyWidgets.changeScreen(
+                        context: context, screen: new ViewVouchers())),
+                MyWidgets.getDashboardItem(
+                    childWidth: 30,
+                    width: MediaQuery.of(context).size.width *
+                        Fonts.dashboardItem_widthFactor,
+                    height: MediaQuery.of(context).size.width *
+                        Fonts.dashboardItem_heightFactor,
+                    text: 'View Dues',
+                    child: Image.asset('images/profile_pic.png'),
+                    onTap: () => MyWidgets.changeScreen(
+                        context: context, screen: new ViewDuesScreen())),
+              ]),
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -165,18 +190,6 @@ class __Dashboard extends State<_Dashboard> {
                             context: context,
                             screen: new ComplaintSuggestionScreen())),
                   ]),
-              Row(children: <Widget>[
-                MyWidgets.getDashboardItem(
-                    childWidth: 30,
-                    width: MediaQuery.of(context).size.width *
-                        Fonts.dashboardItem_widthFactor,
-                    height: MediaQuery.of(context).size.width *
-                        Fonts.dashboardItem_heightFactor,
-                    text: 'Manage Vouchers',
-                    child: Image.asset('images/manage_voucher.png'),
-                    onTap: () => MyWidgets.changeScreen(
-                        context: context, screen: new ViewVouchers())),
-              ]),
               SizedBox(
                 height: 10.0,
               ),

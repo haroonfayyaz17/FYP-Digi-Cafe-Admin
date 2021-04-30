@@ -4,202 +4,140 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-import 'package:digi_cafe_admin/Model/Complaint.dart';
 import 'LoadingWidget.dart';
-import 'package:intl/intl.dart';
 import 'MyWidgets.dart';
-import 'ViewFeedbackDetails.dart';
+import 'package:digi_cafe_admin/Model/Faculty.dart';
 
-class ComplaintScreen extends StatefulWidget {
-  ComplaintScreen({this.fromDate, this.toDate});
-  DateTime fromDate;
-  DateTime toDate;
-  _ComplaintScreen complaintState;
-
+class ViewDuesScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    complaintState = new _ComplaintScreen();
-    return complaintState;
-  }
+  State<StatefulWidget> createState() => new _ViewDuesScreen();
 }
 
-class _ComplaintScreen extends State<ComplaintScreen> {
-  String chosenComplaint = 'All';
-  OrderUIController orderUIController;
-  String time;
-  String convertDateTimeDisplay(String date) {
-    final DateFormat displayFormater = DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
-    final DateFormat serverFormater = DateFormat('dd-MM-yyyy');
-    final DateTime displayDate = displayFormater.parse(date);
-    final String formatted = serverFormater.format(displayDate);
-    return formatted;
-  }
-
-  final List<String> complaintCategories = [
-    'All',
-    "Food",
-    "Serving",
-    "Environment",
-    "Utensils",
-    "Management",
-    "Others",
-  ];
-  CreateFormFieldDropDown filterType;
-
-  final ValueNotifier<Stream<QuerySnapshot>> _counter =
-      ValueNotifier<Stream<QuerySnapshot>>(null);
+class _ViewDuesScreen extends State<ViewDuesScreen> {
   Stream<QuerySnapshot> querySnapshot;
-
+  OrderUIController uiController;
+  List<Faculty> cardsList = new List<Faculty>();
   @override
   void initState() {
     super.initState();
-    orderUIController = new OrderUIController();
-    _counter.value = orderUIController.getComplaintsSnapshot();
-    filterType = new CreateFormFieldDropDown(
-      dropDownList: complaintCategories,
-      icon: Icons.feedback,
-      title: 'Complaint Category',
-      type: 'complaint',
-      chosenType: 'All',
-      complaintCallback: () {
-        getQuerySnapshot(filterType.chosenType);
-      },
-    );
+    uiController = new OrderUIController();
+
+    querySnapshot = uiController.getDuesSnapshot();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    //
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
-            child: Container(height: 57, child: filterType),
-          ),
-          ValueListenableBuilder(
-            builder: (BuildContext context, Stream<QuerySnapshot> querySnapshot,
-                Widget child) {
-              return StreamBuilder<QuerySnapshot>(
-                stream: querySnapshot,
-                builder: (context, snapshot) {
-                  return !snapshot.hasData
-                      ? LoadingWidget()
-                      : ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            DocumentSnapshot complaintDoc =
-                                snapshot.data.documents[index];
-
-                            Complaint complaint = new Complaint(
-                                complaintDoc.documentID.toString(),
-                                complaintDoc.data["feedback"],
-                                complaintDoc.data["status"],
-                                complaintDoc.data["date"].toDate(),
-                                complaintDoc.data["category"]);
-                            return Container(
-                              margin: EdgeInsets.only(left: 10, top: 10),
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: MediaQuery.of(context).size.width * 0.22,
-                              child: InkWell(
-                                onDoubleTap: () async {
-                                  await changeStatus(
-                                      complaint.id, complaint.status);
-                                },
-                                onTap: () async {
-                                  complaint.status == 'unread'
-                                      ? await orderUIController
-                                          .changeComplaintStatus(
-                                              complaint.id, 'read')
-                                      : null;
-                                  MyWidgets.changeScreen(
-                                      context: context,
-                                      screen: ViewFeedbackDetails(
-                                          'complaint', complaint.id));
-                                },
-                                child: Card(
-                                  elevation: 8,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 10),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        Row(
+    return Scaffold(
+      appBar: MyWidgets.getFilterAppBar(
+          text: 'View Dues',
+          child: Icons.notifications,
+          onTap: () {
+            MyWidgets.showConfirmationDialog(context,
+                text: 'Do you want to notify all persons?', callback: () async {
+              print(cardsList.length);
+              for (int i = 0; i < cardsList.length; i++) {
+                await uiController.sendNotifications(
+                    'Pending Dues',
+                    cardsList[i].Dob,
+                    'Dear ${cardsList[i].Name}, you have Rs. ${cardsList[i].getDues()} pending dues. Kindly pay them as soon as possible.');
+              }
+            });
+          }),
+      backgroundColor: colors.backgroundColor,
+      body: SingleChildScrollView(
+        child: FutureBuilder<List<Faculty>>(
+            future: uiController.getPersonData(),
+            builder: (context, snap) {
+              if (!snap.hasData) {
+                return LoadingWidget();
+              } else {
+                return StreamBuilder<QuerySnapshot>(
+                    stream: querySnapshot,
+                    builder: (context, snapshot) {
+                      cardsList = new List<Faculty>();
+                      return !snapshot.hasData
+                          ? LoadingWidget()
+                          : ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: snapshot.data.documents.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                DocumentSnapshot duesDoc =
+                                    snapshot.data.documents[index];
+                                int ind =
+                                    getListIndex(duesDoc.documentID, snap.data);
+                                Faculty f;
+                                if (ind != -1)
+                                  f = new Faculty(
+                                      snap.data[ind].Name,
+                                      snap.data[ind].EmailAddres,
+                                      duesDoc.documentID,
+                                      snap.data[ind].Dob,
+                                      '',
+                                      duesDoc.data['dues'],
+                                      '',
+                                      '');
+                                else
+                                  f = new Faculty('', '', duesDoc.documentID,
+                                      '', '', duesDoc.data['dues'], '', '');
+                                if (f.getDues() != 0) cardsList.add(f);
+                                return Container(
+                                  margin: EdgeInsets.only(
+                                      left: 10, top: 10, right: 10),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.31,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      print(f.Name);
+                                    },
+                                    child: Card(
+                                      elevation: 8,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 15, horizontal: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.start,
                                           children: <Widget>[
                                             MyWidgets.getTextWidget(
-                                                text: complaint.category,
-                                                weight: FontWeight.bold,
+                                                text: f.Name),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            MyWidgets.getTextWidget(
+                                                text: f.EmailAddres,
                                                 overflow:
                                                     TextOverflow.ellipsis),
-                                            Align(
-                                              alignment: Alignment.topRight,
-                                              child: MyWidgets.getTextWidget(
-                                                  text: convertDateTimeDisplay(
-                                                      complaint.time
-                                                          .toString()),
-                                                  weight: FontWeight.bold,
-                                                  size: Fonts.label_size,
-                                                  overflow:
-                                                      TextOverflow.ellipsis),
+                                            SizedBox(
+                                              height: 10,
                                             ),
+                                            MyWidgets.getTextWidget(
+                                                text: f.getDues().toString()),
                                           ],
                                         ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8.0),
-                                          child: Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: MyWidgets.getTextWidget(
-                                                text: complaint.text,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                          ),
-                                        ),
-                                        Spacer(flex: 2),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                  color: complaint.status == 'read'
-                                      // ? Colors.yellow[100]
-                                      ? Colors.orange[50]
-                                      : colors.backgroundColor,
-                                  //
-                                ),
-                              ),
+                                );
+                              },
                             );
-                          },
-                        );
-                },
-              );
-            },
-            valueListenable: _counter,
-            child: const Text('Good job!'),
-          )
-        ],
+                    });
+              }
+            }),
       ),
     );
   }
 
-  void getQuerySnapshot(String newValue) async {
-    if (newValue == 'All')
-      _counter.value = orderUIController.getComplaintsSnapshot(
-          fromDate: widget.fromDate, toDate: widget.toDate);
-    else
-      _counter.value = orderUIController.getComplaintsSnapshot(
-          newValue: newValue, fromDate: widget.fromDate, toDate: widget.toDate);
-  }
-
-  Future<void> changeStatus(String id, String status) async {
-    status == 'read'
-        ? await orderUIController.changeComplaintStatus(id, 'unread')
-        : await orderUIController.changeComplaintStatus(id, 'read');
+  int getListIndex(String docID, List<Faculty> list) {
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].Gender == docID) return i;
+    }
+    return -1;
   }
 }

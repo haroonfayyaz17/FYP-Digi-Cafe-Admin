@@ -16,7 +16,10 @@ class MyWidgets {
   }
 
   static Widget getFilterAppBar(
-      {String text, VoidCallback onTap, Widget bottom = null}) {
+      {String text,
+      VoidCallback onTap,
+      Widget bottom = null,
+      var child = Icons.filter_list}) {
     return AppBar(
       bottom: bottom,
       backgroundColor: colors.buttonColor,
@@ -26,7 +29,7 @@ class MyWidgets {
         Padding(
           padding: const EdgeInsets.only(top: 0, right: 25),
           child: InkWell(
-            child: Icon(Icons.filter_list),
+            child: Icon(child),
             onTap: onTap,
           ),
         ),
@@ -114,16 +117,20 @@ class MyWidgets {
       height: height,
       child: InkWell(
         child: Card(
+          elevation: 7,
           child: Column(children: <Widget>[
             Container(
               width: width - childWidth,
               height: height - 30,
               child: child,
             ),
-            getTextWidget(
-                text: text,
-                color: colors.labelColor,
-                size: Fonts.label_size - 1),
+            FittedBox(
+              child: getTextWidget(
+                  text: text,
+                  color: colors.labelColor,
+                  size: Fonts.label_size,
+                  overflow: TextOverflow.ellipsis),
+            ),
           ]),
         ),
         onTap: onTap,

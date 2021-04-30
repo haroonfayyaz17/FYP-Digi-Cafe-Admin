@@ -38,8 +38,7 @@ class EmployeeUIController {
   }
 
   Future<bool> updateEmployeeData(CafeEmployee employee) async {
-    bool result =
-        await _employeeDBController.updateEmployeeData(employee).then((value) {
+    await _employeeDBController.updateEmployeeData(employee).then((value) {
       return value;
     });
     // return result;

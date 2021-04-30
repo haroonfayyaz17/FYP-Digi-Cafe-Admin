@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digi_cafe_admin/Model/Voucher.dart';
 import 'package:digi_cafe_admin/Model/FoodItem.dart';
+import 'package:digi_cafe_admin/Model/Faculty.dart';
 import 'package:digi_cafe_admin/Model/Order.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/OrderDBController.dart';
 import 'package:digi_cafe_admin/Views/FeedbackDetailsClass.dart';
@@ -65,5 +66,19 @@ class OrderUIController {
 
   Future<Order> fetchOrderData(String orderNo) async {
     return await _orderDBController.getOrderItemsList(orderNo);
+  }
+
+  Stream<QuerySnapshot> getDuesSnapshot() {
+    return _orderDBController.getDuesSnapshot();
+  }
+
+  Future<List<Faculty>> getPersonData() async {
+    // print(docId);
+    return await _orderDBController.getPersonData();
+  }
+
+  Future<void> sendNotifications(String title, var tokenId, String msg) async {
+    print(tokenId);
+    _orderDBController.sendNotifications(title, tokenId, msg);
   }
 }

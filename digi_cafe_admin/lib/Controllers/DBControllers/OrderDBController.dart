@@ -6,6 +6,7 @@ import 'package:digi_cafe_admin/Model/OrderItem.dart';
 import 'package:digi_cafe_admin/Model/FoodItem.dart';
 import 'FirebaseCloudMessaging.dart';
 import 'package:intl/intl.dart';
+import 'package:digi_cafe_admin/Model/Faculty.dart';
 
 class OrderDBController {
   var firestoreInstance;
@@ -300,5 +301,28 @@ class OrderDBController {
         new FirebaseCloudMessaging();
 
     firebaseCloudMessaging.sendAndRetrieveMessage(title, msg, tokenId);
+  }
+
+  Stream<QuerySnapshot> getDuesSnapshot() {
+    Stream<QuerySnapshot> querySnapshot = firestoreInstance
+        .collection('Faculty')
+        .orderBy("dues", descending: true)
+        .snapshots();
+    return querySnapshot;
+  }
+
+  Future<List<Faculty>> getPersonData() async {
+    List<Faculty> faculty = new List<Faculty>();
+
+    QuerySnapshot querySnapshot = await firestoreInstance
+        .collection('Person')
+        .where('PType', isEqualTo: 'faculty')
+        .getDocuments();
+    for (DocumentSnapshot element in querySnapshot.documents) {
+      Faculty f = new Faculty(element.data['Name'], element.data['email'],
+          element.documentID, element.data['tokenID'], '', 0, '', '');
+      faculty.add(f);
+    }
+    return faculty;
   }
 }
