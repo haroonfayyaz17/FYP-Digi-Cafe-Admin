@@ -70,7 +70,7 @@ class _NominateItemsState extends State<NominateItemsState> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) if (snapshot.data) {}
                   // _showToast(context, 'Items Nom')
-                  return Container();
+                  return LoadingWidget();
                 },
                 future: _nominateSelectedItems(context),
               );

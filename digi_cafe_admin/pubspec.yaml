@@ -35,6 +35,7 @@ dependencies:
   flutter_icons: ^1.1.0
   flutter_launcher_icons: ^0.8.1
   lottie: ^0.7.0+1
+  readmore: ^1.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
@@ -68,6 +69,7 @@ flutter:
      - images/innerImages/chef.png
      - images/innerImages/cook_img.jpg
      - assets/no_data_found.json
+     - images/pay_dues.png
 
 
 

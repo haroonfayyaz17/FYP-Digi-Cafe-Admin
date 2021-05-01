@@ -27,7 +27,7 @@ class MyWidgets {
           text: text, size: Fonts.label_size, color: colors.appBarColor),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(top: 0, right: 25),
+          padding: const EdgeInsets.only(top: 0, right: 10),
           child: InkWell(
             child: Icon(child),
             onTap: onTap,
@@ -37,7 +37,8 @@ class MyWidgets {
     );
   }
 
-  static Widget getAppBar({String text = 'Digi Café Admin'}) {
+  static Widget getAppBar(
+      {String text = 'Digi Café Admin', VoidCallback onTap, var child = null}) {
     return AppBar(
       backgroundColor: colors.buttonColor,
       title: Text(
@@ -47,6 +48,17 @@ class MyWidgets {
           fontSize: Fonts.label_size,
         ),
       ),
+      actions: [
+        child != null
+            ? Padding(
+                padding: const EdgeInsets.only(top: 0, right: 10),
+                child: InkWell(
+                  child: child,
+                  onTap: onTap,
+                ),
+              )
+            : Container()
+      ],
     );
   }
 
@@ -205,12 +217,35 @@ class MyWidgets {
   static TextStyle getTextStyle(
       {var size = Fonts.heading2_size,
       FontWeight weight = FontWeight.normal,
-      var color = colors.buttonTextColor}) {
+      var color = colors.buttonTextColor,
+      var bgColor = null}) {
     return TextStyle(
       color: color,
+      backgroundColor: bgColor,
       fontFamily: Fonts.default_font,
       fontWeight: weight,
       fontSize: size,
+    );
+  }
+
+  static getPopMenu(
+      {Function(String) onSelected = null,
+      @required List<String> list,
+      String text = ''}) {
+    return getAppBar(
+      text: text,
+      child: PopupMenuButton<String>(
+        icon: Icon(Icons.filter_list),
+        onSelected: onSelected,
+        itemBuilder: (BuildContext context) {
+          return list.map((String choice) {
+            return PopupMenuItem<String>(
+              value: choice,
+              child: getTextWidget(text: choice),
+            );
+          }).toList();
+        },
+      ),
     );
   }
 
@@ -393,6 +428,7 @@ class _TextFormDate extends State<TextFormDate> {
         controller: widget.controller,
         readOnly: true,
         autofocus: true,
+        cursorColor: colors.buttonColor,
         textInputAction: TextInputAction.next,
         onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
         textCapitalization: TextCapitalization.words,

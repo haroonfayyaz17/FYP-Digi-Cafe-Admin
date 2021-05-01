@@ -2,6 +2,7 @@ import 'package:digi_cafe_admin/Views/ComplaintSuggestionScreen.dart';
 import 'package:digi_cafe_admin/Views/ViewEmployees.dart';
 import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
 import 'package:digi_cafe_admin/Views/ViewSales.dart';
+import 'CheckReviews.dart';
 import 'package:digi_cafe_admin/Views/ViewVouchers.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart';
@@ -164,7 +165,7 @@ class __Dashboard extends State<_Dashboard> {
                     height: MediaQuery.of(context).size.width *
                         Fonts.dashboardItem_heightFactor,
                     text: 'View Dues',
-                    child: Image.asset('images/profile_pic.png'),
+                    child: Image.asset('images/pay_dues.png'),
                     onTap: () => MyWidgets.changeScreen(
                         context: context, screen: new ViewDuesScreen())),
               ]),
@@ -178,7 +179,10 @@ class __Dashboard extends State<_Dashboard> {
                             Fonts.dashboardItem_heightFactor,
                         text: 'Check Reviews',
                         child: Image.asset('images/review.png'),
-                        onTap: () {}),
+                        onTap: () {
+                          MyWidgets.changeScreen(
+                              context: context, screen: CheckReviewsScreen());
+                        }),
                     MyWidgets.getDashboardItem(
                         width: MediaQuery.of(context).size.width *
                             Fonts.dashboardItem_widthFactor,

@@ -56,100 +56,106 @@ class _SuggestionScreen extends State<SuggestionScreen> {
             builder: (BuildContext context, Stream<QuerySnapshot> querySnapshot,
                 Widget child) {
               return StreamBuilder<QuerySnapshot>(
-                stream: querySnapshot,
-                builder: (context, snapshot) {
-                  return !snapshot.hasData
-                      ? LoadingWidget()
-                      : ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            DocumentSnapshot complaintDoc =
-                                snapshot.data.documents[index];
+                  stream: querySnapshot,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active) {
+                      return !snapshot.hasData
+                          ? LoadingWidget()
+                          : ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: snapshot.data.documents.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                DocumentSnapshot complaintDoc =
+                                    snapshot.data.documents[index];
 
-                            Suggestion complaint = new Suggestion(
-                              complaintDoc.documentID.toString(),
-                              complaintDoc.data[
-                                  "suggestion"], //backend se ara snapshot main
-                              complaintDoc.data["status"],
-                              complaintDoc.data["date"].toDate(),
-                            );
+                                Suggestion complaint = new Suggestion(
+                                  complaintDoc.documentID.toString(),
+                                  complaintDoc.data[
+                                      "suggestion"], //backend se ara snapshot main
+                                  complaintDoc.data["status"],
+                                  complaintDoc.data["date"].toDate(),
+                                );
 
-                            return Container(
-                              margin: EdgeInsets.only(left: 10, top: 10),
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: MediaQuery.of(context).size.width * 0.22,
-                              child: InkWell(
-                                onDoubleTap: () async {
-                                  await changeStatus(
-                                      complaint.id, complaint.status);
-                                },
-                                onTap: () async {
-                                  complaint.status == 'unread'
-                                      ? await orderUIController
-                                          .changeSuggestionStatus(
-                                              complaint.id, 'read')
-                                      : null;
-                                  MyWidgets.changeScreen(
-                                      context: context,
-                                      screen: ViewFeedbackDetails(
-                                          'suggestion', complaint.id));
-                                },
-                                child: Card(
-                                  elevation: 8,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 10),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        Row(
+                                return Container(
+                                  margin: EdgeInsets.only(left: 10, top: 10),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.22,
+                                  child: InkWell(
+                                    onDoubleTap: () async {
+                                      await changeStatus(
+                                          complaint.id, complaint.status);
+                                    },
+                                    onTap: () async {
+                                      complaint.status == 'unread'
+                                          ? await orderUIController
+                                              .changeSuggestionStatus(
+                                                  complaint.id, 'read')
+                                          : null;
+                                      MyWidgets.changeScreen(
+                                          context: context,
+                                          screen: ViewFeedbackDetails(
+                                              'suggestion', complaint.id));
+                                    },
+                                    child: Card(
+                                      elevation: 8,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 15, horizontal: 10),
+                                        child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceEvenly,
                                           children: <Widget>[
-                                            Align(
-                                              alignment: Alignment.topLeft,
-                                              child: MyWidgets.getTextWidget(
-                                                  text: convertDateTimeDisplay(
-                                                      complaint.time
-                                                          .toString()),
-                                                  weight: FontWeight.bold,
-                                                  size: Fonts.label_size,
-                                                  overflow:
-                                                      TextOverflow.ellipsis),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Align(
+                                                  alignment: Alignment.topLeft,
+                                                  child: MyWidgets.getTextWidget(
+                                                      text:
+                                                          convertDateTimeDisplay(
+                                                              complaint.time
+                                                                  .toString()),
+                                                      weight: FontWeight.bold,
+                                                      size: Fonts.label_size,
+                                                      overflow: TextOverflow
+                                                          .ellipsis),
+                                                ),
+                                              ],
                                             ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0),
+                                              child: Align(
+                                                alignment: Alignment.bottomLeft,
+                                                child: MyWidgets.getTextWidget(
+                                                    text: complaint.text,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                              ),
+                                            ),
+                                            Spacer(flex: 2),
                                           ],
                                         ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8.0),
-                                          child: Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: MyWidgets.getTextWidget(
-                                                text: complaint.text,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                          ),
-                                        ),
-                                        Spacer(flex: 2),
-                                      ],
+                                      ),
+                                      color: complaint.status == 'read'
+                                          // ? Colors.yellow[100]
+                                          ? Colors.orange[50]
+                                          : colors.backgroundColor,
+                                      //
                                     ),
                                   ),
-                                  color: complaint.status == 'read'
-                                      // ? Colors.yellow[100]
-                                      ? Colors.orange[50]
-                                      : colors.backgroundColor,
-                                  //
-                                ),
-                              ),
+                                );
+                              },
                             );
-                          },
-                        );
-                },
-              );
+                    } else
+                      return LoadingWidget();
+                  });
             },
             valueListenable: _counter,
             child: const Text('Good job!'),

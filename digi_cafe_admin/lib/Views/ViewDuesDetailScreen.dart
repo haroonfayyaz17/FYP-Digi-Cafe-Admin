@@ -39,67 +39,70 @@ class _ViewDuesDetailScreen extends State<ViewDuesDetailScreen> {
         child: StreamBuilder<QuerySnapshot>(
             stream: querySnapshot,
             builder: (context, snapshot) {
-              return !snapshot.hasData
-                  ? LoadingWidget()
-                  : ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        DocumentSnapshot duesDoc =
-                            snapshot.data.documents[index];
+              if (snapshot.connectionState == ConnectionState.active) {
+                return !snapshot.hasData
+                    ? LoadingWidget()
+                    : ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          DocumentSnapshot duesDoc =
+                              snapshot.data.documents[index];
 
-                        String docID = duesDoc.documentID;
+                          String docID = duesDoc.documentID;
 
-                        return FutureBuilder<Order>(
-                            future: uiController.fetchOrderData(docID),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Container();
-                              } else {
-                                return Container(
-                                  margin: EdgeInsets.only(left: 10, top: 10),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.28,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      MyWidgets.changeScreen(
-                                          context: context,
-                                          screen: ViewOrderDetails(docID));
-                                    },
-                                    child: Card(
-                                      elevation: 8,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            MyWidgets.getTextWidget(
-                                                text: 'Order No: ${docID}',
-                                                weight: FontWeight.bold),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            MyWidgets.getTextWidget(
-                                                text: 'Amount: ' +
-                                                    snapshot.data.totalAmount
-                                                        .toString()),
-                                          ],
+                          return FutureBuilder<Order>(
+                              future: uiController.fetchOrderData(docID),
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Container();
+                                } else {
+                                  return Container(
+                                    margin: EdgeInsets.only(left: 10, top: 10),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                    height: MediaQuery.of(context).size.width *
+                                        0.28,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        MyWidgets.changeScreen(
+                                            context: context,
+                                            screen: ViewOrderDetails(docID));
+                                      },
+                                      child: Card(
+                                        elevation: 8,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              MyWidgets.getTextWidget(
+                                                  text: 'Order No: ${docID}',
+                                                  weight: FontWeight.bold),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              MyWidgets.getTextWidget(
+                                                  text: 'Amount: ' +
+                                                      snapshot.data.totalAmount
+                                                          .toString()),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }
-                            });
-                      });
+                                  );
+                                }
+                              });
+                        });
+              } else
+                return LoadingWidget();
             }),
       ),
     );

@@ -97,33 +97,36 @@ class __ViewVouchers extends State<_ViewVouchers> {
               child: StreamBuilder<QuerySnapshot>(
                 stream: querySnapshot,
                 builder: (context, snapshot) {
-                  return !snapshot.hasData
-                      ? LoadingWidget()
-                      : ListView.builder(
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot voucher =
-                                snapshot.data.documents[index];
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    return !snapshot.hasData
+                        ? LoadingWidget()
+                        : ListView.builder(
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (context, index) {
+                              DocumentSnapshot voucher =
+                                  snapshot.data.documents[index];
 
-                            // var url = null;
-                            // storageReference.getDownloadURL().then((fileURL) {
-                            //   url = fileURL;
-                            //   print(fileURL);
-                            // });
-                            // var imgURL = loadPic(voucher.documentID);
-                            // print(url);
-                            Widget widget = VoucherItemWidget(
-                              discount: voucher.data['discount'],
-                              expiryDate: voucher.data['validity'],
-                              minimumSpend: voucher.data['minimumSpend'],
-                              voucherID: voucher.documentID,
-                              title: voucher.data['title'],
-                              context: context,
-                            );
+                              // var url = null;
+                              // storageReference.getDownloadURL().then((fileURL) {
+                              //   url = fileURL;
+                              //   print(fileURL);
+                              // });
+                              // var imgURL = loadPic(voucher.documentID);
+                              // print(url);
+                              Widget widget = VoucherItemWidget(
+                                discount: voucher.data['discount'],
+                                expiryDate: voucher.data['validity'],
+                                minimumSpend: voucher.data['minimumSpend'],
+                                voucherID: voucher.documentID,
+                                title: voucher.data['title'],
+                                context: context,
+                              );
 
-                            return widget;
-                          },
-                        );
+                              return widget;
+                            },
+                          );
+                  } else
+                    return LoadingWidget();
                 },
               ),
             ),

@@ -88,44 +88,46 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
           children: <Widget>[
             Flexible(
               child: StreamBuilder<QuerySnapshot>(
-                stream: querySnapshot,
-                builder: (context, snapshot) {
-                  return !snapshot.hasData
-                      ? LoadingWidget()
-                      : ListView.builder(
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot dish =
-                                snapshot.data.documents[index];
-                            Widget widget = MenuItemWidget(
-                                quantity: dish.data['stockLeft'],
-                                foodImg: dish.data['imgURL'],
-                                category: dish.data['category'],
-                                foodID: dish.documentID,
-                                price: dish.data['price'].toString(),
-                                description: dish.data['description'],
-                                name: dish.data['name']);
+                  stream: querySnapshot,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active) {
+                      return !snapshot.hasData
+                          ? LoadingWidget()
+                          : ListView.builder(
+                              itemCount: snapshot.data.documents.length,
+                              itemBuilder: (context, index) {
+                                DocumentSnapshot dish =
+                                    snapshot.data.documents[index];
+                                Widget widget = MenuItemWidget(
+                                    quantity: dish.data['stockLeft'],
+                                    foodImg: dish.data['imgURL'],
+                                    category: dish.data['category'],
+                                    foodID: dish.documentID,
+                                    price: dish.data['price'].toString(),
+                                    description: dish.data['description'],
+                                    name: dish.data['name']);
 
-                            Widget x = Column(
-                              children: [
-                                index > 0
-                                    ? snapshot.data.documents[index - 1]
-                                                .data['category'] !=
-                                            dish.data['category']
-                                        ? getTextWidget(
-                                            capitalize(dish.data['category']))
-                                        : Container()
-                                    : getTextWidget(
-                                        capitalize(dish.data['category'])),
-                                widget,
-                              ],
+                                Widget x = Column(
+                                  children: [
+                                    index > 0
+                                        ? snapshot.data.documents[index - 1]
+                                                    .data['category'] !=
+                                                dish.data['category']
+                                            ? getTextWidget(capitalize(
+                                                dish.data['category']))
+                                            : Container()
+                                        : getTextWidget(
+                                            capitalize(dish.data['category'])),
+                                    widget,
+                                  ],
+                                );
+
+                                return x;
+                              },
                             );
-
-                            return x;
-                          },
-                        );
-                },
-              ),
+                    } else
+                      return LoadingWidget();
+                  }),
             ),
           ]),
     );

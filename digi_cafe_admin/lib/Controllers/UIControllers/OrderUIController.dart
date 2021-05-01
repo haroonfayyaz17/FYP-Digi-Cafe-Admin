@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:digi_cafe_admin/Model/OrderItem.dart';
 import 'package:digi_cafe_admin/Model/Voucher.dart';
 import 'package:digi_cafe_admin/Model/FoodItem.dart';
 import 'package:digi_cafe_admin/Model/Order.dart';
@@ -81,5 +82,17 @@ class OrderUIController {
 
   Stream<QuerySnapshot> getDuesDetailSnapshot({String docId}) {
     return _orderDBController.getDuesDetailSnapshot(docId: docId);
+  }
+
+  Stream<QuerySnapshot> getOrderReviewsSnapshot({int no}) {
+    return _orderDBController.getOrderReviewsSnapshot(no: no);
+  }
+
+  Future<DocumentSnapshot> getFoodItemData(var docId) async {
+    return await _orderDBController.getFoodItemData(docId);
+  }
+
+  Stream<QuerySnapshot> getOrderSnapshot(docID) {
+    return _orderDBController.getOrderSnapshot(docID);
   }
 }

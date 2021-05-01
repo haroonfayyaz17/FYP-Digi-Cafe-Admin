@@ -87,7 +87,7 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
     );
     filterType = new CreateFormFieldDropDown(
       dropDownList: <String>['Daily', 'Monthly', 'Yearly'],
-      icon: Icons.filter,
+      icon: Icons.filter_list,
       title: 'Filter Type',
     );
   }
@@ -157,109 +157,115 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                                 _totalOrdersAmount.value = totalAmount;
                                 _totalOrderss.value = totalOrders;
                               });
-                              if (snapshot.hasData) {
-                                List<SalesViewItems> listItems = new List();
-                                double amount = 0, orders = 0;
-                                for (int count = 0;
-                                    count < snapshot.data.documents.length;
-                                    count++) {
-                                  DocumentSnapshot element =
-                                      snapshot.data.documents[count];
-                                  String docID = element.documentID;
-                                  if (filterType.chosenType == 'Monthly') {
-                                    DateTime date =
-                                        element.data['date'].toDate();
+                              if (snapshot.connectionState ==
+                                  ConnectionState.active) {
+                                if (snapshot.hasData) {
+                                  List<SalesViewItems> listItems = new List();
+                                  double amount = 0, orders = 0;
+                                  for (int count = 0;
+                                      count < snapshot.data.documents.length;
+                                      count++) {
+                                    DocumentSnapshot element =
+                                        snapshot.data.documents[count];
+                                    String docID = element.documentID;
+                                    if (filterType.chosenType == 'Monthly') {
+                                      DateTime date =
+                                          element.data['date'].toDate();
 
-                                    docID = getAlphabeticalMonth(
-                                        date.month - 1, date.year);
+                                      docID = getAlphabeticalMonth(
+                                          date.month - 1, date.year);
+                                    }
+                                    SalesViewItems items = new SalesViewItems(
+                                        docID,
+                                        // element.data['date'],
+                                        element.data['totalOrders'].toString(),
+                                        element.data['totalAmount']);
+                                    if (items.orders != null) {
+                                      orders +=
+                                          double.parse(items.orders.toString());
+                                    }
+                                    if (items.total != null) {
+                                      amount +=
+                                          double.parse(items.total.toString());
+                                    }
+                                    listItems.add(items);
                                   }
-                                  SalesViewItems items = new SalesViewItems(
-                                      docID,
-                                      // element.data['date'],
-                                      element.data['totalOrders'].toString(),
-                                      element.data['totalAmount']);
-                                  if (items.orders != null) {
-                                    orders +=
-                                        double.parse(items.orders.toString());
-                                  }
-                                  if (items.total != null) {
-                                    amount +=
-                                        double.parse(items.total.toString());
-                                  }
-                                  listItems.add(items);
-                                }
 
-                                print(totalAmount);
-                                totalOrders = 'Total Orders: ' +
-                                    orders.toInt().toString();
-                                totalAmount = 'Total Amount: ' +
-                                    amount.toStringAsFixed(1);
+                                  print(totalAmount);
+                                  totalOrders = 'Total Orders: ' +
+                                      orders.toInt().toString();
+                                  totalAmount = 'Total Amount: ' +
+                                      amount.toStringAsFixed(1);
 
-                                _ds = new NominateItemsDataSource(listItems);
+                                  _ds = new NominateItemsDataSource(listItems);
 
-                                return listItems.length == 0
-                                    ? ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                            minHeight: MediaQuery.of(context)
-                                                .size
-                                                .height),
-                                        child: Center(
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.75,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.75,
-                                            child: Lottie.asset(
-                                              'assets/no_data_found.json',
-                                              controller: _controller,
-                                              onLoaded: (composition) {
-                                                // Configure the AnimationController with the duration of the
-                                                // Lottie file and start the animation.
-                                                _controller
-                                                  ..duration =
-                                                      composition.duration
-                                                  ..forward();
-                                              },
+                                  return listItems.length == 0
+                                      ? ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                              minHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height),
+                                          child: Center(
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.75,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.75,
+                                              child: Lottie.asset(
+                                                'assets/no_data_found.json',
+                                                controller: _controller,
+                                                onLoaded: (composition) {
+                                                  // Configure the AnimationController with the duration of the
+                                                  // Lottie file and start the animation.
+                                                  _controller
+                                                    ..duration =
+                                                        composition.duration
+                                                    ..forward();
+                                                },
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      )
-                                    : SingleChildScrollView(
-                                        child: Theme(
-                                          data: Theme.of(context).copyWith(
-                                              dividerColor: colors.buttonColor),
-                                          child: PaginatedDataTable(
-                                            header: Container(),
-                                            dataRowHeight:
-                                                MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.7 /
-                                                    _rowsPerPage,
-                                            rowsPerPage: _rowsPerPage,
-                                            availableRowsPerPage: <int>[
-                                              5,
-                                              10,
-                                              20
-                                            ],
-                                            onRowsPerPageChanged: (int value) {
-                                              setState(() {
-                                                _rowsPerPage = value;
-                                              });
-                                            },
-                                            showCheckboxColumn: false,
-                                            columns: kTableColumns,
-                                            source: _ds,
+                                        )
+                                      : SingleChildScrollView(
+                                          child: Theme(
+                                            data: Theme.of(context).copyWith(
+                                                dividerColor:
+                                                    colors.buttonColor),
+                                            child: PaginatedDataTable(
+                                              header: Container(),
+                                              dataRowHeight:
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.7 /
+                                                      _rowsPerPage,
+                                              rowsPerPage: _rowsPerPage,
+                                              availableRowsPerPage: <int>[
+                                                5,
+                                                10,
+                                                20
+                                              ],
+                                              onRowsPerPageChanged:
+                                                  (int value) {
+                                                setState(() {
+                                                  _rowsPerPage = value;
+                                                });
+                                              },
+                                              showCheckboxColumn: false,
+                                              columns: kTableColumns,
+                                              source: _ds,
+                                            ),
                                           ),
-                                        ),
-                                      );
-                              } else {
+                                        );
+                                } else {
+                                  return LoadingWidget();
+                                }
+                              } else
                                 return LoadingWidget();
-                              }
                             },
                           );
                         },
@@ -366,12 +372,10 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
                               .then((value) {
                             querySnapshot1 = value;
                           });
-                          print(querySnapshot1);
                           Navigator.of(context, rootNavigator: true).pop();
                           setState(() {
                             querySnapshot = querySnapshot1;
                           });
-                          print(querySnapshot == querySnapshot1);
                           _counter.value = querySnapshot1;
                         } else {
                           setState(() {

@@ -51,82 +51,98 @@ class _ViewDuesScreen extends State<ViewDuesScreen> {
         child: StreamBuilder<QuerySnapshot>(
             stream: querySnapshot,
             builder: (context, snapshot) {
-              cardsList = new List<Dues>();
-              return !snapshot.hasData
-                  ? LoadingWidget()
-                  : ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        DocumentSnapshot duesDoc =
-                            snapshot.data.documents[index];
-                        Dues dues = new Dues(
-                            docID: duesDoc.documentID,
-                            duesTotal: duesDoc.data['dues'].toDouble());
-                        return FutureBuilder<DocumentSnapshot>(
-                            future: uiController.getPersonData(dues.docID),
-                            builder: (context, snap) {
-                              if (!snap.hasData) {
-                                return Container();
-                              } else {
-                                if (snap.data.exists) {
-                                  dues.setEmail = snap.data['email'];
-                                  dues.setName = snap.data['Name'];
-                                  dues.setTokenId = snap.data['tokenID'];
-                                }
-                                cardsList.add(dues);
-                                return Container(
-                                  margin: EdgeInsets.only(left: 10, top: 10),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.31,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      MyWidgets.changeScreen(
-                                          context: context,
-                                          screen: ViewDuesDetailScreen(
-                                              docId: dues.docID));
-                                    },
-                                    child: Card(
-                                      elevation: 8,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            MyWidgets.getTextWidget(
-                                                text: dues.getName),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            MyWidgets.getTextWidget(
-                                                text: dues.getEmail,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            MyWidgets.getTextWidget(
-                                                text: dues.getDuesTotal
-                                                    .toInt()
-                                                    .toString()),
-                                          ],
+              if (snapshot.connectionState == ConnectionState.active) {
+                cardsList = new List<Dues>();
+                return !snapshot.hasData
+                    ? LoadingWidget()
+                    : ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data.documents.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          DocumentSnapshot duesDoc =
+                              snapshot.data.documents[index];
+                          Dues dues = new Dues(
+                              docID: duesDoc.documentID,
+                              duesTotal: duesDoc.data['dues'].toDouble());
+                          return FutureBuilder<DocumentSnapshot>(
+                              future: uiController.getPersonData(dues.docID),
+                              builder: (context, snap) {
+                                if (!snap.hasData) {
+                                  return Container();
+                                } else {
+                                  if (snap.data.exists) {
+                                    dues.setEmail = snap.data['email'];
+                                    dues.setName = snap.data['Name'];
+                                    dues.setTokenId = snap.data['tokenID'];
+                                  }
+                                  cardsList.add(dues);
+                                  return Container(
+                                    margin: EdgeInsets.only(
+                                        left: 5, top: 10, right: 5),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.9,
+                                    height: MediaQuery.of(context).size.width *
+                                        0.28,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        MyWidgets.changeScreen(
+                                            context: context,
+                                            screen: ViewDuesDetailScreen(
+                                                docId: dues.docID));
+                                      },
+                                      child: Card(
+                                        elevation: 8,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: <Widget>[
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  MyWidgets.getTextWidget(
+                                                      text: dues.getName,
+                                                      size: Fonts.heading1_size,
+                                                      color: colors.buttonColor,
+                                                      weight: FontWeight.bold),
+                                                  MyWidgets.getTextWidget(
+                                                      size: Fonts.heading3_size,
+                                                      text: 'Rs. ' +
+                                                          dues.getDuesTotal
+                                                              .toInt()
+                                                              .toString()),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              MyWidgets.getTextWidget(
+                                                  text: dues.getEmail,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }
-                            });
-                      },
-                    );
+                                  );
+                                }
+                              });
+                        },
+                      );
+              } else
+                return LoadingWidget();
             }),
       ),
     );

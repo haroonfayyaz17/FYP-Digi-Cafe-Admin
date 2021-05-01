@@ -84,99 +84,104 @@ class _ComplaintScreen extends State<ComplaintScreen> {
               return StreamBuilder<QuerySnapshot>(
                 stream: querySnapshot,
                 builder: (context, snapshot) {
-                  return !snapshot.hasData
-                      ? LoadingWidget()
-                      : ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            DocumentSnapshot complaintDoc =
-                                snapshot.data.documents[index];
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    return !snapshot.hasData
+                        ? LoadingWidget()
+                        : ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data.documents.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              DocumentSnapshot complaintDoc =
+                                  snapshot.data.documents[index];
 
-                            Complaint complaint = new Complaint(
-                                complaintDoc.documentID.toString(),
-                                complaintDoc.data["feedback"],
-                                complaintDoc.data["status"],
-                                complaintDoc.data["date"].toDate(),
-                                complaintDoc.data["category"]);
-                            return Container(
-                              margin: EdgeInsets.only(left: 10, top: 10),
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              height: MediaQuery.of(context).size.width * 0.22,
-                              child: InkWell(
-                                onDoubleTap: () async {
-                                  await changeStatus(
-                                      complaint.id, complaint.status);
-                                },
-                                onTap: () async {
-                                  complaint.status == 'unread'
-                                      ? await orderUIController
-                                          .changeComplaintStatus(
-                                              complaint.id, 'read')
-                                      : null;
-                                  MyWidgets.changeScreen(
-                                      context: context,
-                                      screen: ViewFeedbackDetails(
-                                          'complaint', complaint.id));
-                                },
-                                child: Card(
-                                  elevation: 8,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 10),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            MyWidgets.getTextWidget(
-                                                text: complaint.category,
-                                                weight: FontWeight.bold,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                            Align(
-                                              alignment: Alignment.topRight,
-                                              child: MyWidgets.getTextWidget(
-                                                  text: convertDateTimeDisplay(
-                                                      complaint.time
-                                                          .toString()),
+                              Complaint complaint = new Complaint(
+                                  complaintDoc.documentID.toString(),
+                                  complaintDoc.data["feedback"],
+                                  complaintDoc.data["status"],
+                                  complaintDoc.data["date"].toDate(),
+                                  complaintDoc.data["category"]);
+                              return Container(
+                                margin: EdgeInsets.only(left: 10, top: 10),
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.22,
+                                child: InkWell(
+                                  onDoubleTap: () async {
+                                    await changeStatus(
+                                        complaint.id, complaint.status);
+                                  },
+                                  onTap: () async {
+                                    complaint.status == 'unread'
+                                        ? await orderUIController
+                                            .changeComplaintStatus(
+                                                complaint.id, 'read')
+                                        : null;
+                                    MyWidgets.changeScreen(
+                                        context: context,
+                                        screen: ViewFeedbackDetails(
+                                            'complaint', complaint.id));
+                                  },
+                                  child: Card(
+                                    elevation: 8,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 10),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              MyWidgets.getTextWidget(
+                                                  text: complaint.category,
                                                   weight: FontWeight.bold,
-                                                  size: Fonts.label_size,
+                                                  overflow:
+                                                      TextOverflow.ellipsis),
+                                              Align(
+                                                alignment: Alignment.topRight,
+                                                child: MyWidgets.getTextWidget(
+                                                    text:
+                                                        convertDateTimeDisplay(
+                                                            complaint.time
+                                                                .toString()),
+                                                    weight: FontWeight.bold,
+                                                    size: Fonts.label_size,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 8.0),
+                                            child: Align(
+                                              alignment: Alignment.bottomLeft,
+                                              child: MyWidgets.getTextWidget(
+                                                  text: complaint.text,
                                                   overflow:
                                                       TextOverflow.ellipsis),
                                             ),
-                                          ],
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8.0),
-                                          child: Align(
-                                            alignment: Alignment.bottomLeft,
-                                            child: MyWidgets.getTextWidget(
-                                                text: complaint.text,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
                                           ),
-                                        ),
-                                        Spacer(flex: 2),
-                                      ],
+                                          Spacer(flex: 2),
+                                        ],
+                                      ),
                                     ),
+                                    color: complaint.status == 'read'
+                                        // ? Colors.yellow[100]
+                                        ? Colors.orange[50]
+                                        : colors.backgroundColor,
+                                    //
                                   ),
-                                  color: complaint.status == 'read'
-                                      // ? Colors.yellow[100]
-                                      ? Colors.orange[50]
-                                      : colors.backgroundColor,
-                                  //
                                 ),
-                              ),
-                            );
-                          },
-                        );
+                              );
+                            },
+                          );
+                  } else
+                    return LoadingWidget();
                 },
               );
             },

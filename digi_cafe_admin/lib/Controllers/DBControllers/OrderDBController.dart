@@ -107,10 +107,7 @@ class OrderDBController {
         .collection(filterType)
         .where("date", isGreaterThanOrEqualTo: fromDate)
         .where("date", isLessThanOrEqualTo: toDate)
-        // .orderBy('dateTime', descending: true)
-        // .where('category', isEqualTo: 'continental')
         .snapshots();
-    // print(querySnapshot.length);
 
     querySnapshot.listen((event) {
       print(event.documents.length);
@@ -127,14 +124,11 @@ class OrderDBController {
           .orderBy('category')
           .where("date", isGreaterThanOrEqualTo: fromDate)
           .where("date", isLessThanOrEqualTo: toDate)
-
-          // .where('category', isEqualTo: 'Serving')
           .snapshots();
     else {
       return firestoreInstance
           .collection('Complaints')
           .where('category', isEqualTo: '$newValue')
-          // .orderBy('category', descending: false)
           .where("date", isGreaterThanOrEqualTo: fromDate)
           .where("date", isLessThanOrEqualTo: toDate)
           .orderBy('date', descending: true)
@@ -163,8 +157,7 @@ class OrderDBController {
         .collection('Orders')
         .where('orderNo', isEqualTo: no)
         .getDocuments();
-    // print(snapshot.documents.first.data['amount']);
-    // print(snapshot.documents.length);
+
     DocumentSnapshot element;
 
     if (snapshot.documents.length != 0) {
@@ -210,8 +203,6 @@ class OrderDBController {
         .orderBy('date', descending: true)
         .where("date", isGreaterThanOrEqualTo: fromDate)
         .where("date", isLessThanOrEqualTo: toDate)
-
-        // .where('category', isEqualTo: 'Serving')
         .snapshots();
   }
 
@@ -291,7 +282,6 @@ class OrderDBController {
     for (DocumentSnapshot element in querySnapshot.documents) {
       sendNotifications('Admin\'s Response', element['tokenID'],
           'Complain: $text\n' + 'Reply: $reply');
-      // sendNotifications('Complain: $text', element['tokenID'], 'Reply: $reply');
     }
   }
 
@@ -325,5 +315,45 @@ class OrderDBController {
         .collection('Dues')
         .snapshots();
     return querySnapshot;
+  }
+
+  Stream<QuerySnapshot> getOrderReviewsSnapshot({int no}) {
+    Stream<QuerySnapshot> querySnapshot;
+    int l = 1, h = 5;
+    if (no == 2) {
+      l = 3;
+      h = 5;
+    } else if (no == 3) {
+      l = 1;
+      h = 3;
+    }
+    querySnapshot = firestoreInstance
+        .collection('Orders')
+        .where("rating", isGreaterThanOrEqualTo: l)
+        .where("rating", isLessThanOrEqualTo: h)
+        .orderBy('rating')
+        .orderBy('orderNo', descending: true)
+        .snapshots();
+    return querySnapshot;
+  }
+
+  Future<DocumentSnapshot> getFoodItemData(docId) async {
+    return await firestoreInstance
+        .collection('Food Menu')
+        .document('All')
+        .collection('Foods')
+        .document(docId)
+        .get()
+        .then((value) {
+      return value;
+    });
+  }
+
+  Stream<QuerySnapshot> getOrderSnapshot(docID) {
+    return firestoreInstance
+        .collection('Orders')
+        .document(docID)
+        .collection('Items')
+        .snapshots();
   }
 }

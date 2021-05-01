@@ -105,102 +105,108 @@ class __ViewEmployees extends State<_ViewEmployees> {
       children: <Widget>[
         Flexible(
           child: StreamBuilder<QuerySnapshot>(
-            stream: querySnapshot,
-            builder: (context, snapshot) {
-              return !snapshot.hasData
-                  ? LoadingWidget()
-                  : ListView.builder(
-                      itemCount: snapshot.data.documents.length,
-                      itemBuilder: (context, index) {
-                        DocumentSnapshot element =
-                            snapshot.data.documents[index];
-                        CafeEmployee employee = new CafeEmployee(
-                            element.data["Name"],
-                            element.data["email"],
-                            element.data["gender"],
-                            element.data["DOB"],
-                            "",
-                            element.data["phoneNo"],
-                            element.data["PType"],
-                            element.data['imgURL']);
-                        // print('${element.data['imgURL']}');
-                        employee.id = element.documentID;
-                        return GestureDetector(
-                          onTap: () {
-                            //TODO: Update Employee
-                            MyWidgets.changeScreen(
-                                context: context,
-                                screen: AddEmployeeScreen(
-                                    employee: employee, actionType: "update"));
-                          },
-                          onLongPress: () {
-                            //Delete Employee
-                            MyWidgets.showConfirmationDialog(context,
-                                text: 'Do you want to remove Employee?',
-                                callback: () async {
-                              bool result = await uiController
-                                  .deleteEmployee(employee.id);
+              stream: querySnapshot,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.active) {
+                  return !snapshot.hasData
+                      ? LoadingWidget()
+                      : ListView.builder(
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot element =
+                                snapshot.data.documents[index];
+                            CafeEmployee employee = new CafeEmployee(
+                                element.data["Name"],
+                                element.data["email"],
+                                element.data["gender"],
+                                element.data["DOB"],
+                                "",
+                                element.data["phoneNo"],
+                                element.data["PType"],
+                                element.data['imgURL']);
+                            // print('${element.data['imgURL']}');
+                            employee.id = element.documentID;
+                            return GestureDetector(
+                              onTap: () {
+                                  MyWidgets.changeScreen(
+                                      context: context,
+                                    screen: AddEmployeeScreen(
+                                        employee: employee,
+                                        actionType: "update"));
+                              },
+                              onLongPress: () {
+                                //Delete Employee
+                                MyWidgets.showConfirmationDialog(context,
+                                    text: 'Do you want to remove Employee?',
+                                    callback: () async {
+                                  bool result = await uiController
+                                      .deleteEmployee(employee.id);
 
-                              if (result.toString() == "true") {
-                                _showToast(_buildContext,
-                                    "Employee deleted successfully");
-                              } else {
-                                _showToast(_buildContext,
-                                    "Employee delete unsuccessful");
-                              }
-                            });
-                          },
-                          child: Container(
-                            constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width - 10,
-                            ),
-                            child: Card(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.all(10.0),
-                                    height: 120.0,
-                                    width: 120,
-                                    child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(100.0),
-                                        child: employee.imgURL == null
-                                            ? Image.asset(
-                                                'images/profile_pic.png')
-                                            : Image.network(employee.imgURL)),
-                                  ),
-                                  Column(
+                                  if (result.toString() == "true") {
+                                    _showToast(_buildContext,
+                                        "Employee deleted successfully");
+                                  } else {
+                                    _showToast(_buildContext,
+                                        "Employee delete unsuccessful");
+                                  }
+                                });
+                              },
+                              child: Container(
+                                constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width - 10,
+                                ),
+                                child: Card(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width -
-                                              150,
-                                          child: MyWidgets.getTextWidget(
-                                              text: employee.Name,
-                                              size: Fonts.heading1_size,
-                                              weight: FontWeight.w500)),
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width -
-                                              150,
-                                          child: MyWidgets.getTextWidget(
-                                            text: employee.userType,
-                                            size: Fonts.heading2_size,
-                                          )),
+                                        margin: EdgeInsets.all(10.0),
+                                        height: 120.0,
+                                        width: 120,
+                                        child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(100.0),
+                                            child: employee.imgURL == null
+                                                ? Image.asset(
+                                                    'images/profile_pic.png')
+                                                : Image.network(
+                                                    employee.imgURL)),
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: <Widget>[
+                                          Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  150,
+                                              child: MyWidgets.getTextWidget(
+                                                  text: employee.Name,
+                                                  size: Fonts.heading1_size,
+                                                  weight: FontWeight.w500)),
+                                          Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width -
+                                                  150,
+                                              child: MyWidgets.getTextWidget(
+                                                text: employee.userType,
+                                                size: Fonts.heading2_size,
+                                              )),
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        );
-                      });
-            },
-          ),
+                            );
+                          });
+                }
+                else
+                return LoadingWidget();
+              }),
         ),
       ],
     );

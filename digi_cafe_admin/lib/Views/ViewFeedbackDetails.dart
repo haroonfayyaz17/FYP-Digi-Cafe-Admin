@@ -236,7 +236,7 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                                         });
                                         await _orderUIController
                                             .submitReply(
-                                              text:details.text,
+                                                text: details.text,
                                                 feedbackID: details.id,
                                                 reply: replyController.text,
                                                 type: widget.type,
