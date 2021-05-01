@@ -42,7 +42,7 @@ class _ViewDuesScreen extends State<ViewDuesScreen> {
                 await uiController.sendNotifications(
                     'Pending Dues',
                     cardsList[i].getTokenId,
-                    'Dear ${cardsList[i].getName}, you have Rs. ${cardsList[i].getDuesTotal.toInt().toString()} pending dues. Kindly pay them as soon as possible.');
+                    'Dear ${cardsList[i].getName}, Rs. ${cardsList[i].getDuesTotal.toInt().toString()} are due on your side. Kindly pay them as soon as possible.');
               }
             });
           }),
