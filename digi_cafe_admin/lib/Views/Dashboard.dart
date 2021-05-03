@@ -22,14 +22,6 @@ class Dashboard extends StatelessWidget {
     return _Dashboard(
       email: email,
     );
-    // return WillPopScope(
-    //   onWillPop: () {
-    //     //exit(0);
-    //     Navigator.pop(context);
-    //   },
-    //   child: _dashboard(),
-    // );
-    // );
   }
 }
 
@@ -55,7 +47,10 @@ class __Dashboard extends State<_Dashboard> {
     // TODO: implement build
     return Scaffold(
       backgroundColor: colors.backgroundColor,
-      appBar: MyWidgets.getAppBar(),
+      appBar: MyWidgets.getFilterAppBar(
+          text: 'Digi Café Admin',
+          child: Icons.power_settings_new,
+          onTap: () => showDialogBox()),
       body: WillPopScope(
         onWillPop: () async {
           showDialogBox();
@@ -194,16 +189,6 @@ class __Dashboard extends State<_Dashboard> {
                             context: context,
                             screen: new ComplaintSuggestionScreen())),
                   ]),
-              SizedBox(
-                height: 10.0,
-              ),
-              MyWidgets.getButton(
-                text: 'Log Out',
-                color: Colors.red,
-                radius: 10,
-                width: MediaQuery.of(context).size.width - 10,
-                onTap: () => showDialogBox(),
-              ),
             ],
           ),
         ),

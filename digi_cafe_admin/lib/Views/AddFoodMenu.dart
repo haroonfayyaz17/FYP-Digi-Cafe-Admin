@@ -112,7 +112,6 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                           count < snapshot.data.documents.length;
                           count++) {
                         DocumentSnapshot dish = snapshot.data.documents[count];
-
                         listItems.add(dish.data['name']);
                       }
                       categoryOptionList = listItems;
@@ -285,7 +284,7 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                             autofocus: true,
                                             inputFormatters: [
                                               DecimalTextInputFormatter(
-                                                  decimalRange: 0)
+                                                  decimalRange: 1)
                                             ],
                                             keyboardType: TextInputType.number,
                                             textInputAction:
@@ -369,8 +368,8 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                               ? MyWidgets.getButton(
                                                   text: 'Remove',
                                                   color: Colors.red[400],
-                                                  onTap: () =>
-                                                      clearSelection())
+                                                  onTap: () => clearSelection(),
+                                                  width: 140)
                                               : Container(),
                                         ],
                                       ),

@@ -40,6 +40,8 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
   var count = 0;
   Stream<QuerySnapshot> querySnapshot;
 
+  BuildContext buildContext;
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +51,7 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
 
   @override
   Widget build(BuildContext context) {
+    this.buildContext = context;
     // TODO: implement build
     return Scaffold(
       floatingActionButton: SpeedDial(
@@ -99,13 +102,15 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
                                 DocumentSnapshot dish =
                                     snapshot.data.documents[index];
                                 Widget widget = MenuItemWidget(
-                                    quantity: dish.data['stockLeft'],
-                                    foodImg: dish.data['imgURL'],
-                                    category: dish.data['category'],
-                                    foodID: dish.documentID,
-                                    price: dish.data['price'].toString(),
-                                    description: dish.data['description'],
-                                    name: dish.data['name']);
+                                  quantity: dish.data['stockLeft'],
+                                  foodImg: dish.data['imgURL'],
+                                  category: dish.data['category'],
+                                  foodID: dish.documentID,
+                                  price: dish.data['price'].toString(),
+                                  description: dish.data['description'],
+                                  name: dish.data['name'],
+                                  context: buildContext,
+                                );
 
                                 Widget x = Column(
                                   children: [

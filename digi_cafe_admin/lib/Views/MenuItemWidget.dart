@@ -16,6 +16,7 @@ class MenuItemWidget extends StatefulWidget {
   var foodImg, price, description, name, foodID;
   var category;
   var quantity;
+  BuildContext context;
 
   MenuItemWidget(
       {@required this.foodImg,
@@ -24,7 +25,8 @@ class MenuItemWidget extends StatefulWidget {
       @required this.name,
       @required this.price,
       this.category,
-      this.quantity});
+      this.quantity,
+      this.context});
 
   @override
   _MenuItemWidgetState createState() => _MenuItemWidgetState();
@@ -81,11 +83,12 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                   //TODO: Delete Food
                   bool result =
                       await _foodMenuUIController.deleteFoodItem(widget.foodID);
-
+                  for (int i = 0; i < 2000; i++) {}
                   if (result.toString() == "true") {
-                    _showToast(_buildContext, "Food Item deleted successfully");
+                    _showToast(
+                        widget.context, "Food Item deleted successfully");
                   } else {
-                    _showToast(_buildContext, "Food Item delete unsuccessful");
+                    _showToast(widget.context, "Food Item delete unsuccessful");
                   }
                 });
               },
@@ -229,10 +232,11 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                       await _foodMenuUIController.updateFoodItemQuantity(
                           widget.foodID, double.parse(quantityController.text));
 
+                  print(result);
                   if (result) {
-                    _showToast(context, 'Quantity Updated Successfully');
+                    _showToast(widget.context, 'Quantity Updated Successfully');
                   } else {
-                    _showToast(context, 'Quantity Update Unsuccessful');
+                    _showToast(widget.context, 'Quantity Update Unsuccessful');
                   }
                   Navigator.of(context, rootNavigator: true).pop();
                 } catch (ex) {

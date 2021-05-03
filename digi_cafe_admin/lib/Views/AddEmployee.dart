@@ -675,7 +675,8 @@ class _ImageWidgetState extends State<ImageWidget> {
                     ? MyWidgets.getButton(
                         text: 'Remove',
                         color: Colors.red[400],
-                        onTap: () => clearSelection())
+                        onTap: () => clearSelection(),
+                        width: 140)
                     : Container(),
               ],
             ),

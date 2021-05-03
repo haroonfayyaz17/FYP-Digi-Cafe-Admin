@@ -27,7 +27,7 @@ class MyWidgets {
           text: text, size: Fonts.label_size, color: colors.appBarColor),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(top: 0, right: 10),
+          padding: const EdgeInsets.only(top: 0, right: 20),
           child: InkWell(
             child: Icon(child),
             onTap: onTap,
@@ -464,10 +464,11 @@ class _TextFormDate extends State<TextFormDate> {
 }
 
 class DecimalTextInputFormatter extends TextInputFormatter {
-  DecimalTextInputFormatter({this.decimalRange})
-      : assert(decimalRange == null || decimalRange == 0);
+  DecimalTextInputFormatter({this.decimalRange, this.allowed = false})
+      : assert(decimalRange == null || decimalRange > 0);
 
   final int decimalRange;
+  final bool allowed;
   bool isNumeric(String s) {
     if (s == null) {
       return false;
@@ -486,7 +487,7 @@ class DecimalTextInputFormatter extends TextInputFormatter {
     if (decimalRange != null) {
       String value = newValue.text;
       if (isNumeric(value)) {
-        if (value.contains(".")) {
+        if (value.contains(".") && allowed) {
           // if (value.substring(value.indexOf(".") + 1).contains(".")) {
           //   truncated = oldValue.text;
           //   newSelection = oldValue.selection;

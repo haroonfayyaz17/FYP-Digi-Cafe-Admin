@@ -37,7 +37,6 @@ class _ViewDuesScreen extends State<ViewDuesScreen> {
           onTap: () {
             MyWidgets.showConfirmationDialog(context,
                 text: 'Do you want to notify all persons?', callback: () async {
-              print(cardsList.length);
               for (int i = 0; i < cardsList.length; i++) {
                 await uiController.sendNotifications(
                     'Pending Dues',

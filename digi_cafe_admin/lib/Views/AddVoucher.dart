@@ -152,7 +152,8 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
                                 keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.next,
                                 inputFormatters: [
-                                  DecimalTextInputFormatter(decimalRange: 0)
+                                  DecimalTextInputFormatter(
+                                      decimalRange: 1, allowed: true)
                                 ],
                                 controller: edtMinimumAmount,
                                 onFieldSubmitted: (_) =>
@@ -173,7 +174,8 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
                                     FocusScope.of(context).nextFocus(),
                                 onChanged: _discountChanged,
                                 inputFormatters: [
-                                  DecimalTextInputFormatter(decimalRange: 0)
+                                  DecimalTextInputFormatter(
+                                      decimalRange: 1, allowed: true)
                                 ],
                                 controller: edtDiscountController,
                                 textCapitalization: TextCapitalization.words,
@@ -184,8 +186,7 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
                             Padding(
                                 padding: EdgeInsets.only(top: 50),
                                 child: MyWidgets.getButton(
-                                    text: btnText,
-                                    onTap: () => _addVoucher())),
+                                    text: btnText, onTap: () => _addVoucher())),
                           ],
                         ),
                       ),

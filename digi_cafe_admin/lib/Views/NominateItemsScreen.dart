@@ -83,6 +83,8 @@ class _NominateItemsState extends State<NominateItemsState> {
               : StreamBuilder<QuerySnapshot>(
                   stream: querySnapshot,
                   builder: (context, snapshot) {
+                    int count = 0;
+
                     if (snapshot.hasData) {
                       List<NominateItems> listItems = new List();
                       for (int count = 0;
@@ -93,13 +95,21 @@ class _NominateItemsState extends State<NominateItemsState> {
                             dish.documentID,
                             dish.data['name'],
                             dish.data['price'].toDouble(),
-                            dish.data['stockLeft'].toDouble());
+                            dish.data['stockLeft'].toDouble(),
+                            dish.data['isNominated']);
                         listItems.add(items);
                       }
-                      _ds = new NominateItemsDataSource(listItems);
+                      for (int i = 0; i < listItems.length; i++) {
+                        if (listItems[i].selected == true) {
+                          count += 1;
+                        }
+                      }
+                      _ds = new NominateItemsDataSource(listItems, count);
                       // return Container(
                       //   color: colors.backgroundColor,
                       // );
+                      _ds.notifyListeners();
+
                       return SingleChildScrollView(
                         child: Theme(
                           data: Theme.of(context)
@@ -149,11 +159,8 @@ class _NominateItemsState extends State<NominateItemsState> {
       }
     }
     if (_itemsSelected.length > 0) {
-      final DateTime now = DateTime.now();
-      final DateFormat formatter = DateFormat('dd-MM-yyyy');
-      final String formatted = formatter.format(now);
-      bool result = await _foodMenuUIController.addNominatedItems(
-          _itemsSelected, formatted);
+      bool result =
+          await _foodMenuUIController.addNominatedItems(_itemsSelected);
       setState(() {
         _displayLoadingWidget = false;
       });
@@ -214,20 +221,22 @@ const kTableColumns = <DataColumn>[
 
 ////// Data class.
 class NominateItems {
-  NominateItems(this.itemID, this.itemName, this.price, this.quantity);
+  NominateItems(
+      this.itemID, this.itemName, this.price, this.quantity, this.selected);
   var itemID;
   final String itemName;
   final double quantity;
   final double price;
-  bool selected = false;
+  bool selected;
 }
 
 ////// Data source class for obtaining row data for PaginatedDataTable.
 class NominateItemsDataSource extends DataTableSource {
-  NominateItemsDataSource(List<NominateItems> nominate) {
+  NominateItemsDataSource(List<NominateItems> nominate, int count) {
     nominateItems = nominate;
+    _selectedCount = count;
   }
-  int _selectedCount = 0;
+  int _selectedCount;
   List<NominateItems> nominateItems;
 
   @override

@@ -5,6 +5,7 @@ import 'package:digi_cafe_admin/Model/FoodItem.dart';
 import 'package:digi_cafe_admin/Model/Voucher.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FoodMenuDBController {
@@ -22,18 +23,19 @@ class FoodMenuDBController {
   Future<bool> addFoodMenu(FoodMenu foodMenu, File image) async {
     var done = false;
     try {
+      DateTime dateTime = DateTime.now();
+      DateTime dt = new DateTime(dateTime.year, dateTime.month, dateTime.day);
       FoodItem _foodItem = foodMenu.foodList.first;
-      await firestoreInstance
-          .collection('Food Menu')
-          .document("$documentName")
-          .collection('$collectionName')
-          .add({
+      await firestoreInstance.collection('Food Menu').add({
         "category": foodMenu.category,
         "name": _foodItem.name,
         "description": _foodItem.description,
         "price": _foodItem.price,
         "rating": 0,
         "review": null,
+        "lastUpdated": dt,
+        "votes": 0,
+        "isNominated": false,
         "stockLeft": _foodItem.stockLeft,
       }).then((value) async {
         // print(value.documentID);
@@ -46,8 +48,6 @@ class FoodMenuDBController {
         taskSnapshot.ref.getDownloadURL().then((value) async {
           await firestoreInstance
               .collection('Food Menu')
-              .document("$documentName")
-              .collection("$collectionName")
               .document(id)
               .updateData({"imgURL": value});
         });
@@ -66,8 +66,6 @@ class FoodMenuDBController {
       FoodItem _foodItem = foodMenu.foodList.first;
       await firestoreInstance
           .collection('Food Menu')
-          .document("$documentName")
-          .collection("$collectionName")
           .document(_foodItem.id)
           .updateData({
         "category": foodMenu.category,
@@ -87,8 +85,6 @@ class FoodMenuDBController {
             print("Done: $value");
             await firestoreInstance
                 .collection('Food Menu')
-                .document("$documentName")
-                .collection("$collectionName")
                 .document(_foodItem.id)
                 .updateData({"imgURL": value});
           });
@@ -104,8 +100,6 @@ class FoodMenuDBController {
   Future<bool> deleteFoodItem(String id) async {
     await firestoreInstance
         .collection('Food Menu')
-        .document("$documentName")
-        .collection("$collectionName")
         .document(id)
         .delete()
         .catchError((e) {
@@ -153,26 +147,27 @@ class FoodMenuDBController {
   }
 
   Future<void> sendNotifications() async {
+    var date = DateTime.now();
+
+    var dateTxt = DateFormat('EEEE, d MMM, yyyy')
+        .format(date); // prints Tuesday, 10 Dec, 2019
+
     FirebaseCloudMessaging firebaseCloudMessaging =
         new FirebaseCloudMessaging();
     QuerySnapshot value = await firestoreInstance
         .collection('Person')
         .where('PType', whereIn: ["faculty", "student"]).getDocuments();
     for (DocumentSnapshot element in value.documents) {
-      firebaseCloudMessaging.sendAndRetrieveMessage("Items Nominated",
-          "The new items are nominated", element.data['tokenID']);
+      firebaseCloudMessaging.sendAndRetrieveMessage(
+          "Items Nominated",
+          "Hi! ${element.data['Name']}, Your wait is over. The new items for $dateTxt are nominated. Vote for your favorite food items to see them in the upcoming menu",
+          element.data['tokenID']);
     }
   }
 
   Future<bool> addVoucher(Voucher voucher) async {
     var done = false;
     try {
-      // await firestoreInstance.collection('Category').add({
-      //   "name": categoryName,
-      // }).then((value) async {
-      //   done = true;
-      // });
-
       await firestoreInstance.collection('Voucher').add({
         "title": voucher.getTitle,
         "validity": voucher.validity,
@@ -190,10 +185,6 @@ class FoodMenuDBController {
               .collection("Voucher")
               .document(id)
               .setData({
-            // "title": voucher.title,
-            // "validity": voucher.validity,
-            // 'discount': voucher.discount,
-            // 'minimumSpend': voucher.minimumSpend,
             'usedOn': 'null',
           });
         }
@@ -208,12 +199,6 @@ class FoodMenuDBController {
   Future<bool> updateVoucher(Voucher voucher) async {
     var done = false;
     try {
-      // await firestoreInstance.collection('Category').add({
-      //   "name": categoryName,
-      // }).then((value) async {
-      //   done = true;
-      // });
-
       await firestoreInstance
           .collection('Voucher')
           .document(voucher.getId)
@@ -223,24 +208,6 @@ class FoodMenuDBController {
         'discount': voucher.discount,
         'minimumSpend': voucher.minimumSpend,
       }).then((value1) async {
-        // var id = value1.documentID;
-        // QuerySnapshot value =
-        //     await firestoreInstance.collection('Person').getDocuments();
-        // for (DocumentSnapshot element in value.documents) {
-        //   firestoreInstance
-        //       .collection('Person')
-        //       .document(element.documentID)
-        //       .collection("Voucher")
-        //       .document(id)
-        //       .setData({
-        //     "title": voucher.title,
-        //     "validity": voucher.validity,
-        //     'discount': voucher.discount,
-        //     'minimumSpend': voucher.minimumSpend,
-        //     'usedOn': 'null',
-        //   });
-        //
-        // }
         done = true;
       });
     } catch (e) {
@@ -268,8 +235,6 @@ class FoodMenuDBController {
     try {
       await firestoreInstance
           .collection('Food Menu')
-          .document("$documentName")
-          .collection("$collectionName")
           .document(_foodItem.id)
           .updateData({
         "stockLeft": _foodItem.stockLeft,
@@ -285,8 +250,6 @@ class FoodMenuDBController {
   Stream<QuerySnapshot> getFoodMenuSnapshot() {
     Stream<QuerySnapshot> querySnapshot = firestoreInstance
         .collection('Food Menu')
-        .document('$documentName')
-        .collection('$collectionName')
         .orderBy('category', descending: false)
         // .where('category', isEqualTo: 'continental')
         .snapshots();
@@ -338,29 +301,37 @@ class FoodMenuDBController {
     return querySnapshot;
   }
 
-  Future<bool> addNominatedItems(
-      List<String> itemsSelected, String formatted) async {
+  Future<bool> addNominatedItems(List<String> itemsSelected) async {
+    DateTime dateTime = DateTime.now();
+    DateTime dt = new DateTime(dateTime.year, dateTime.month, dateTime.day);
     await firestoreInstance
         .collection('Food Menu')
-        .document("$nominatedItemsDocument")
-        .collection("$formatted")
         .getDocuments()
-        .then((snapshot) {
+        .then((snapshot) async {
       for (DocumentSnapshot doc in snapshot.documents) {
-        doc.reference.delete();
+        if (itemsSelected.contains(doc.documentID)) {
+          if (dt.compareTo(doc['lastUpdated'].toDate()) != 0) {
+            await firestoreInstance
+                .collection('Food Menu')
+                .document(doc.documentID)
+                .updateData(
+                    {"lastUpdated": dt, "isNominated": true, "votes": 0});
+          } else {
+            await firestoreInstance
+                .collection('Food Menu')
+                .document(doc.documentID)
+                .updateData({"isNominated": true});
+          }
+        } else {
+          await firestoreInstance
+              .collection('Food Menu')
+              .document(doc.documentID)
+              .updateData(
+                  {"lastUpdated": dt, "isNominated": false, "votes": 0});
+        }
       }
     });
 
-    for (int i = 0; i < itemsSelected.length; i++) {
-      await firestoreInstance
-          .collection('Food Menu')
-          .document("$nominatedItemsDocument")
-          .collection('$formatted')
-          .document(itemsSelected[i])
-          .setData({
-        "count": '0',
-      }, merge: true);
-    }
     sendNotifications();
 
     return Future.value(true);
