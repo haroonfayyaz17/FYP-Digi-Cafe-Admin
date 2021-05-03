@@ -95,7 +95,6 @@ class FoodMenuUIController {
   Stream<QuerySnapshot> getFoodMenuSnapshot() {
     return _foodMenuDBController.getFoodMenuSnapshot();
   }
-  
 
   Stream<QuerySnapshot> getCategorySnapshot() {
     return _foodMenuDBController.getCategorySnapshot();
@@ -105,14 +104,8 @@ class FoodMenuUIController {
     return _foodMenuDBController.getVoucherSnapshot();
   }
 
-  Stream<QuerySnapshot> getNominatedItemsSnapshot(String formatted) {
-    return _foodMenuDBController.getNominatedItemsSnapshot(formatted);
-  }
-
-  Future<bool> addNominatedItems(
-      List<String> itemsSelected) async {
-    bool result =
-        await _foodMenuDBController.addNominatedItems(itemsSelected);
+  Future<bool> addNominatedItems(List<String> itemsSelected) async {
+    bool result = await _foodMenuDBController.addNominatedItems(itemsSelected);
     return Future.value(result);
   }
 }

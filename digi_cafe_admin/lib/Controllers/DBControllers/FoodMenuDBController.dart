@@ -38,7 +38,6 @@ class FoodMenuDBController {
         "isNominated": false,
         "stockLeft": _foodItem.stockLeft,
       }).then((value) async {
-        // print(value.documentID);
         var id = value.documentID;
         StorageReference firebaseStorageRef = FirebaseStorage.instance
             .ref()
@@ -251,7 +250,6 @@ class FoodMenuDBController {
     Stream<QuerySnapshot> querySnapshot = firestoreInstance
         .collection('Food Menu')
         .orderBy('category', descending: false)
-        // .where('category', isEqualTo: 'continental')
         .snapshots();
     return querySnapshot;
   }
@@ -285,19 +283,8 @@ class FoodMenuDBController {
   }
 
   Stream<QuerySnapshot> getCategorySnapshot() {
-    Stream<QuerySnapshot> querySnapshot = firestoreInstance
-        .collection('Category')
-        // .where('category', isEqualTo: 'continental')
-        .snapshots();
-    return querySnapshot;
-  }
-
-  Stream<QuerySnapshot> getNominatedItemsSnapshot(String formatted) {
-    Stream<QuerySnapshot> querySnapshot = firestoreInstance
-        .collection('Food Menu')
-        .document("$nominatedItemsDocument")
-        .collection("$formatted")
-        .snapshots();
+    Stream<QuerySnapshot> querySnapshot =
+        firestoreInstance.collection('Category').snapshots();
     return querySnapshot;
   }
 
@@ -338,10 +325,8 @@ class FoodMenuDBController {
   }
 
   Stream<QuerySnapshot> getVoucherSnapshot() {
-    Stream<QuerySnapshot> querySnapshot = firestoreInstance
-        .collection('Voucher')
-        // .where('category', isEqualTo: 'continental')
-        .snapshots();
+    Stream<QuerySnapshot> querySnapshot =
+        firestoreInstance.collection('Voucher').snapshots();
     return querySnapshot;
   }
 }

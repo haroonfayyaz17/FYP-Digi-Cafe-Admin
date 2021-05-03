@@ -40,7 +40,6 @@ class _NominateItemsState extends State<NominateItemsState> {
   FoodMenuUIController _foodMenuUIController;
   NominateItemsDataSource _ds;
   Stream<QuerySnapshot> querySnapshot;
-  Stream<QuerySnapshot> selectedItemsSnapshot;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   BuildContext _buildContext;
@@ -50,8 +49,6 @@ class _NominateItemsState extends State<NominateItemsState> {
     super.initState();
     _foodMenuUIController = new FoodMenuUIController();
     querySnapshot = _foodMenuUIController.getFoodMenuSnapshot();
-    selectedItemsSnapshot =
-        _foodMenuUIController.getNominatedItemsSnapshot(null);
   }
 
   @override
