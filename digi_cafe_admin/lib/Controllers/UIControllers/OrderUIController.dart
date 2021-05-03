@@ -64,8 +64,8 @@ class OrderUIController {
         text: text);
   }
 
-  Future<Order> fetchOrderData(String orderNo) async {
-    return await _orderDBController.getOrderItemsList(orderNo);
+  Future<Order> fetchOrderData(String orderNo, {bool detail = false}) async {
+    return await _orderDBController.getOrderItemsList(orderNo, detail: detail);
   }
 
   Stream<QuerySnapshot> getDuesSnapshot() {

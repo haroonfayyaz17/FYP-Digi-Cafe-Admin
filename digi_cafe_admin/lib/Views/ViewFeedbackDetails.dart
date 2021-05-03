@@ -49,7 +49,11 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyWidgets.getAppBar(),
+      appBar: MyWidgets.getAppBar(
+          text: 'View ' +
+              widget.type[0].toUpperCase() +
+              widget.type.substring(1) +
+              ' Details'),
       backgroundColor: colors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(

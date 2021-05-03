@@ -136,7 +136,7 @@ class OrderDBController {
     }
   }
 
-  Future<Order> getOrderItemsList(String orderNo) async {
+  Future<Order> getOrderItemsList(String orderNo, {bool detail = false}) async {
     //This function sends list of order items that wer ordered before
     //and are nominated in todays date as well
     final DateTime now = DateTime.now();
@@ -157,36 +157,33 @@ class OrderDBController {
         .collection('Orders')
         .where('orderNo', isEqualTo: no)
         .getDocuments();
-
     DocumentSnapshot element;
-
     if (snapshot.documents.length != 0) {
       element = snapshot.documents.first;
       order.orderTime = element.data['dateTime'].toDate();
       order.totalAmount = element.data['amount'];
-
-      QuerySnapshot querySnapshot = await firestoreInstance
-          .collection('Orders')
-          .document(element.documentID)
-          .collection('Items')
-          .getDocuments();
-      List<OrderItem> list = new List();
-      for (DocumentSnapshot element in querySnapshot.documents) {
-        var doc = await firestoreInstance
-            .collection('Food Menu')
-            .document('All')
-            .collection('Foods')
+      if (detail) {
+        QuerySnapshot querySnapshot = await firestoreInstance
+            .collection('Orders')
             .document(element.documentID)
-            .get();
-
-        FoodItem foodItem = new FoodItem(
-            doc.documentID, doc.data['name'], '', '', doc.data['price'], 0);
-        var orderItemQuantity = element.data['quantity'];
-        list.add(new OrderItem(foodItem, orderItemQuantity));
+            .collection('Items')
+            .getDocuments();
+        List<OrderItem> list = new List();
+        for (DocumentSnapshot element in querySnapshot.documents) {
+          print(element.documentID);
+          DocumentSnapshot doc = await firestoreInstance
+              .collection('Food Menu')
+              .document(element.documentID)
+              .get();
+          if (!doc.exists) return order;
+          FoodItem foodItem = new FoodItem(
+              doc.documentID, doc.data['name'], '', '', doc.data['price'], 0);
+          var orderItemQuantity = element.data['quantity'];
+          list.add(new OrderItem(foodItem, orderItemQuantity));
+        }
+        order.orderItems = list;
       }
-      order.orderItems = list;
     }
-
     return order;
   }
 
@@ -340,8 +337,6 @@ class OrderDBController {
   Future<DocumentSnapshot> getFoodItemData(docId) async {
     return await firestoreInstance
         .collection('Food Menu')
-        .document('All')
-        .collection('Foods')
         .document(docId)
         .get()
         .then((value) {

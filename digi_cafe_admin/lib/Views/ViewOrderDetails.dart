@@ -35,7 +35,8 @@ class _ViewOrderDetailsState extends State<ViewOrderDetails> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: FutureBuilder<Order>(
-              future: _orderUIController.fetchOrderData(widget.orderNo),
+              future: _orderUIController.fetchOrderData(widget.orderNo,
+                  detail: true),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return LoadingWidget();

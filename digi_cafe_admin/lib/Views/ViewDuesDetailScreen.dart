@@ -51,6 +51,8 @@ class _ViewDuesDetailScreen extends State<ViewDuesDetailScreen> {
                           DocumentSnapshot duesDoc =
                               snapshot.data.documents[index];
 
+                          print(snapshot.data.documents.length);
+
                           String docID = duesDoc.documentID;
 
                           return FutureBuilder<Order>(
