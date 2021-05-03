@@ -50,11 +50,7 @@ class _ViewDuesDetailScreen extends State<ViewDuesDetailScreen> {
                         itemBuilder: (BuildContext context, int index) {
                           DocumentSnapshot duesDoc =
                               snapshot.data.documents[index];
-
-                          print(snapshot.data.documents.length);
-
                           String docID = duesDoc.documentID;
-
                           return FutureBuilder<Order>(
                               future: uiController.fetchOrderData(docID),
                               builder: (context, snapshot) {
