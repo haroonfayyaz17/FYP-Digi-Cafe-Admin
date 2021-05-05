@@ -33,6 +33,9 @@ class FoodMenuDBController {
         "price": _foodItem.price,
         "rating": 0,
         "review": null,
+        "totalOrders": 0,
+        "totalRatings": 0,
+        "deleted": false,
         "lastUpdated": dt,
         "votes": 0,
         "isNominated": false,
@@ -97,21 +100,15 @@ class FoodMenuDBController {
   }
 
   Future<bool> deleteFoodItem(String id) async {
-    await firestoreInstance
+    return await firestoreInstance
         .collection('Food Menu')
         .document(id)
-        .delete()
-        .catchError((e) {
-      print(e);
-      return false;
+        .updateData({
+      "deleted": true,
+      "isNominated": false,
+    }).then((value) async {
+      return true;
     });
-
-    StorageReference storageReferance = FirebaseStorage.instance.ref();
-    await storageReferance.child('Food Menu/${id}').delete().catchError((e) {
-      print(e);
-    });
-
-    return true;
   }
 
   Future<bool> deleteVoucher(String id) async {
@@ -249,6 +246,7 @@ class FoodMenuDBController {
   Stream<QuerySnapshot> getFoodMenuSnapshot() {
     Stream<QuerySnapshot> querySnapshot = firestoreInstance
         .collection('Food Menu')
+        .where('deleted', isEqualTo: false)
         .orderBy('category', descending: false)
         .snapshots();
     return querySnapshot;
@@ -261,12 +259,8 @@ class FoodMenuDBController {
           .collection('Category')
           .where('name', isEqualTo: '$categoryName')
           .getDocuments();
-      int count = 0;
-      for (DocumentSnapshot element in querySnapshot.documents) {
-        count++;
-        break;
-      }
-      if (count == 0) {
+
+      if (querySnapshot.documents.length == 0) {
         await firestoreInstance.collection('Category').add({
           "name": categoryName,
         }).then((value) async {
