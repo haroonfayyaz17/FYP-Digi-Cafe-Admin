@@ -112,7 +112,7 @@ class __SettingScreen extends State<_SettingScreen> {
                             textCapitalization: TextCapitalization.words,
                             decoration: MyWidgets.getTextFormDecoration(
                                 title: 'Selections Count',
-                                icon: Icons.confirmation_number),
+                                icon: Icons.select_all_rounded),
                           ),
                         ),
                         Padding(
