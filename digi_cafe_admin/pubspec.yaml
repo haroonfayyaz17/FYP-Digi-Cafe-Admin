@@ -24,6 +24,7 @@ dependencies:
   firebase_analytics: ^5.0.2
   firebase_messaging: ^6.0.16
   http: ^0.12.2
+  font_awesome_flutter: ^8.11.0
   image_picker: ^0.6.6+5
   splashscreen: ^1.2.0
   path_provider: ^1.6.24
@@ -95,3 +96,5 @@ flutter:
      - family:  PasswordCross
        fonts:
          - asset: customIcons/PasswordCross.ttf
+
+     

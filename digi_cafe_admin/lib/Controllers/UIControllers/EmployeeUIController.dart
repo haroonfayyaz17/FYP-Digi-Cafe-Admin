@@ -47,4 +47,14 @@ class EmployeeUIController {
   Stream<QuerySnapshot> getEmployeeSnapshot() {
     return _employeeDBController.getEmployeeSnapshot();
   }
+
+  Future<bool> saveSettings(
+      {String count, votes, String openingTime, String closingTime}) async {
+    return await _employeeDBController.saveSettings(
+        count, votes, openingTime, closingTime);
+  }
+
+  Future<DocumentSnapshot> getSettings() async {
+    return await _employeeDBController.getSettings();
+  }
 }

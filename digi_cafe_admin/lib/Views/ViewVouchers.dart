@@ -14,21 +14,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'VoucherItemWidget.dart';
 
-// ViewVouchers todaysMenu;
-
 class ViewVouchers extends StatelessWidget {
-  // var fm;
-
-  // ViewVouchers() {
-  //   final foodList = [
-  //     FoodItem('1', 'Biryani', 'Chicken Biryani', null, 120, 3),
-  //     FoodItem('1', 'Shawarma', 'Zinger Shawarma', null, 60, 5),
-  //     FoodItem('1', 'Sandwich', 'Egg & Chicken', null, 80, 10),
-  //     FoodItem('1', 'Sandwich', 'Vegetable & Chicken', null, 50, 3),
-  //   ];
-  //   todaysMenu = new ViewVouchers('All', foodList);
-  // }
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

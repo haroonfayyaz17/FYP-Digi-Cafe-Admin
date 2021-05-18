@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'ViewDuesScreen.dart';
 import 'package:flutter/material.dart';
 import 'MyWidgets.dart';
+import 'SettingScreen.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/Views/NominateItemsScreen.dart';
 import '../style/fonts_style.dart';
@@ -50,6 +51,9 @@ class __Dashboard extends State<_Dashboard> {
       appBar: MyWidgets.getFilterAppBar(
           text: 'Digi Café Admin',
           child: Icons.power_settings_new,
+          secondChild: Icons.settings,
+          secondTap: () =>
+              MyWidgets.changeScreen(context: context, screen: SettingScreen()),
           onTap: () => showDialogBox()),
       body: WillPopScope(
         onWillPop: () async {
@@ -87,7 +91,8 @@ class __Dashboard extends State<_Dashboard> {
                             maxWidth: MediaQuery.of(context).size.width * 0.6,
                           ),
                           child: MyWidgets.getTextWidget(
-                              text: '${widget.email}',
+                              text:
+                                  '${widget.email[0].toString().toUpperCase() + widget.email.toString().substring(1)}',
                               size: Fonts.heading3_size - 1,
                               overflow: TextOverflow.visible),
                         ),

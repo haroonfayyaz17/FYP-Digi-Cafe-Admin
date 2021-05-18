@@ -147,4 +147,57 @@ class EmployeeDBController {
         .snapshots();
     return querySnapshot;
   }
+
+  Future<bool> saveSettings(
+      String count, votes, String openingTime, String closingTime) async {
+    bool done;
+    await firestoreInstance
+        .collection('Settings')
+        .document('All')
+        .get()
+        .then((value) async {
+      if (value.exists) {
+        await firestoreInstance
+            .collection('Settings')
+            .document('All')
+            .updateData({
+          'selectionCount': count,
+          'minVotes': votes,
+          'openingTime': openingTime,
+          'closingTime': closingTime
+        }).then((value) {
+          print('tur');
+          done = true;
+        }).catchError((e) {
+          print(e);
+          done = false;
+        });
+      } else {
+        await firestoreInstance.collection('Settings').document('All').setData({
+          'selectionCount': count,
+          'minVotes': votes,
+          'openingTime': openingTime,
+          'closingTime': closingTime
+        }).then((value) {
+          done = true;
+        }).catchError((e) {
+          done = false;
+        });
+      }
+    });
+
+    return done;
+  }
+
+  Future<DocumentSnapshot> getSettings() async {
+    return await firestoreInstance
+        .collection('Settings')
+        .document('All')
+        .get()
+        .then((value) {
+      return value;
+    }).catchError((e) {
+      return null;
+    });
+  }
 }

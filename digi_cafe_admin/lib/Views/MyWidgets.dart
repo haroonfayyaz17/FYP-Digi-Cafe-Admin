@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class MyWidgets {
@@ -15,17 +16,39 @@ class MyWidgets {
         context, MaterialPageRoute(builder: (BuildContext context) => screen));
   }
 
-  static Widget getFilterAppBar(
-      {String text,
-      VoidCallback onTap,
-      Widget bottom = null,
-      var child = Icons.filter_list}) {
+  static Function timePicker({BuildContext context, Function(String) onTap}) {
+    DateTime now = DateTime.now();
+    showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: now.hour, minute: now.minute),
+    ).then((value) {
+      onTap(value.format(context));
+    });
+  }
+
+  static Widget getFilterAppBar({
+    String text,
+    VoidCallback onTap,
+    Widget bottom = null,
+    var child = Icons.filter_list,
+    var secondChild = null,
+    VoidCallback secondTap = null,
+  }) {
     return AppBar(
       bottom: bottom,
       backgroundColor: colors.buttonColor,
       title: getTextWidget(
           text: text, size: Fonts.label_size, color: colors.appBarColor),
       actions: [
+        secondChild != null
+            ? Padding(
+                padding: const EdgeInsets.only(top: 0, right: 20),
+                child: InkWell(
+                  child: Icon(secondChild),
+                  onTap: secondTap,
+                ),
+              )
+            : Container(),
         Padding(
           padding: const EdgeInsets.only(top: 0, right: 20),
           child: InkWell(
@@ -192,6 +215,59 @@ class MyWidgets {
     );
   }
 
+  static Widget getSettingsHeading(
+      {var title,
+      double top = 0,
+      double left = 0,
+      double right = 0,
+      double bottom = 0}) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(left, top, right, bottom),
+      child: MyWidgets.getTextWidget(
+          text: title,
+          color: colors.buttonColor,
+          weight: FontWeight.bold,
+          size: Fonts.heading2_XL_size),
+    );
+  }
+
+  static Widget getSettingsRow(
+      {var title = '',
+      var subTitle = '',
+      VoidCallback onTap = null,
+      var icon = null,
+      var iconData = null}) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          iconData == null ? Icon(icon) : iconData,
+          Padding(
+            padding: const EdgeInsets.only(left: 18.0, top: 2),
+            child: InkWell(
+              onTap: onTap,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MyWidgets.getTextWidget(
+                      text: '$title',
+                      weight: FontWeight.bold,
+                      size: Fonts.heading2_size),
+                  MyWidgets.getTextWidget(
+                      text: '$subTitle',
+                      weight: FontWeight.w600,
+                      color: Colors.grey,
+                      size: Fonts.heading2_size),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   static Widget getTextWidget({
     String text = '',
     var size = Fonts.heading2_size,
@@ -277,6 +353,19 @@ class MyWidgets {
               : Colors.transparent,
           borderRadius: BorderRadius.circular(100)),
     );
+  }
+
+  static int compareTime(TimeOfDay first, TimeOfDay second) {
+    if (first.hour < second.hour) return -1;
+    if (first.hour > second.hour) return 1;
+    if (first.minute < second.minute) return -1;
+    if (first.minute > second.minute) return 1;
+    return 0;
+  }
+
+  static TimeOfDay stringToTimeOfDay(String tod) {
+    final format = DateFormat.jm(); //"6:00 AM"
+    return TimeOfDay.fromDateTime(format.parse(tod));
   }
 
   static AlertStyle getAlertStyle(
