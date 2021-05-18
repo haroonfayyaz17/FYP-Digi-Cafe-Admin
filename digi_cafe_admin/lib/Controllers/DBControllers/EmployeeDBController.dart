@@ -166,10 +166,8 @@ class EmployeeDBController {
           'openingTime': openingTime,
           'closingTime': closingTime
         }).then((value) {
-          print('tur');
           done = true;
         }).catchError((e) {
-          print(e);
           done = false;
         });
       } else {

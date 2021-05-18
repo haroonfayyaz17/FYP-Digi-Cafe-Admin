@@ -30,35 +30,21 @@ class __SettingScreen extends State<_SettingScreen> {
   var openingTime = '';
   var closingTime = '';
   var callsCount = 0;
-  String selectionAllowed = 'Less Than 5';
-  List<String> selectionList;
-  CreateFormFieldDropDown selection;
   EmployeeUIController _controller;
   var edtControllerVotes;
 
   var _displayLoadingWidget = true;
 
   TimeOfDay opening = null;
+
+  var edtControllerCount;
   @override
   void initState() {
     super.initState();
     opening = MyWidgets.stringToTimeOfDay('9:00 AM');
-    print(opening);
     _controller = new EmployeeUIController();
+    edtControllerCount = new TextEditingController();
     edtControllerVotes = new TextEditingController();
-    selectionList = [
-      'Less Than 5',
-      '5-10',
-      '11-15',
-      '16-20',
-      'Greater Than 20'
-    ];
-    selection = new CreateFormFieldDropDown(
-        dropDownList: selectionList,
-        chosenType: selectionAllowed,
-        title: 'Selection Allowed',
-        type: 'Complaint',
-        icon: Icons.select_all_outlined);
   }
 
   Future<void> loadSettingsData(BuildContext context) async {
@@ -69,15 +55,7 @@ class __SettingScreen extends State<_SettingScreen> {
         opening = MyWidgets.stringToTimeOfDay(snapshot['openingTime']);
         openingTime = opening.format(context);
         closingTime = snapshot['closingTime'];
-        var type = snapshot['selectionCount'];
-
-        if (type == '0-5')
-          selection.chosenType = 'Less Than 5';
-        else if (type == '>20')
-          selection.chosenType = 'Greater Than 20';
-        else {
-          selection.chosenType = type;
-        }
+        edtControllerCount.text = snapshot['selectionCount'];
         edtControllerVotes.text = snapshot['minVotes'];
         _displayLoadingWidget = false;
       });
@@ -86,10 +64,10 @@ class __SettingScreen extends State<_SettingScreen> {
         opening = MyWidgets.stringToTimeOfDay('9:00 AM');
         openingTime = '9:00 AM';
         closingTime = '9:00 PM';
-        selection.chosenType = 'Less Than 5';
-        edtControllerVotes.text = 5;
+        edtControllerVotes.text = '5';
+        edtControllerCount.text = '5';
         _controller.saveSettings(
-            count: '0-5',
+            count: edtControllerCount.text,
             votes: edtControllerVotes.text,
             openingTime: openingTime,
             closingTime: closingTime);
@@ -124,8 +102,18 @@ class __SettingScreen extends State<_SettingScreen> {
                         MyWidgets.getSettingsHeading(
                             title: 'Voting', top: 50.0),
                         Padding(
-                          padding: const EdgeInsets.only(top: 25.0, right: 40),
-                          child: selection,
+                          padding: EdgeInsets.only(top: 20, right: 40),
+                          child: TextFormField(
+                            autofocus: true,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) =>
+                                FocusScope.of(context).nextFocus(),
+                            controller: edtControllerCount,
+                            textCapitalization: TextCapitalization.words,
+                            decoration: MyWidgets.getTextFormDecoration(
+                                title: 'Selections Count',
+                                icon: Icons.confirmation_number),
+                          ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 20, right: 40),
@@ -205,32 +193,19 @@ class __SettingScreen extends State<_SettingScreen> {
                                         'Enter Minimum Votes Per Food Item');
                                     return;
                                   }
-                                  if (openingTime == '') {
-                                    MyWidgets.showToast(
-                                        _buildContext, 'Select Opening Time');
+                                  if (edtControllerCount.text == null) {
+                                    MyWidgets.showToast(_buildContext,
+                                        'Enter Selections Allowed');
                                     return;
                                   }
-                                  if (closingTime == '') {
-                                    MyWidgets.showToast(
-                                        _buildContext, 'Select Closing Time');
-                                    return;
-                                  }
-                                  String count = '';
-                                  if (selection.chosenType == 'Less Than 5')
-                                    count = '0-5';
-                                  else if (selection.chosenType ==
-                                      'Greater Than 20')
-                                    count = '>20';
-                                  else {
-                                    count = selection.chosenType;
-                                  }
+
                                   setState(() {
                                     _displayLoadingWidget = true;
                                   });
 
                                   _controller
                                       .saveSettings(
-                                          count: count,
+                                          count: edtControllerCount.text,
                                           votes: edtControllerVotes.text,
                                           openingTime: openingTime,
                                           closingTime: closingTime)
