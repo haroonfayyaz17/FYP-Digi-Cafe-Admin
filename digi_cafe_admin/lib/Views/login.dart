@@ -14,9 +14,8 @@ class LoginScreen extends StatelessWidget {
     // TODO: implement build
     return MaterialApp(
       theme: ThemeData(
+        primarySwatch: colors.kPrimaryColor,
         backgroundColor: colors.backgroundColor,
-        primaryColor: colors.buttonColor,
-        cursorColor: colors.cursorColor,
       ),
       home: Scaffold(
         body: _LoginScreen(),
@@ -220,6 +219,15 @@ class _LoginScreenState extends State<_LoginScreen> {
           .replaceAll(new RegExp(r"\s+"), "")
           .toLowerCase();
       if (email == adminEmail) {
+        bool done = false;
+
+        await MyWidgets.internetStatus(context).then((value) {
+          done = value;
+        });
+        if (done)
+          setState(() {
+            _buttonPressed = false;
+          });
         await dbController.CheckSignIn(email, edtTextControllerPassword.text)
             .then((value) {
           if (value == 'wrong email') {

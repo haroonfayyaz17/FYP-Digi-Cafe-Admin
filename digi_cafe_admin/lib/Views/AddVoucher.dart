@@ -74,7 +74,13 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await MyWidgets.internetStatus(context).then((value) {
+        if (value && _displayLoadingWidget)
+          setState(() {
+            _displayLoadingWidget = true;
+          });
+      });
       if (widget.actionType == 'update' && count < 1) {
         expiryDateWidget.state.setState(() {
           expiryDateWidget.controller.text = widget._voucher.getValidity;

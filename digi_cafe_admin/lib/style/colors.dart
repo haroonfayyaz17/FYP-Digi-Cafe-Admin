@@ -15,6 +15,21 @@ class colors {
   // static const Color navDrawerColor = Color(0xFFBF752A);
   // static const Color backgroundColor = Color(0xFFBF752A);
 
+  static const MaterialColor kPrimaryColor = const MaterialColor(
+    0xFFBF752A,
+    const <int, Color>{
+      50: const Color(0xFFBF752A),
+      100: const Color(0xFFBF752A),
+      200: const Color(0xFFBF752A),
+      300: const Color(0xFFBF752A),
+      400: const Color(0xFFBF752A),
+      500: const Color(0xFFBF752A),
+      600: const Color(0xFFBF752A),
+      700: const Color(0xFFBF752A),
+      800: const Color(0xFFBF752A),
+      900: const Color(0xFFBF752A),
+    },
+  );
   static const Color warningColor = Colors.red;
   static const Color buttonColor = Color(0xFFBF752A);
   static const Color cursorColor = Color(0xFFBF752A);

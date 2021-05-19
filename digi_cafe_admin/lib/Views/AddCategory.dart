@@ -42,6 +42,14 @@ class _AddCategoryScreenState extends State<_AddCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await MyWidgets.internetStatus(context).then((value) {
+        if (value && _displayLoadingWidget)
+          setState(() {
+            _displayLoadingWidget = true;
+          });
+      });
+    });
     return SafeArea(
       child: Stack(
         children: [

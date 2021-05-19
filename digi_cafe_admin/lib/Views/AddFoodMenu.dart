@@ -97,6 +97,14 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await MyWidgets.internetStatus(context).then((value) {
+        if (value && _displayLoadingWidget)
+          setState(() {
+            _displayLoadingWidget = true;
+          });
+      });
+    });
     return Scaffold(
       appBar: MyWidgets.getAppBar(text: '$screenHeader'),
       body: Stack(

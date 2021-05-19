@@ -149,11 +149,17 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (actionType == 'update' && count < 1) {
         setFieldsForUpdate();
         screenHeader = 'Update Employee';
       }
+      await MyWidgets.internetStatus(context).then((value) {
+        if (value && _displayLoadingWidget)
+          setState(() {
+            _displayLoadingWidget = true;
+          });
+      });
     });
 
     Widget widget = Stack(children: [
