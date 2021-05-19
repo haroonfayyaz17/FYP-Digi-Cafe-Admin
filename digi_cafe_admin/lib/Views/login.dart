@@ -1,3 +1,4 @@
+import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
 import 'package:digi_cafe_admin/Views/Dashboard.dart';
 import 'package:digi_cafe_admin/Views/Forgot Password Screen.dart';
@@ -7,6 +8,7 @@ import 'package:digi_cafe_admin/Controllers/DBControllers/LoginDBController.dart
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'MyWidgets.dart';
+import 'NoIternetScreen.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -66,149 +68,159 @@ class _LoginScreenState extends State<_LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        color: colors.backgroundColor,
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: 200,
-                  height: 200,
-                  padding: EdgeInsets.only(left: 25),
-                  child: Image.asset('images/logo.png'),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: MyWidgets.getTextWidget(
-                      text: 'Digi Café', size: Fonts.heading1_size),
-                ),
-                _displayLabel
-                    ? Padding(
-                        padding: EdgeInsets.only(left: 20, right: 20, top: 20),
-                        child: MyWidgets.getTextWidget(
-                            text: errorHeading,
-                            size: Fonts.dialog_heading_size,
-                            color: colors.warningColor),
-                      )
-                    : Container(),
-                Padding(
-                  padding: EdgeInsets.all(20),
-                  child: TextFormField(
-                    autofocus: true,
-                    controller: edtTextControllerEmail,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                    textCapitalization: TextCapitalization.words,
-                    decoration: MyWidgets.getTextFormDecoration(
-                        title: 'Email',
-                        icon: Icons.email,
-                        border: UnderlineInputBorder(),
-                        addBorder: false),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(20),
-                  child: TextFormField(
-                    autofocus: true,
-                    controller: edtTextControllerPassword,
-                    textInputAction: TextInputAction.next,
-                    onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
-                    textCapitalization: TextCapitalization.words,
-                    decoration: MyWidgets.getTextFormDecoration(
-                      title: 'Password',
-                      icon: Icons.vpn_key,
-                      border: UnderlineInputBorder(),
-                      addBorder: false,
-                      suffix: InkWell(
-                        child: _passwordIcon,
-                        onTap: () {
-                          setState(() {
-                            _passwordHide = !_passwordHide;
-                            if (_passwordHide) {
-                              _passwordIcon = Icon(
-                                PasswordCross.eye_slash,
-                                size: 22,
-                              );
-                            } else {
-                              _passwordIcon = Icon(
-                                Icons.remove_red_eye,
-                                size: 22,
-                              );
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                    keyboardType: TextInputType.text,
-                    obscureText: _passwordHide,
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: InkWell(
-                      child: MyWidgets.getTextWidget(
-                          text: 'Forgot Password?',
-                          size: Fonts.heading3_size,
-                          color: colors.buttonColor),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ForgotPasswordScreen()));
-                      },
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 30.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: colors.buttonColor,
-                    ),
-                    width: 200,
-                    height: 50,
-                    child: FlatButton(
-                      child: Stack(
-                        children: <Widget>[
-                          Visibility(
-                            visible: !_buttonPressed,
-                            child: MyWidgets.getTextWidget(
-                                text: 'Sign In',
-                                size: Fonts.button_size,
-                                color: colors.buttonTextColor),
+    return ConnectivityWidget(
+      builder: (context, isOnline) => !isOnline
+          ? NoInternetScreen(screen: LoginScreen())
+          : Scaffold(
+              body: Container(
+                color: colors.backgroundColor,
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 200,
+                          height: 200,
+                          padding: EdgeInsets.only(left: 25),
+                          child: Image.asset('images/logo.png'),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 10),
+                          child: MyWidgets.getTextWidget(
+                              text: 'Digi Café', size: Fonts.heading1_size),
+                        ),
+                        _displayLabel
+                            ? Padding(
+                                padding: EdgeInsets.only(
+                                    left: 20, right: 20, top: 20),
+                                child: MyWidgets.getTextWidget(
+                                    text: errorHeading,
+                                    size: Fonts.dialog_heading_size,
+                                    color: colors.warningColor),
+                              )
+                            : Container(),
+                        Padding(
+                          padding: EdgeInsets.all(20),
+                          child: TextFormField(
+                            autofocus: true,
+                            controller: edtTextControllerEmail,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) =>
+                                FocusScope.of(context).nextFocus(),
+                            textCapitalization: TextCapitalization.words,
+                            decoration: MyWidgets.getTextFormDecoration(
+                                title: 'Email',
+                                icon: Icons.email,
+                                border: UnderlineInputBorder(),
+                                addBorder: false),
                           ),
-                          Visibility(
-                            visible: _buttonPressed,
-                            child: CircularProgressIndicator(
-                              valueColor: new AlwaysStoppedAnimation<Color>(
-                                  Colors.white),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(20),
+                          child: TextFormField(
+                            autofocus: true,
+                            controller: edtTextControllerPassword,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) =>
+                                FocusScope.of(context).nextFocus(),
+                            textCapitalization: TextCapitalization.words,
+                            decoration: MyWidgets.getTextFormDecoration(
+                              title: 'Password',
+                              icon: Icons.vpn_key,
+                              border: UnderlineInputBorder(),
+                              addBorder: false,
+                              suffix: InkWell(
+                                child: _passwordIcon,
+                                onTap: () {
+                                  setState(() {
+                                    _passwordHide = !_passwordHide;
+                                    if (_passwordHide) {
+                                      _passwordIcon = Icon(
+                                        PasswordCross.eye_slash,
+                                        size: 22,
+                                      );
+                                    } else {
+                                      _passwordIcon = Icon(
+                                        Icons.remove_red_eye,
+                                        size: 22,
+                                      );
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                            keyboardType: TextInputType.text,
+                            obscureText: _passwordHide,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: InkWell(
+                              child: MyWidgets.getTextWidget(
+                                  text: 'Forgot Password?',
+                                  size: Fonts.heading3_size,
+                                  color: colors.buttonColor),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ForgotPasswordScreen()));
+                              },
                             ),
                           ),
-                        ],
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _buttonPressed = true;
-                        });
-                        checkSignIn();
-                      },
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 30.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              color: colors.buttonColor,
+                            ),
+                            width: 200,
+                            height: 50,
+                            child: FlatButton(
+                              child: Stack(
+                                children: <Widget>[
+                                  Visibility(
+                                    visible: !_buttonPressed,
+                                    child: MyWidgets.getTextWidget(
+                                        text: 'Sign In',
+                                        size: Fonts.button_size,
+                                        color: colors.buttonTextColor),
+                                  ),
+                                  Visibility(
+                                    visible: _buttonPressed,
+                                    child: CircularProgressIndicator(
+                                      valueColor:
+                                          new AlwaysStoppedAnimation<Color>(
+                                              Colors.white),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _buttonPressed = true;
+                                });
+                                checkSignIn();
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -221,13 +233,13 @@ class _LoginScreenState extends State<_LoginScreen> {
       if (email == adminEmail) {
         bool done = false;
 
-        await MyWidgets.internetStatus(context).then((value) {
-          done = value;
-        });
-        if (done)
-          setState(() {
-            _buttonPressed = false;
-          });
+        // await MyWidgets.internetStatus(context).then((value) {
+        //   done = value;
+        // });
+        // if (done)
+        //   setState(() {
+        //     _buttonPressed = false;
+        //   });
         await dbController.CheckSignIn(email, edtTextControllerPassword.text)
             .then((value) {
           if (value == 'wrong email') {

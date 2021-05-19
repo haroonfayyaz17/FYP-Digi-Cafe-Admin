@@ -156,12 +156,12 @@ class _AddEmployeeScreen3State extends State<AddEmployeeScreenFul> {
         setFieldsForUpdate();
         screenHeader = 'Update Employee';
       }
-      await MyWidgets.internetStatus(context).then((value) {
-        if (value && _displayLoadingWidget)
-          setState(() {
-            _displayLoadingWidget = true;
-          });
-      });
+      // await MyWidgets.internetStatus(context).then((value) {
+      //   if (value && _displayLoadingWidget)
+      //     setState(() {
+      //       _displayLoadingWidget = true;
+      //     });
+      // });
     });
 
     Widget widget = ConnectivityWidget(

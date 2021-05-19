@@ -6,41 +6,41 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter/material.dart';
-import 'package:connectivity/connectivity.dart';
+// import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'NoIternetScreen.dart';
 
 class MyWidgets {
-  static Future<bool> internetStatus(BuildContext context) async {
-    bool done = false;
-    await checkInternetConnection().then((value) {
-      if (!value) {
-        MyWidgets.changeScreen(
-            context: context, screen: new NoInternetScreen());
-        done = true;
-        print(done);
-      }
-    });
-    return done;
-  }
+  // static Future<bool> internetStatus(BuildContext context) async {
+  //   bool done = false;
+  //   await checkInternetConnection().then((value) {
+  //     if (!value) {
+  //       MyWidgets.changeScreen(
+  //           context: context, screen: new NoInternetScreen());
+  //       done = true;
+  //       print(done);
+  //     }
+  //   });
+  //   return done;
+  // }
 
-  static Future<bool> checkInternetConnection() async {
-    final Connectivity _connectivity = Connectivity();
-    ConnectivityResult result = ConnectivityResult.none;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      print(e.toString());
-    }
-    if (result == ConnectivityResult.none)
-      return false;
-    else
-      return true;
-    // return true;
-  }
+  // static Future<bool> checkInternetConnection() async {
+  //   final Connectivity _connectivity = Connectivity();
+  //   ConnectivityResult result = ConnectivityResult.none;
+  //   // Platform messages may fail, so we use a try/catch PlatformException.
+  //   try {
+  //     result = await _connectivity.checkConnectivity();
+  //   } on PlatformException catch (e) {
+  //     print(e.toString());
+  //   }
+  //   if (result == ConnectivityResult.none)
+  //     return false;
+  //   else
+  //     return true;
+  //   // return true;
+  // }
 
   static void changeScreen(
       {@required BuildContext context, @required var screen}) {

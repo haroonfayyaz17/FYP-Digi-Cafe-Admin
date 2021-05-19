@@ -208,18 +208,18 @@ class __SettingScreen extends State<_SettingScreen> {
                                       setState(() {
                                         _displayLoadingWidget = true;
                                       });
-                                      bool done = false;
-                                      await MyWidgets.internetStatus(context)
-                                          .then((value) {
-                                        done = value;
-                                      });
-                                      print(done);
-                                      if (done) {
-                                        setState(() {
-                                          _displayLoadingWidget = false;
-                                        });
-                                        return;
-                                      }
+                                      // bool done = false;
+                                      // await MyWidgets.internetStatus(context)
+                                      //     .then((value) {
+                                      //   done = value;
+                                      // });
+                                      // print(done);
+                                      // if (done) {
+                                      //   setState(() {
+                                      //     _displayLoadingWidget = false;
+                                      //   });
+                                      //   return;
+                                      // }
                                       await _controller
                                           .saveSettings(
                                               count: edtControllerCount.text,
