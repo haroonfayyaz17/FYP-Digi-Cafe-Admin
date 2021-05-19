@@ -1,3 +1,4 @@
+import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:digi_cafe_admin/Model/Voucher.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'MyWidgets.dart';
 import '../style/colors.dart';
 import 'LoadingWidget.dart';
+import 'NoIternetScreen.dart';
 
 class AddVoucherScreen extends StatelessWidget {
   Voucher _voucher;
@@ -75,12 +77,12 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await MyWidgets.internetStatus(context).then((value) {
-        if (value && _displayLoadingWidget)
-          setState(() {
-            _displayLoadingWidget = true;
-          });
-      });
+      // await MyWidgets.internetStatus(context).then((value) {
+      //   if (value && _displayLoadingWidget)
+      //     setState(() {
+      //       _displayLoadingWidget = true;
+      //     });
+      // });
       if (widget.actionType == 'update' && count < 1) {
         expiryDateWidget.state.setState(() {
           expiryDateWidget.controller.text = widget._voucher.getValidity;
@@ -101,106 +103,124 @@ class _AddVoucherScreenState extends State<_AddVoucherScreen> {
         });
       }
     });
-    return Scaffold(
-      backgroundColor: colors.backgroundColor,
-      appBar: MyWidgets.getAppBar(text: screenHeader),
-      body: SafeArea(
-        child: Stack(
-          children: [
-            _displayLoadingWidget
-                ? LoadingWidget()
-                : SingleChildScrollView(
-                    // physics: NeverScrollableScrollPhysics(),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                              minHeight: MediaQuery.of(context).size.height) *
-                          0.8,
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 75,
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: MyWidgets.getTextWidget(
-                                      text: 'Voucher Details',
-                                      size: Fonts.heading2_XL_size)),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: TextFormField(
-                                autofocus: true,
-                                controller: _edtTitleController,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (_) =>
-                                    FocusScope.of(context).nextFocus(),
-                                onChanged: _voucherTitleChanged,
-                                textCapitalization: TextCapitalization.words,
-                                decoration: MyWidgets.getTextFormDecoration(
-                                    title: 'Title', icon: null),
+    return ConnectivityWidget(
+      builder: (context, isOnline) => !isOnline
+          ? NoInternetScreen(
+              screen: AddVoucherScreen(widget._voucher, widget.actionType))
+          : Scaffold(
+              backgroundColor: colors.backgroundColor,
+              appBar: MyWidgets.getAppBar(text: screenHeader),
+              body: SafeArea(
+                child: Stack(
+                  children: [
+                    _displayLoadingWidget
+                        ? LoadingWidget()
+                        : SingleChildScrollView(
+                            // physics: NeverScrollableScrollPhysics(),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                      minHeight:
+                                          MediaQuery.of(context).size.height) *
+                                  0.8,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 75,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                          padding: EdgeInsets.only(left: 20),
+                                          child: MyWidgets.getTextWidget(
+                                              text: 'Voucher Details',
+                                              size: Fonts.heading2_XL_size)),
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      child: TextFormField(
+                                        autofocus: true,
+                                        controller: _edtTitleController,
+                                        textInputAction: TextInputAction.next,
+                                        onFieldSubmitted: (_) =>
+                                            FocusScope.of(context).nextFocus(),
+                                        onChanged: _voucherTitleChanged,
+                                        textCapitalization:
+                                            TextCapitalization.words,
+                                        decoration:
+                                            MyWidgets.getTextFormDecoration(
+                                                title: 'Title', icon: null),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      child: expiryDateWidget,
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      child: TextFormField(
+                                        autofocus: true,
+                                        keyboardType: TextInputType.number,
+                                        textInputAction: TextInputAction.next,
+                                        inputFormatters: [
+                                          DecimalTextInputFormatter(
+                                              decimalRange: 1, allowed: true)
+                                        ],
+                                        controller: edtMinimumAmount,
+                                        onFieldSubmitted: (_) =>
+                                            FocusScope.of(context).nextFocus(),
+                                        onChanged: _minimumSpendChanged,
+                                        textCapitalization:
+                                            TextCapitalization.words,
+                                        decoration:
+                                            MyWidgets.getTextFormDecoration(
+                                                title: 'Minimum Spend Amount',
+                                                icon: null),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      child: TextFormField(
+                                        autofocus: true,
+                                        keyboardType: TextInputType.number,
+                                        textInputAction: TextInputAction.next,
+                                        onFieldSubmitted: (_) =>
+                                            FocusScope.of(context).nextFocus(),
+                                        onChanged: _discountChanged,
+                                        inputFormatters: [
+                                          DecimalTextInputFormatter(
+                                              decimalRange: 1, allowed: true)
+                                        ],
+                                        controller: edtDiscountController,
+                                        textCapitalization:
+                                            TextCapitalization.words,
+                                        decoration:
+                                            MyWidgets.getTextFormDecoration(
+                                                title: 'Discount', icon: null),
+                                      ),
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(top: 50),
+                                        child: MyWidgets.getButton(
+                                            text: btnText,
+                                            onTap: () => _addVoucher())),
+                                  ],
+                                ),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: expiryDateWidget,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: TextFormField(
-                                autofocus: true,
-                                keyboardType: TextInputType.number,
-                                textInputAction: TextInputAction.next,
-                                inputFormatters: [
-                                  DecimalTextInputFormatter(
-                                      decimalRange: 1, allowed: true)
-                                ],
-                                controller: edtMinimumAmount,
-                                onFieldSubmitted: (_) =>
-                                    FocusScope.of(context).nextFocus(),
-                                onChanged: _minimumSpendChanged,
-                                textCapitalization: TextCapitalization.words,
-                                decoration: MyWidgets.getTextFormDecoration(
-                                    title: 'Minimum Spend Amount', icon: null),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: TextFormField(
-                                autofocus: true,
-                                keyboardType: TextInputType.number,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (_) =>
-                                    FocusScope.of(context).nextFocus(),
-                                onChanged: _discountChanged,
-                                inputFormatters: [
-                                  DecimalTextInputFormatter(
-                                      decimalRange: 1, allowed: true)
-                                ],
-                                controller: edtDiscountController,
-                                textCapitalization: TextCapitalization.words,
-                                decoration: MyWidgets.getTextFormDecoration(
-                                    title: 'Discount', icon: null),
-                              ),
-                            ),
-                            Padding(
-                                padding: EdgeInsets.only(top: 50),
-                                child: MyWidgets.getButton(
-                                    text: btnText, onTap: () => _addVoucher())),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-          ],
-        ),
-      ),
+                          ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 

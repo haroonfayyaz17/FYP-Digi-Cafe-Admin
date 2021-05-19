@@ -142,7 +142,7 @@ class OrderDBController {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
-    List<OrderItem> list = new List();
+    List<OrderItem> list = [];
 
     Order order = new Order(0, list, now, '');
     int no = int.parse(
@@ -168,16 +168,18 @@ class OrderDBController {
             .document(element.documentID)
             .collection('Items')
             .getDocuments();
-        List<OrderItem> list = new List();
+        List<OrderItem> list = [];
         for (DocumentSnapshot element in querySnapshot.documents) {
-          print(element.documentID);
           DocumentSnapshot doc = await firestoreInstance
               .collection('Food Menu')
               .document(element.documentID)
               .get();
           if (!doc.exists) return order;
-          FoodItem foodItem = new FoodItem(
-              doc.documentID, doc.data['name'], '', '', doc.data['price'], 0);
+          String docID = doc.documentID;
+          String name = doc['name'];
+          int price = doc['price'];
+          FoodItem foodItem =
+              new FoodItem(docID, name, "", "", price.toDouble(), 0);
           var orderItemQuantity = element.data['quantity'];
           list.add(new OrderItem(foodItem, orderItemQuantity));
         }

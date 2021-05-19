@@ -1,3 +1,4 @@
+import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'MyWidgets.dart';
 import '../style/colors.dart';
+import 'NoIternetScreen.dart';
 
 class AddCategoryScreen extends StatelessWidget {
   @override
@@ -42,74 +44,74 @@ class _AddCategoryScreenState extends State<_AddCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await MyWidgets.internetStatus(context).then((value) {
-        if (value && _displayLoadingWidget)
-          setState(() {
-            _displayLoadingWidget = true;
-          });
-      });
-    });
-    return SafeArea(
-      child: Stack(
-        children: [
-          _displayLoadingWidget
-              ? LoadingWidget()
-              : SingleChildScrollView(
-                  // physics: NeverScrollableScrollPhysics(),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                            minHeight: MediaQuery.of(context).size.height) *
-                        0.8,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(top: 10),
-                            child: MyWidgets.getTextWidget(
-                                text: 'Add Category',
-                                size: Fonts.heading1_size,
-                                color: colors.buttonTextColor),
-                          ),
-                          SizedBox(
-                            height: 75,
-                          ),
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Padding(
-                                padding: EdgeInsets.only(left: 20),
-                                child: MyWidgets.getTextWidget(
-                                    text: 'Category Name',
-                                    size: Fonts.heading2_size)),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                            child: TextFormField(
-                              autofocus: true,
-                              onChanged: _categoryNameChanged,
-                              textCapitalization: TextCapitalization.words,
-                              decoration: MyWidgets.getTextFormDecoration(
-                                  title: 'Category Name', icon: Icons.category),
+    return ConnectivityWidget(
+      builder: (context, isOnline) => !isOnline
+          ? NoInternetScreen(screen: AddCategoryScreen())
+          : SafeArea(
+              child: Stack(
+                children: [
+                  _displayLoadingWidget
+                      ? LoadingWidget()
+                      : SingleChildScrollView(
+                          // physics: NeverScrollableScrollPhysics(),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                                    minHeight:
+                                        MediaQuery.of(context).size.height) *
+                                0.8,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 10),
+                                    child: MyWidgets.getTextWidget(
+                                        text: 'Add Category',
+                                        size: Fonts.heading1_size,
+                                        color: colors.buttonTextColor),
+                                  ),
+                                  SizedBox(
+                                    height: 75,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                        padding: EdgeInsets.only(left: 20),
+                                        child: MyWidgets.getTextWidget(
+                                            text: 'Category Name',
+                                            size: Fonts.heading2_size)),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                    child: TextFormField(
+                                      autofocus: true,
+                                      onChanged: _categoryNameChanged,
+                                      textCapitalization:
+                                          TextCapitalization.words,
+                                      decoration:
+                                          MyWidgets.getTextFormDecoration(
+                                              title: 'Category Name',
+                                              icon: Icons.category),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 50),
+                                    child: MyWidgets.getButton(
+                                      text: 'Add',
+                                      onTap: () => _addCategory(),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(top: 50),
-                            child: MyWidgets.getButton(
-                              text: 'Add',
-                              onTap: () => _addCategory(),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-        ],
-      ),
+                        ),
+                ],
+              ),
+            ),
     );
   }
 

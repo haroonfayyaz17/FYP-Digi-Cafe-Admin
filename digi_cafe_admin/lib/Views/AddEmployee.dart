@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:digi_cafe_admin/Model/Cafe%20Employee.dart';
 import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../style/colors.dart';
+import 'NoIternetScreen.dart';
 
 class AddEmployeeScreen extends StatelessWidget {
   AddEmployeeScreen({this.employee, this.actionType});
@@ -21,7 +23,7 @@ class AddEmployeeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _AddEmployeeScreen(
+      body: AddEmployeeScreenFul(
         employee: employee,
         actionType: actionType,
       ),
@@ -31,8 +33,8 @@ class AddEmployeeScreen extends StatelessWidget {
 
 _AddEmployeeScreen3State _addEmployeeScreen;
 
-class _AddEmployeeScreen extends StatefulWidget {
-  _AddEmployeeScreen({this.employee, this.actionType});
+class AddEmployeeScreenFul extends StatefulWidget {
+  AddEmployeeScreenFul({this.employee, this.actionType});
   CafeEmployee employee;
   String actionType;
   @override
@@ -43,7 +45,7 @@ class _AddEmployeeScreen extends StatefulWidget {
   }
 }
 
-class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
+class _AddEmployeeScreen3State extends State<AddEmployeeScreenFul> {
   var screenHeader = 'Add Employee';
 
   _AddEmployeeScreen3State({this.employee, this.actionType});
@@ -162,180 +164,203 @@ class _AddEmployeeScreen3State extends State<_AddEmployeeScreen> {
       });
     });
 
-    Widget widget = Stack(children: [
-      _displayLoadingWidget
-          ? LoadingWidget()
-          : Column(
-              children: [
-                Expanded(
-                  child: PageView(
-                    physics: NeverScrollableScrollPhysics(),
-                    onPageChanged: onChangedFunction,
-                    controller: controller,
-                    children: [
-                      SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                              child: Container(
-                                height: 150,
-                                width: MediaQuery.of(context).size.width * 0.73,
-                                child: Image.asset(
-                                  'images/innerImages/cook_img.jpg',
-                                  fit: BoxFit.fill,
+    Widget widget = ConnectivityWidget(
+      builder: (context, isOnline) => !isOnline
+          ? NoInternetScreen(
+              screen:
+                  AddEmployeeScreen(actionType: actionType, employee: employee))
+          : Stack(children: [
+              _displayLoadingWidget
+                  ? LoadingWidget()
+                  : Column(
+                      children: [
+                        Expanded(
+                          child: PageView(
+                            physics: NeverScrollableScrollPhysics(),
+                            onPageChanged: onChangedFunction,
+                            controller: controller,
+                            children: [
+                              SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                      child: Container(
+                                        height: 150,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.73,
+                                        child: Image.asset(
+                                          'images/innerImages/cook_img.jpg',
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 20, top: 20, bottom: 10),
+                                        child: MyWidgets.getTextWidget(
+                                            text: 'Personal Information',
+                                            size:
+                                                Fonts.heading_SampleText_size),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      child: TextFormField(
+                                        autofocus: true,
+                                        textInputAction: TextInputAction.next,
+                                        onFieldSubmitted: (_) =>
+                                            FocusScope.of(context).nextFocus(),
+                                        onChanged: (text) {
+                                          _name = text;
+                                        },
+                                        controller: edtControllerName,
+                                        textCapitalization:
+                                            TextCapitalization.words,
+                                        decoration:
+                                            MyWidgets.getTextFormDecoration(
+                                                title: 'Full Name',
+                                                icon: Icons.person_add),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      child: TextFormField(
+                                        controller: _dateControllerText,
+                                        readOnly: true,
+                                        autofocus: true,
+                                        textInputAction: TextInputAction.next,
+                                        onFieldSubmitted: (_) =>
+                                            FocusScope.of(context).nextFocus(),
+                                        textCapitalization:
+                                            TextCapitalization.words,
+                                        decoration:
+                                            MyWidgets.getTextFormDecoration(
+                                                title: 'Date Of Birth',
+                                                icon: Icons.calendar_today),
+                                        onTap: () {
+                                          showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime(2100),
+                                          ).then((value) {
+                                            String day = value.day.toString();
+                                            String month =
+                                                value.month.toString();
+                                            String year = value.year.toString();
+                                            String date =
+                                                '${day}-${month}-${year}';
+                                            _dateControllerText.text = date;
+
+                                            setState(() {
+                                              _dateControllerText.text = date;
+                                            });
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      child: genderType,
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.fromLTRB(20, 5, 20, 10),
+                                      child: staffType,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: 20, top: 20, bottom: 10),
-                                child: MyWidgets.getTextWidget(
-                                    text: 'Personal Information',
-                                    size: Fonts.heading_SampleText_size),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: TextFormField(
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (_) =>
-                                    FocusScope.of(context).nextFocus(),
-                                onChanged: (text) {
-                                  _name = text;
-                                },
-                                controller: edtControllerName,
-                                textCapitalization: TextCapitalization.words,
-                                decoration: MyWidgets.getTextFormDecoration(
-                                    title: 'Full Name', icon: Icons.person_add),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: TextFormField(
-                                controller: _dateControllerText,
-                                readOnly: true,
-                                autofocus: true,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (_) =>
-                                    FocusScope.of(context).nextFocus(),
-                                textCapitalization: TextCapitalization.words,
-                                decoration: MyWidgets.getTextFormDecoration(
-                                    title: 'Date Of Birth',
-                                    icon: Icons.calendar_today),
-                                onTap: () {
-                                  showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime(2100),
-                                  ).then((value) {
-                                    String day = value.day.toString();
-                                    String month = value.month.toString();
-                                    String year = value.year.toString();
-                                    String date = '${day}-${month}-${year}';
-                                    _dateControllerText.text = date;
-
-                                    setState(() {
-                                      _dateControllerText.text = date;
-                                    });
-                                  });
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: genderType,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.fromLTRB(20, 5, 20, 10),
-                              child: staffType,
-                            ),
-                          ],
+                              ContactDetailsWidget(),
+                              if (actionType != 'update') ImageWidget(),
+                              if (actionType != 'update') EmailDetails(),
+                            ],
+                          ),
                         ),
-                      ),
-                      ContactDetailsWidget(),
-                      if (actionType != 'update') ImageWidget(),
-                      if (actionType != 'update') EmailDetails(),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      MyWidgets.getIndicator(
-                          positionIndex: 0, currentIndex: currentIndex),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      MyWidgets.getIndicator(
-                          positionIndex: 1, currentIndex: currentIndex),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      if (actionType != 'update')
-                        MyWidgets.getIndicator(
-                            positionIndex: 3, currentIndex: currentIndex),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      if (actionType != 'update')
-                        MyWidgets.getIndicator(
-                            positionIndex: 4, currentIndex: currentIndex),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 50.0),
-                  child: Container(
-                    padding: EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () => previousFunction(),
-                          child: MyWidgets.getTextWidget(
-                              text: '<Previous',
-                              size: Fonts.heading2_size,
-                              color: colors.buttonColor),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              MyWidgets.getIndicator(
+                                  positionIndex: 0, currentIndex: currentIndex),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              MyWidgets.getIndicator(
+                                  positionIndex: 1, currentIndex: currentIndex),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              if (actionType != 'update')
+                                MyWidgets.getIndicator(
+                                    positionIndex: 3,
+                                    currentIndex: currentIndex),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              if (actionType != 'update')
+                                MyWidgets.getIndicator(
+                                    positionIndex: 4,
+                                    currentIndex: currentIndex),
+                            ],
+                          ),
                         ),
-                        SizedBox(
-                          width: 50,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            nextFunction();
-                          },
-                          child: MyWidgets.getTextWidget(
-                              text: '$_nextLabel',
-                              size: Fonts.heading2_size,
-                              color: colors.buttonColor),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 50.0),
+                          child: Container(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                InkWell(
+                                  onTap: () => previousFunction(),
+                                  child: MyWidgets.getTextWidget(
+                                      text: '<Previous',
+                                      size: Fonts.heading2_size,
+                                      color: colors.buttonColor),
+                                ),
+                                SizedBox(
+                                  width: 50,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    nextFunction();
+                                  },
+                                  child: MyWidgets.getTextWidget(
+                                      text: '$_nextLabel',
+                                      size: Fonts.heading2_size,
+                                      color: colors.buttonColor),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
-                    ),
-                  ),
-                ),
-              ],
-            )
-    ]);
+                    )
+            ]),
+    );
 
     return Scaffold(
         appBar: MyWidgets.getAppBar(text: '$screenHeader'), body: widget);

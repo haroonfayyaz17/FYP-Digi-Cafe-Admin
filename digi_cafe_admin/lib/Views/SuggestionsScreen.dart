@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/OrderUIController.dart';
 import 'package:digi_cafe_admin/Model/Complaint.dart';
 import 'package:digi_cafe_admin/Model/Suggestion.dart';
@@ -9,6 +10,7 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:intl/intl.dart';
 import 'LoadingWidget.dart';
 import 'MyWidgets.dart';
+import 'NoIternetScreen.dart';
 import 'ViewFeedbackDetails.dart';
 
 class SuggestionScreen extends StatefulWidget {
@@ -49,119 +51,145 @@ class _SuggestionScreen extends State<SuggestionScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          ValueListenableBuilder(
-            builder: (BuildContext context, Stream<QuerySnapshot> querySnapshot,
-                Widget child) {
-              return StreamBuilder<QuerySnapshot>(
-                  stream: querySnapshot,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.active) {
-                      return !snapshot.hasData
-                          ? LoadingWidget()
-                          : ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: snapshot.data.documents.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                DocumentSnapshot complaintDoc =
-                                    snapshot.data.documents[index];
+    return ConnectivityWidget(
+      builder: (context, isOnline) => !isOnline
+          ? NoInternetScreen(
+              screen: SuggestionScreen(
+              fromDate: widget.fromDate,
+              toDate: widget.toDate,
+            ))
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  ValueListenableBuilder(
+                    builder: (BuildContext context,
+                        Stream<QuerySnapshot> querySnapshot, Widget child) {
+                      return StreamBuilder<QuerySnapshot>(
+                          stream: querySnapshot,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.active) {
+                              return !snapshot.hasData
+                                  ? LoadingWidget()
+                                  : ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: snapshot.data.documents.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        DocumentSnapshot complaintDoc =
+                                            snapshot.data.documents[index];
 
-                                Suggestion complaint = new Suggestion(
-                                  complaintDoc.documentID.toString(),
-                                  complaintDoc.data[
-                                      "suggestion"], //backend se ara snapshot main
-                                  complaintDoc.data["status"],
-                                  complaintDoc.data["date"].toDate(),
-                                );
+                                        Suggestion complaint = new Suggestion(
+                                          complaintDoc.documentID.toString(),
+                                          complaintDoc.data[
+                                              "suggestion"], //backend se ara snapshot main
+                                          complaintDoc.data["status"],
+                                          complaintDoc.data["date"].toDate(),
+                                        );
 
-                                return Container(
-                                  margin: EdgeInsets.only(left: 10, top: 10),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.9,
-                                  height:
-                                      MediaQuery.of(context).size.width * 0.22,
-                                  child: InkWell(
-                                    onDoubleTap: () async {
-                                      await changeStatus(
-                                          complaint.id, complaint.status);
-                                    },
-                                    onTap: () async {
-                                      complaint.status == 'unread'
-                                          ? await orderUIController
-                                              .changeSuggestionStatus(
-                                                  complaint.id, 'read')
-                                          : null;
-                                      MyWidgets.changeScreen(
-                                          context: context,
-                                          screen: ViewFeedbackDetails(
-                                              'suggestion', complaint.id));
-                                    },
-                                    child: Card(
-                                      elevation: 8,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 15, horizontal: 10),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: <Widget>[
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Align(
-                                                  alignment: Alignment.topLeft,
-                                                  child: MyWidgets.getTextWidget(
-                                                      text:
-                                                          convertDateTimeDisplay(
-                                                              complaint.time
-                                                                  .toString()),
-                                                      weight: FontWeight.bold,
-                                                      size: Fonts.label_size,
-                                                      overflow: TextOverflow
-                                                          .ellipsis),
+                                        return Container(
+                                          margin: EdgeInsets.only(
+                                              left: 10, top: 10),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.9,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.22,
+                                          child: InkWell(
+                                            onDoubleTap: () async {
+                                              await changeStatus(complaint.id,
+                                                  complaint.status);
+                                            },
+                                            onTap: () async {
+                                              complaint.status == 'unread'
+                                                  ? await orderUIController
+                                                      .changeSuggestionStatus(
+                                                          complaint.id, 'read')
+                                                  : null;
+                                              MyWidgets.changeScreen(
+                                                  context: context,
+                                                  screen: ViewFeedbackDetails(
+                                                      'suggestion',
+                                                      complaint.id));
+                                            },
+                                            child: Card(
+                                              elevation: 8,
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 15,
+                                                    horizontal: 10),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  children: <Widget>[
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: <Widget>[
+                                                        Align(
+                                                          alignment:
+                                                              Alignment.topLeft,
+                                                          child: MyWidgets.getTextWidget(
+                                                              text: convertDateTimeDisplay(
+                                                                  complaint.time
+                                                                      .toString()),
+                                                              weight: FontWeight
+                                                                  .bold,
+                                                              size: Fonts
+                                                                  .label_size,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 8.0),
+                                                      child: Align(
+                                                        alignment: Alignment
+                                                            .bottomLeft,
+                                                        child: MyWidgets
+                                                            .getTextWidget(
+                                                                text: complaint
+                                                                    .text,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis),
+                                                      ),
+                                                    ),
+                                                    Spacer(flex: 2),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  top: 8.0),
-                                              child: Align(
-                                                alignment: Alignment.bottomLeft,
-                                                child: MyWidgets.getTextWidget(
-                                                    text: complaint.text,
-                                                    overflow:
-                                                        TextOverflow.ellipsis),
                                               ),
+                                              color: complaint.status == 'read'
+                                                  // ? Colors.yellow[100]
+                                                  ? Colors.orange[50]
+                                                  : colors.backgroundColor,
+                                              //
                                             ),
-                                            Spacer(flex: 2),
-                                          ],
-                                        ),
-                                      ),
-                                      color: complaint.status == 'read'
-                                          // ? Colors.yellow[100]
-                                          ? Colors.orange[50]
-                                          : colors.backgroundColor,
-                                      //
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                    } else
-                      return LoadingWidget();
-                  });
-            },
-            valueListenable: _counter,
-            child: const Text('Good job!'),
-          )
-        ],
-      ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                            } else
+                              return LoadingWidget();
+                          });
+                    },
+                    valueListenable: _counter,
+                    child: const Text('Good job!'),
+                  )
+                ],
+              ),
+            ),
     );
   }
 
