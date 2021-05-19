@@ -1,3 +1,4 @@
+import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/OrderUIController.dart';
 import 'package:digi_cafe_admin/Views/LoadingWidget.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +10,7 @@ import 'package:digi_cafe_admin/Views/MenuItemWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'MyWidgets.dart';
+import 'NoIternetScreen.dart';
 
 class ViewSales extends StatelessWidget {
   @override
@@ -102,181 +104,200 @@ class __ViewSales extends State<_ViewSales> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     _buildContext = context;
     // TODO: implement build
-    return Scaffold(
-      appBar: getSalesAppBar(),
-      bottomNavigationBar: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, top: 8, bottom: 8),
-            child: ValueListenableBuilder(
-                builder:
-                    (BuildContext context, String totalOrderss, Widget child) {
-                  return MyWidgets.getTextWidget(
-                      text: totalOrderss,
-                      weight: FontWeight.bold,
-                      size: Fonts.heading3_size - 1,
-                      overflow: TextOverflow.ellipsis);
-                },
-                valueListenable: _totalOrderss),
-          ),
-          Spacer(
-            flex: 1,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0, top: 8, bottom: 8),
-            child: ValueListenableBuilder(
-                builder:
-                    (BuildContext context, String totalOAmount, Widget child) {
-                  return MyWidgets.getTextWidget(
-                      text: totalOAmount,
-                      weight: FontWeight.bold,
-                      size: Fonts.heading3_size - 1,
-                      overflow: TextOverflow.ellipsis);
-                },
-                valueListenable: _totalOrdersAmount),
-          ),
-        ],
-      ),
-      body: Flex(
-        direction: Axis.vertical,
-        verticalDirection: VerticalDirection.down,
-        children: <Widget>[
-          Flexible(
-            //ye paginated ka hai
-            child: Stack(
-              children: [
-                _displayLoadingWidget
-                    ? LoadingWidget()
-                    : ValueListenableBuilder(
-                        builder: (BuildContext context,
-                            Stream<QuerySnapshot> querySnapshot, Widget child) {
-                          return StreamBuilder<QuerySnapshot>(
-                            stream: querySnapshot,
-                            builder: (context, snapshot) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                _totalOrdersAmount.value = totalAmount;
-                                _totalOrderss.value = totalOrders;
-                              });
-                              if (snapshot.connectionState ==
-                                  ConnectionState.active) {
-                                if (snapshot.hasData) {
-                                  List<SalesViewItems> listItems = new List();
-                                  double amount = 0, orders = 0;
-                                  for (int count = 0;
-                                      count < snapshot.data.documents.length;
-                                      count++) {
-                                    DocumentSnapshot element =
-                                        snapshot.data.documents[count];
-                                    String docID = element.documentID;
-                                    if (filterType.chosenType == 'Monthly') {
-                                      DateTime date =
-                                          element.data['date'].toDate();
-
-                                      docID = getAlphabeticalMonth(
-                                          date.month - 1, date.year);
-                                    }
-                                    SalesViewItems items = new SalesViewItems(
-                                        docID,
-                                        // element.data['date'],
-                                        element.data['totalOrders'].toString(),
-                                        element.data['totalAmount']);
-                                    if (items.orders != null) {
-                                      orders +=
-                                          double.parse(items.orders.toString());
-                                    }
-                                    if (items.total != null) {
-                                      amount +=
-                                          double.parse(items.total.toString());
-                                    }
-                                    listItems.add(items);
-                                  }
-
-                                  print(totalAmount);
-                                  totalOrders = 'Total Orders: ' +
-                                      orders.toInt().toString();
-                                  totalAmount = 'Total Amount: ' +
-                                      amount.toStringAsFixed(1);
-
-                                  _ds = new NominateItemsDataSource(listItems);
-
-                                  return listItems.length == 0
-                                      ? ConstrainedBox(
-                                          constraints: BoxConstraints(
-                                              minHeight: MediaQuery.of(context)
-                                                  .size
-                                                  .height),
-                                          child: Center(
-                                            child: Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.75,
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.75,
-                                              child: Lottie.asset(
-                                                'assets/no_data_found.json',
-                                                controller: _controller,
-                                                onLoaded: (composition) {
-                                                  // Configure the AnimationController with the duration of the
-                                                  // Lottie file and start the animation.
-                                                  _controller
-                                                    ..duration =
-                                                        composition.duration
-                                                    ..forward();
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : SingleChildScrollView(
-                                          child: Theme(
-                                            data: Theme.of(context).copyWith(
-                                                dividerColor:
-                                                    colors.buttonColor),
-                                            child: PaginatedDataTable(
-                                              header: Container(),
-                                              dataRowHeight:
-                                                  MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.7 /
-                                                      _rowsPerPage,
-                                              rowsPerPage: _rowsPerPage,
-                                              availableRowsPerPage: <int>[
-                                                5,
-                                                10,
-                                                20
-                                              ],
-                                              onRowsPerPageChanged:
-                                                  (int value) {
-                                                setState(() {
-                                                  _rowsPerPage = value;
-                                                });
-                                              },
-                                              showCheckboxColumn: false,
-                                              columns: kTableColumns,
-                                              source: _ds,
-                                            ),
-                                          ),
-                                        );
-                                } else {
-                                  return LoadingWidget();
-                                }
-                              } else
-                                return LoadingWidget();
-                            },
-                          );
+    return ConnectivityWidget(
+      builder: (context, isOnline) => !isOnline
+          ? NoInternetScreen(screen: ViewSales())
+          : Scaffold(
+              appBar: getSalesAppBar(),
+              bottomNavigationBar: Row(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8.0, top: 8, bottom: 8),
+                    child: ValueListenableBuilder(
+                        builder: (BuildContext context, String totalOrderss,
+                            Widget child) {
+                          return MyWidgets.getTextWidget(
+                              text: totalOrderss,
+                              weight: FontWeight.bold,
+                              size: Fonts.heading3_size - 1,
+                              overflow: TextOverflow.ellipsis);
                         },
-                        valueListenable: _counter,
-                        child: const Text('Good job!'),
-                      ),
-              ],
+                        valueListenable: _totalOrderss),
+                  ),
+                  Spacer(
+                    flex: 1,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(right: 8.0, top: 8, bottom: 8),
+                    child: ValueListenableBuilder(
+                        builder: (BuildContext context, String totalOAmount,
+                            Widget child) {
+                          return MyWidgets.getTextWidget(
+                              text: totalOAmount,
+                              weight: FontWeight.bold,
+                              size: Fonts.heading3_size - 1,
+                              overflow: TextOverflow.ellipsis);
+                        },
+                        valueListenable: _totalOrdersAmount),
+                  ),
+                ],
+              ),
+              body: Flex(
+                direction: Axis.vertical,
+                verticalDirection: VerticalDirection.down,
+                children: <Widget>[
+                  Flexible(
+                    //ye paginated ka hai
+                    child: Stack(
+                      children: [
+                        _displayLoadingWidget
+                            ? LoadingWidget()
+                            : ValueListenableBuilder(
+                                builder: (BuildContext context,
+                                    Stream<QuerySnapshot> querySnapshot,
+                                    Widget child) {
+                                  return StreamBuilder<QuerySnapshot>(
+                                    stream: querySnapshot,
+                                    builder: (context, snapshot) {
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        _totalOrdersAmount.value = totalAmount;
+                                        _totalOrderss.value = totalOrders;
+                                      });
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.active) {
+                                        if (snapshot.hasData) {
+                                          List<SalesViewItems> listItems =
+                                              new List();
+                                          double amount = 0, orders = 0;
+                                          for (int count = 0;
+                                              count <
+                                                  snapshot
+                                                      .data.documents.length;
+                                              count++) {
+                                            DocumentSnapshot element =
+                                                snapshot.data.documents[count];
+                                            String docID = element.documentID;
+                                            if (filterType.chosenType ==
+                                                'Monthly') {
+                                              DateTime date =
+                                                  element.data['date'].toDate();
+
+                                              docID = getAlphabeticalMonth(
+                                                  date.month - 1, date.year);
+                                            }
+                                            SalesViewItems items =
+                                                new SalesViewItems(
+                                                    docID,
+                                                    // element.data['date'],
+                                                    element.data['totalOrders']
+                                                        .toString(),
+                                                    element
+                                                        .data['totalAmount']);
+                                            if (items.orders != null) {
+                                              orders += double.parse(
+                                                  items.orders.toString());
+                                            }
+                                            if (items.total != null) {
+                                              amount += double.parse(
+                                                  items.total.toString());
+                                            }
+                                            listItems.add(items);
+                                          }
+
+                                          print(totalAmount);
+                                          totalOrders = 'Total Orders: ' +
+                                              orders.toInt().toString();
+                                          totalAmount = 'Total Amount: ' +
+                                              amount.toStringAsFixed(1);
+
+                                          _ds = new NominateItemsDataSource(
+                                              listItems);
+
+                                          return listItems.length == 0
+                                              ? ConstrainedBox(
+                                                  constraints: BoxConstraints(
+                                                      minHeight:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .height),
+                                                  child: Center(
+                                                    child: Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.75,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.75,
+                                                      child: Lottie.asset(
+                                                        'assets/no_data_found.json',
+                                                        controller: _controller,
+                                                        onLoaded:
+                                                            (composition) {
+                                                          // Configure the AnimationController with the duration of the
+                                                          // Lottie file and start the animation.
+                                                          _controller
+                                                            ..duration =
+                                                                composition
+                                                                    .duration
+                                                            ..forward();
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : SingleChildScrollView(
+                                                  child: Theme(
+                                                    data: Theme.of(context)
+                                                        .copyWith(
+                                                            dividerColor: colors
+                                                                .buttonColor),
+                                                    child: PaginatedDataTable(
+                                                      header: Container(),
+                                                      dataRowHeight:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.7 /
+                                                              _rowsPerPage,
+                                                      rowsPerPage: _rowsPerPage,
+                                                      availableRowsPerPage: <
+                                                          int>[5, 10, 20],
+                                                      onRowsPerPageChanged:
+                                                          (int value) {
+                                                        setState(() {
+                                                          _rowsPerPage = value;
+                                                        });
+                                                      },
+                                                      showCheckboxColumn: false,
+                                                      columns: kTableColumns,
+                                                      source: _ds,
+                                                    ),
+                                                  ),
+                                                );
+                                        } else {
+                                          return LoadingWidget();
+                                        }
+                                      } else
+                                        return LoadingWidget();
+                                    },
+                                  );
+                                },
+                                valueListenable: _counter,
+                                child: const Text('Good job!'),
+                              ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
     );
   }
 
