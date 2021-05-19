@@ -5,16 +5,20 @@ import '../style/colors.dart';
 import 'MyWidgets.dart';
 
 class NoInternetScreen extends StatelessWidget {
+  NoInternetScreen({this.screen = null});
+  var screen;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: colors.backgroundColor,
-      body: _NoInternetScreen(),
+      body: _NoInternetScreen(screen: screen),
     );
   }
 }
 
 class _NoInternetScreen extends StatefulWidget {
+  _NoInternetScreen({this.screen = null});
+  var screen;
   @override
   _NoInternetScreenState createState() => _NoInternetScreenState();
 }
@@ -108,6 +112,9 @@ class _NoInternetScreenState extends State<_NoInternetScreen> {
                       text: 'Try Again',
                       onTap: () {
                         Navigator.pop(context);
+                        if (widget.screen != null)
+                          MyWidgets.changeScreen(
+                              context: context, screen: widget.screen);
                       })),
             ],
           ),

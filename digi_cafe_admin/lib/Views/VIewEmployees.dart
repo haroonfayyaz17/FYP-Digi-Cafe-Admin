@@ -9,8 +9,9 @@ import 'package:digi_cafe_admin/Views/AddEmployee.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
+import 'package:connectivity_widget/connectivity_widget.dart';
 import 'LoadingWidget.dart';
+import 'NoIternetScreen.dart';
 
 class ViewEmployees extends StatelessWidget {
   void createHelpAlert(context) async {
@@ -46,34 +47,37 @@ class ViewEmployees extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: MyWidgets.getAppBar(text: 'View Employees'),
-      body: _ViewEmployees(),
-      floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          animatedIconTheme: IconThemeData(size: 20),
-          backgroundColor: colors.buttonColor,
-          children: [
-            MyWidgets.getSpeedDialChild(
-              icon: Icons.fastfood,
-              text: 'Add Employee',
-              callback: () {
-                MyWidgets.changeScreen(
-                    context: context, screen: AddEmployeeScreen());
-              },
-            ),
-            MyWidgets.getSpeedDialChild(
-              icon: Icons.help_outline,
-              text: 'Help',
-              bgColor: colors.backgroundColor,
-              iconColor: Colors.blue[800],
-              callback: () {
-                createHelpAlert(context);
-              },
-            ),
-          ]),
-    );
+    // TODO: implaement build
+    return ConnectivityWidget(
+        builder: (context, isOnline) => !isOnline
+            ? NoInternetScreen(screen:ViewEmployees())
+            : Scaffold(
+                appBar: MyWidgets.getAppBar(text: 'View Employees'),
+                body: _ViewEmployees(),
+                floatingActionButton: SpeedDial(
+                    animatedIcon: AnimatedIcons.menu_close,
+                    animatedIconTheme: IconThemeData(size: 20),
+                    backgroundColor: colors.buttonColor,
+                    children: [
+                      MyWidgets.getSpeedDialChild(
+                        icon: Icons.fastfood,
+                        text: 'Add Employee',
+                        callback: () {
+                          MyWidgets.changeScreen(
+                              context: context, screen: AddEmployeeScreen());
+                        },
+                      ),
+                      MyWidgets.getSpeedDialChild(
+                        icon: Icons.help_outline,
+                        text: 'Help',
+                        bgColor: colors.backgroundColor,
+                        iconColor: Colors.blue[800],
+                        callback: () {
+                          createHelpAlert(context);
+                        },
+                      ),
+                    ]),
+              ));
   }
 }
 
@@ -89,7 +93,7 @@ class __ViewEmployees extends State<_ViewEmployees> {
   List<CafeEmployee> employees;
   BuildContext _buildContext;
   Stream<QuerySnapshot> querySnapshot;
-
+  int count = 0;
   @override
   void initState() {
     uiController = new EmployeeUIController();
@@ -98,7 +102,12 @@ class __ViewEmployees extends State<_ViewEmployees> {
 
   Widget build(BuildContext context) {
     _buildContext = context;
-
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (count == 0) {
+        await MyWidgets.internetStatus(context).then((value) {});
+        count++;
+      }
+    });
     return Flex(
       direction: Axis.vertical,
       verticalDirection: VerticalDirection.down,
@@ -128,8 +137,8 @@ class __ViewEmployees extends State<_ViewEmployees> {
                             employee.id = element.documentID;
                             return GestureDetector(
                               onTap: () {
-                                  MyWidgets.changeScreen(
-                                      context: context,
+                                MyWidgets.changeScreen(
+                                    context: context,
                                     screen: AddEmployeeScreen(
                                         employee: employee,
                                         actionType: "update"));
@@ -203,9 +212,8 @@ class __ViewEmployees extends State<_ViewEmployees> {
                               ),
                             );
                           });
-                }
-                else
-                return LoadingWidget();
+                } else
+                  return LoadingWidget();
               }),
         ),
       ],

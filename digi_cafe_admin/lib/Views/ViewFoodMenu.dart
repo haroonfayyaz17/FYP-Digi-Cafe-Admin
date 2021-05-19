@@ -1,3 +1,4 @@
+import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/FoodMenuUIController.dart';
 import 'package:digi_cafe_admin/Views/AddCategory.dart';
 import 'package:digi_cafe_admin/Views/AddFoodMenu.dart';
@@ -12,6 +13,8 @@ import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Views/MenuItemWidget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
+import 'NoIternetScreen.dart';
 
 // ViewFoodMenu todaysMenu;
 
@@ -53,89 +56,101 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
   Widget build(BuildContext context) {
     this.buildContext = context;
     // TODO: implement build
-    return Scaffold(
-      floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          animatedIconTheme: IconThemeData(size: 20),
-          backgroundColor: colors.buttonColor,
-          children: [
-            MyWidgets.getSpeedDialChild(
-              icon: Icons.fastfood,
-              text: 'Add Food Item',
-              callback: () {
-                MyWidgets.changeScreen(
-                    context: context, screen: AddFoodMenuScreen());
-              },
-            ),
-            MyWidgets.getSpeedDialChild(
-              icon: Icons.fastfood,
-              text: 'Add Category',
-              callback: () {
-                MyWidgets.changeScreen(
-                    context: context, screen: AddCategoryScreen());
-              },
-            ),
-            MyWidgets.getSpeedDialChild(
-              icon: Icons.help_outline,
-              text: 'Help',
-              bgColor: colors.backgroundColor,
-              iconColor: Colors.blue[800],
-              callback: () {
-                createHelpAlert(context);
-              },
-            ),
-          ]),
-      body: Flex(
-          direction: Axis.vertical,
-          verticalDirection: VerticalDirection.down,
-          children: <Widget>[
-            Flexible(
-              child: StreamBuilder<QuerySnapshot>(
-                  stream: querySnapshot,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.active) {
-                      return !snapshot.hasData
-                          ? LoadingWidget()
-                          : ListView.builder(
-                              itemCount: snapshot.data.documents.length,
-                              itemBuilder: (context, index) {
-                                DocumentSnapshot dish =
-                                    snapshot.data.documents[index];
-                                Widget widget = MenuItemWidget(
-                                  quantity: dish.data['stockLeft'],
-                                  foodImg: dish.data['imgURL'],
-                                  category: dish.data['category'],
-                                  foodID: dish.documentID,
-                                  price: dish.data['price'].toString(),
-                                  description: dish.data['description'],
-                                  name: dish.data['name'],
-                                  context: buildContext,
-                                );
+    return ConnectivityWidget(
+        builder: (context, isOnline) => !isOnline
+            ? NoInternetScreen(screen: ViewFoodMenu())
+            : Scaffold(
+                floatingActionButton: SpeedDial(
+                    animatedIcon: AnimatedIcons.menu_close,
+                    animatedIconTheme: IconThemeData(size: 20),
+                    backgroundColor: colors.buttonColor,
+                    children: [
+                      MyWidgets.getSpeedDialChild(
+                        icon: Icons.fastfood,
+                        text: 'Add Food Item',
+                        callback: () {
+                          MyWidgets.changeScreen(
+                              context: context, screen: AddFoodMenuScreen());
+                        },
+                      ),
+                      MyWidgets.getSpeedDialChild(
+                        icon: Icons.fastfood,
+                        text: 'Add Category',
+                        callback: () {
+                          MyWidgets.changeScreen(
+                              context: context, screen: AddCategoryScreen());
+                        },
+                      ),
+                      MyWidgets.getSpeedDialChild(
+                        icon: Icons.help_outline,
+                        text: 'Help',
+                        bgColor: colors.backgroundColor,
+                        iconColor: Colors.blue[800],
+                        callback: () {
+                          createHelpAlert(context);
+                        },
+                      ),
+                    ]),
+                body: Flex(
+                    direction: Axis.vertical,
+                    verticalDirection: VerticalDirection.down,
+                    children: <Widget>[
+                      Flexible(
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: querySnapshot,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.active) {
+                                return !snapshot.hasData
+                                    ? LoadingWidget()
+                                    : ListView.builder(
+                                        itemCount:
+                                            snapshot.data.documents.length,
+                                        itemBuilder: (context, index) {
+                                          DocumentSnapshot dish =
+                                              snapshot.data.documents[index];
+                                          Widget widget = MenuItemWidget(
+                                            quantity: dish.data['stockLeft'],
+                                            foodImg: dish.data['imgURL'],
+                                            category: dish.data['category'],
+                                            foodID: dish.documentID,
+                                            price:
+                                                dish.data['price'].toString(),
+                                            description:
+                                                dish.data['description'],
+                                            name: dish.data['name'],
+                                            context: buildContext,
+                                          );
 
-                                Widget x = Column(
-                                  children: [
-                                    index > 0
-                                        ? snapshot.data.documents[index - 1]
-                                                    .data['category'] !=
-                                                dish.data['category']
-                                            ? getTextWidget(capitalize(
-                                                dish.data['category']))
-                                            : Container()
-                                        : getTextWidget(
-                                            capitalize(dish.data['category'])),
-                                    widget,
-                                  ],
-                                );
+                                          Widget x = Column(
+                                            children: [
+                                              index > 0
+                                                  ? snapshot
+                                                                  .data
+                                                                  .documents[
+                                                                      index - 1]
+                                                                  .data[
+                                                              'category'] !=
+                                                          dish.data['category']
+                                                      ? getTextWidget(
+                                                          capitalize(dish.data[
+                                                              'category']))
+                                                      : Container()
+                                                  : getTextWidget(capitalize(
+                                                      dish.data['category'])),
+                                              widget,
+                                            ],
+                                          );
 
-                                return x;
-                              },
-                            );
-                    } else
-                      return LoadingWidget();
-                  }),
-            ),
-          ]),
-    );
+                                          return x;
+                                        },
+                                      );
+                              } else
+                                return LoadingWidget();
+                            }),
+                      ),
+                    ]),
+              ));
   }
 
   String capitalize(String string) {
