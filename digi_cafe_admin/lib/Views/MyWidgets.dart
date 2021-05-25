@@ -396,8 +396,20 @@ class MyWidgets {
   }
 
   static TimeOfDay stringToTimeOfDay(String tod) {
+    // var x = tod.split(" ");
+    // String s = x[0];
+    // int hours = int.parse(s.split(":")[0]);
+    // int mins = int.parse(s.split(":")[1]);
+    // print('$hours : $mins');
+    // if (x[1] == "PM") hours += 12;
+    // return TimeOfDay(hour: hours, minute: mins);
     final format = DateFormat.jm(); //"6:00 AM"
     return TimeOfDay.fromDateTime(format.parse(tod));
+  }
+
+  static String getTimeWithZone(TimeOfDay time) {
+    return DateFormat.jm()
+        .format(DateFormat("hh:mm:ss").parse("${time.hour}:${time.minute}:00"));
   }
 
   static AlertStyle getAlertStyle(

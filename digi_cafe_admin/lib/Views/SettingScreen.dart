@@ -53,8 +53,9 @@ class __SettingScreen extends State<_SettingScreen> {
     // print(snapshot.exists);
     if (snapshot.exists) {
       setState(() {
-        opening = MyWidgets.stringToTimeOfDay(snapshot['openingTime']);
-        openingTime = opening.format(context);
+        opening =
+            MyWidgets.stringToTimeOfDay(snapshot['openingTime'].toString());
+        openingTime = snapshot['openingTime'];
         closingTime = snapshot['closingTime'];
         edtControllerCount.text = snapshot['selectionCount'];
         edtControllerVotes.text = snapshot['minVotes'];
@@ -155,7 +156,8 @@ class __SettingScreen extends State<_SettingScreen> {
                                     if (value != null)
                                       setState(() {
                                         opening = value;
-                                        openingTime = value.format(context);
+                                        openingTime =
+                                            MyWidgets.getTimeWithZone(value);
                                       });
                                   });
                                 }),
@@ -179,7 +181,8 @@ class __SettingScreen extends State<_SettingScreen> {
                                       if (result >= 0) {
                                         print('yes');
                                         setState(() {
-                                          closingTime = value.format(context);
+                                          closingTime =
+                                              MyWidgets.getTimeWithZone(value);
                                         });
                                       } else {
                                         MyWidgets.showToast(_buildContext,
