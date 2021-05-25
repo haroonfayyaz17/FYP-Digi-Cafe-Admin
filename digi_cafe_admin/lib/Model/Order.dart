@@ -2,7 +2,8 @@ import 'package:digi_cafe_admin/Model/OrderItem.dart';
 
 class Order {
   String _orderNo, _review, _status;
-  int _totalAmount, _rating;
+  int _totalAmount;
+  double _rating;
   List<OrderItem> _orderItems;
   DateTime _orderTime;
   Order(this._totalAmount, this._orderItems, this._orderTime, this._status) {
@@ -52,11 +53,11 @@ class Order {
     this._totalAmount = _totalAmount;
   }
 
-  int get rating {
+  double get rating {
     return _rating;
   }
 
-  set rating(int _rating) {
+  set rating(double _rating) {
     this._rating = _rating;
   }
 
