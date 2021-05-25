@@ -539,6 +539,9 @@ class _AddEmployeeScreen3State extends State<AddEmployeeScreenFul> {
               child: TextFormField(
                 autofocus: true,
                 onChanged: _valueChanged,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(10),
+                ],
                 controller: edtPhoneController,
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.next,
