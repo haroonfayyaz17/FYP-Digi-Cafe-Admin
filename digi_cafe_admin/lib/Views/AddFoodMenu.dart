@@ -394,10 +394,10 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                                         )
                                                       : Container(),
                                                   _image != null
-                                                      ? Image.asset(
-                                                          _image.path,
-                                                          width: 225,
-                                                          height: 225,
+                                                      ? Image.file(
+                                                          new File(_image.path),
+                                                          width: 275,
+                                                          height: 275,
                                                         )
                                                       : Container(),
                                                   _image == null &&

@@ -73,7 +73,7 @@ class __Dashboard extends State<_Dashboard> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(100.0),
                     ),
-                    margin: EdgeInsets.all(10.0),
+                    margin: EdgeInsets.only(left: 10, top: 10, bottom: 10),
                     child: ClipRRect(
                       child: Image.asset(
                         'images/profile_pic.png',
@@ -88,7 +88,7 @@ class __Dashboard extends State<_Dashboard> {
                         ConstrainedBox(
                           constraints: BoxConstraints(
                             minWidth: 150,
-                            maxWidth: MediaQuery.of(context).size.width * 0.6,
+                            maxWidth: MediaQuery.of(context).size.width * 0.5,
                           ),
                           child: MyWidgets.getTextWidget(
                               text:

@@ -684,8 +684,8 @@ class _ImageWidgetState extends State<ImageWidget> {
                   height: 50,
                 ),
                 _image != null
-                    ? Image.asset(
-                        _image.path,
+                    ? Image.file(
+                        new File(_image.path),
                         width: 275,
                         height: 275,
                       )
