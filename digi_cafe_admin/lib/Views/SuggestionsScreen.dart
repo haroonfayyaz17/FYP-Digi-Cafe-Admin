@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
+import 'package:readmore/readmore.dart';
 import 'package:intl/intl.dart';
 import 'LoadingWidget.dart';
 import 'MyWidgets.dart';
@@ -90,16 +91,15 @@ class _SuggestionScreen extends State<SuggestionScreen> {
                                         );
 
                                         return Container(
+                                          constraints: BoxConstraints(
+                                              maxHeight: 150, minHeight: 50),
                                           margin: EdgeInsets.only(
                                               left: 10, top: 10),
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
                                               0.9,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.22,
+                                          // height: 150,
                                           child: InkWell(
                                             onDoubleTap: () async {
                                               await changeStatus(complaint.id,
@@ -157,13 +157,23 @@ class _SuggestionScreen extends State<SuggestionScreen> {
                                                       child: Align(
                                                         alignment: Alignment
                                                             .bottomLeft,
-                                                        child: MyWidgets
-                                                            .getTextWidget(
-                                                                text: complaint
-                                                                    .text,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis),
+                                                        child: ReadMoreText(
+                                                          complaint.text,
+                                                          style: MyWidgets
+                                                              .getTextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                          trimLines: 2,
+                                                          colorClickableText:
+                                                              colors
+                                                                  .buttonColor,
+                                                          trimMode:
+                                                              TrimMode.Line,
+                                                          trimCollapsedText:
+                                                              '...Show more',
+                                                          trimExpandedText:
+                                                              'Show less',
+                                                        ),
                                                       ),
                                                     ),
                                                     Spacer(flex: 2),

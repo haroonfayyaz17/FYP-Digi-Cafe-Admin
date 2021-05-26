@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
 import 'package:digi_cafe_admin/Model/Complaint.dart';
+import 'package:readmore/readmore.dart';
 import 'LoadingWidget.dart';
 import 'package:intl/intl.dart';
 import 'MyWidgets.dart';
@@ -112,32 +113,36 @@ class _ComplaintScreen extends State<ComplaintScreen> {
                                           complaintDoc.data["status"],
                                           complaintDoc.data["date"].toDate(),
                                           complaintDoc.data["category"]);
-                                      return Container(
-                                        margin:
-                                            EdgeInsets.only(left: 10, top: 10),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.9,
-                                        height:
-                                            MediaQuery.of(context).size.width *
-                                                0.22,
-                                        child: InkWell(
-                                          onDoubleTap: () async {
-                                            await changeStatus(
-                                                complaint.id, complaint.status);
-                                          },
-                                          onTap: () async {
-                                            complaint.status == 'unread'
-                                                ? await orderUIController
-                                                    .changeComplaintStatus(
-                                                        complaint.id, 'read')
-                                                : null;
-                                            MyWidgets.changeScreen(
-                                                context: context,
-                                                screen: ViewFeedbackDetails(
-                                                    'complaint', complaint.id));
-                                          },
+                                      return InkWell(
+                                        onDoubleTap: () async {
+                                          await changeStatus(
+                                              complaint.id, complaint.status);
+                                        },
+                                        onTap: () async {
+                                          complaint.status == 'unread'
+                                              ? await orderUIController
+                                                  .changeComplaintStatus(
+                                                      complaint.id, 'read')
+                                              : null;
+                                          MyWidgets.changeScreen(
+                                              context: context,
+                                              screen: ViewFeedbackDetails(
+                                                  'complaint', complaint.id));
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              left: 10, top: 10, right: 10),
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.9,
+                                          constraints: BoxConstraints(
+                                              maxHeight: 150, minHeight: 50),
                                           child: Card(
+                                            color: complaint.status == 'read'
+                                                // ? Colors.yellow[100]
+                                                ? Colors.orange[50]
+                                                : colors.backgroundColor,
                                             elevation: 8,
                                             child: Padding(
                                               padding: EdgeInsets.symmetric(
@@ -183,24 +188,27 @@ class _ComplaintScreen extends State<ComplaintScreen> {
                                                     child: Align(
                                                       alignment:
                                                           Alignment.bottomLeft,
-                                                      child: MyWidgets
-                                                          .getTextWidget(
-                                                              text: complaint
-                                                                  .text,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis),
+                                                      child: ReadMoreText(
+                                                        complaint.text,
+                                                        style: MyWidgets
+                                                            .getTextStyle(
+                                                                color: Colors
+                                                                    .black),
+                                                        trimLines: 2,
+                                                        colorClickableText:
+                                                            colors.buttonColor,
+                                                        trimMode: TrimMode.Line,
+                                                        trimCollapsedText:
+                                                            '...Show more',
+                                                        trimExpandedText:
+                                                            'Show less',
+                                                      ),
                                                     ),
                                                   ),
                                                   Spacer(flex: 2),
                                                 ],
                                               ),
-                                            ),
-                                            color: complaint.status == 'read'
-                                                // ? Colors.yellow[100]
-                                                ? Colors.orange[50]
-                                                : colors.backgroundColor,
-                                            //
+                                            ), //
                                           ),
                                         ),
                                       );

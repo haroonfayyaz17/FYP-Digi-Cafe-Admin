@@ -174,7 +174,8 @@ class _CheckReviewsScreen extends State<CheckReviewsScreen> {
                                           ),
                                         ),
                                       );
-                                    });
+                                    },
+                                  );
                           } else
                             return Container();
                         });
