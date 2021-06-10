@@ -3,6 +3,7 @@ import 'package:connectivity_widget/connectivity_widget.dart';
 import 'package:digi_cafe_admin/Controllers/UIControllers/EmployeeUIController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'LoadingWidget.dart';
 import 'MyWidgets.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
@@ -57,8 +58,8 @@ class __SettingScreen extends State<_SettingScreen> {
             MyWidgets.stringToTimeOfDay(snapshot['openingTime'].toString());
         openingTime = snapshot['openingTime'];
         closingTime = snapshot['closingTime'];
-        edtControllerCount.text = snapshot['selectionCount'];
-        edtControllerVotes.text = snapshot['minVotes'];
+        edtControllerCount.text = snapshot['selectionCount'].toString();
+        edtControllerVotes.text = snapshot['minVotes'].toString();
         _displayLoadingWidget = false;
       });
     } else {
@@ -111,6 +112,11 @@ class __SettingScreen extends State<_SettingScreen> {
                             Padding(
                               padding: EdgeInsets.only(top: 20, right: 40),
                               child: TextFormField(
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(3),
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                ],
                                 autofocus: true,
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (_) =>
@@ -125,6 +131,11 @@ class __SettingScreen extends State<_SettingScreen> {
                             Padding(
                               padding: EdgeInsets.only(top: 20, right: 40),
                               child: TextFormField(
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(3),
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                ],
                                 autofocus: true,
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (_) =>

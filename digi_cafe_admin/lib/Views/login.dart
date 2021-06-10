@@ -1,4 +1,5 @@
 import 'package:connectivity_widget/connectivity_widget.dart';
+import 'package:digi_cafe_admin/Controllers/DBControllers/EmployeeDBController.dart';
 import 'package:digi_cafe_admin/style/Icons/customIcons.dart';
 import 'package:digi_cafe_admin/Views/Dashboard.dart';
 import 'package:digi_cafe_admin/Views/Forgot Password Screen.dart';
@@ -43,16 +44,17 @@ class _LoginScreenState extends State<_LoginScreen> {
 
   TextEditingController edtTextControllerPassword;
 
-  var adminEmail = 'ayeshaghani1998@gmail.com';
+  var adminEmail = 'digicafe2021@gmail.com';
   bool _displayLabel = false;
-  var adminPassword = 'admin123';
+  var adminPassword = 'Admin@123';
   LoginDBController dbController;
-
+  EmployeeDBController _employeeDBController;
   var errorHeading = '';
 
   @override
   void initState() {
     super.initState();
+    _employeeDBController = new EmployeeDBController();
     edtTextControllerEmail = new TextEditingController();
     edtTextControllerPassword = new TextEditingController();
     dbController = new LoginDBController();
@@ -60,6 +62,7 @@ class _LoginScreenState extends State<_LoginScreen> {
     dbController.CheckSignIn(adminEmail, adminPassword).then((value) {
       if (value == 'wrong email') {
         dbController.CreateNewUser(adminEmail, adminPassword);
+        _employeeDBController.addAdmin(adminEmail);
       }
     });
     // if (dbController.CheckSignIn(adminEmail, adminPassword) == null) {

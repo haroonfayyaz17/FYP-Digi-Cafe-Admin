@@ -122,15 +122,18 @@ class FoodMenuDBController {
           .collection('Person')
           .where('PType', whereIn: ["faculty", "student"]).getDocuments();
       for (DocumentSnapshot element in value.documents) {
-        firestoreInstance
+        await firestoreInstance
             .collection('Person')
             .document(element.documentID)
             .collection("Voucher")
             .document(id)
-            .delete()
-            .catchError((e) {
-          print(e);
-          done = false;
+            .get()
+            .then((value) {
+          if (value.exists)
+            value.reference.delete().catchError((e) {
+              print(e);
+              done = false;
+            });
         });
       }
       done = true;

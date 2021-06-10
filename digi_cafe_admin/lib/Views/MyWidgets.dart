@@ -120,6 +120,7 @@ class MyWidgets {
   static InputDecoration getTextFormDecoration(
       {String title = 'Name',
       IconData icon = Icons.person,
+      var counterText = null,
       var suffix = null,
       var border = null,
       var addBorder = true,
@@ -138,8 +139,11 @@ class MyWidgets {
       border: border,
       hintText: hint == null ? title : hint,
       filled: true,
+      counterText: counterText,
       fillColor: colors.backgroundColor,
       labelText: title,
+      labelStyle: getTextStyle(color: colors.buttonColor),
+      hintStyle: getTextStyle(color: Colors.grey),
       suffixIcon: suffix,
       icon: icon == null ? null : Icon(icon),
     );
@@ -396,20 +400,13 @@ class MyWidgets {
   }
 
   static TimeOfDay stringToTimeOfDay(String tod) {
-    // var x = tod.split(" ");
-    // String s = x[0];
-    // int hours = int.parse(s.split(":")[0]);
-    // int mins = int.parse(s.split(":")[1]);
-    // print('$hours : $mins');
-    // if (x[1] == "PM") hours += 12;
-    // return TimeOfDay(hour: hours, minute: mins);
     final format = DateFormat.jm(); //"6:00 AM"
     return TimeOfDay.fromDateTime(format.parse(tod));
   }
 
   static String getTimeWithZone(TimeOfDay time) {
     return DateFormat.jm()
-        .format(DateFormat("hh:mm:ss").parse("${time.hour}:${time.minute}:00"));
+        .format(DateFormat("hh:mm a").parse("${time.hour}:${time.minute}:00"));
   }
 
   static AlertStyle getAlertStyle(

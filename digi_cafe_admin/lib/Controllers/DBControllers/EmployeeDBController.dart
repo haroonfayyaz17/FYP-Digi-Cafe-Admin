@@ -161,9 +161,9 @@ class EmployeeDBController {
             .collection('Settings')
             .document('All')
             .updateData({
-          'selectionCount': count,
-          'minVotes': votes,
-          'openingTime': openingTime,
+          'selectionCount': int.parse(count,radix:10),
+          'minVotes': int.parse(votes,radix:10),
+          'openingTime':openingTime,
           'closingTime': closingTime
         }).then((value) {
           done = true;
@@ -196,6 +196,17 @@ class EmployeeDBController {
       return value;
     }).catchError((e) {
       return null;
+    });
+  }
+
+  Future<void> addAdmin(String _email) async {
+    await firestoreInstance.collection('Person').add({
+      "Name": 'Admin',
+      "email": _email,
+      "PType": 'admin',
+      "gender": '',
+      "phoneNo": '',
+      "DOB": '',
     });
   }
 }

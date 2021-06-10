@@ -82,66 +82,78 @@ class _NominateItemsState extends State<NominateItemsState> {
               ),
               body: SafeArea(
                 child: Stack(children: [
-                  _displayLoadingWidget
-                      ? LoadingWidget()
-                      : StreamBuilder<QuerySnapshot>(
-                          stream: querySnapshot,
-                          builder: (context, snapshot) {
-                            int count = 0;
+                  if (_displayLoadingWidget)
+                    LoadingWidget()
+                  else
+                    StreamBuilder<QuerySnapshot>(
+                        stream: querySnapshot,
+                        builder: (context, snapshot) {
+                          int count = 0;
 
-                            if (snapshot.hasData) {
-                              List<NominateItems> listItems = new List();
-                              for (int count = 0;
-                                  count < snapshot.data.documents.length;
-                                  count++) {
-                                DocumentSnapshot dish =
-                                    snapshot.data.documents[count];
-                                NominateItems items = new NominateItems(
-                                    dish.documentID,
-                                    dish.data['name'],
-                                    dish.data['price'].toDouble(),
-                                    dish.data['stockLeft'].toDouble(),
-                                    dish.data['isNominated']);
-                                listItems.add(items);
+                          if (snapshot.hasData) {
+                            List<NominateItems> listItems = new List();
+                            for (int count = 0;
+                                count < snapshot.data.documents.length;
+                                count++) {
+                              DocumentSnapshot dish =
+                                  snapshot.data.documents[count];
+                              NominateItems items = new NominateItems(
+                                  dish.documentID,
+                                  dish.data['name'],
+                                  dish.data['price'].toDouble(),
+                                  dish.data['stockLeft'].toDouble(),
+                                  dish.data['isNominated']);
+                              listItems.add(items);
+                            }
+                            for (int i = 0; i < listItems.length; i++) {
+                              if (listItems[i].selected == true) {
+                                count += 1;
                               }
-                              for (int i = 0; i < listItems.length; i++) {
-                                if (listItems[i].selected == true) {
-                                  count += 1;
-                                }
-                              }
-                              _ds =
-                                  new NominateItemsDataSource(listItems, count);
-                              // return Container(
-                              //   color: colors.backgroundColor,
-                              // );
-                              _ds.notifyListeners();
+                            }
+                            _ds = new NominateItemsDataSource(listItems, count);
+                            // return Container(
+                            //   color: colors.backgroundColor,
+                            // );
+                            _ds.notifyListeners();
 
-                              return SingleChildScrollView(
-                                child: Theme(
-                                  data: Theme.of(context).copyWith(
-                                      dividerColor: colors.buttonColor),
-                                  child: PaginatedDataTable(
-                                    header: Container(),
-                                    dataRowHeight:
-                                        MediaQuery.of(context).size.height *
-                                            0.7 /
-                                            _rowsPerPage,
-                                    rowsPerPage: _rowsPerPage,
-                                    availableRowsPerPage: <int>[5, 10, 20],
-                                    onRowsPerPageChanged: (int value) {
-                                      setState(() {
-                                        _rowsPerPage = value;
-                                      });
-                                    },
-                                    columns: kTableColumns,
-                                    source: _ds,
+                            return SingleChildScrollView(
+                              child: Theme(
+                                data: ThemeData(
+                                  dividerColor: colors.buttonColor,
+                                  colorScheme: ColorScheme.fromSwatch(
+                                    brightness: Brightness.light,
                                   ),
                                 ),
-                              );
-                            } else {
-                              return LoadingWidget();
-                            }
-                          }),
+                                // Theme.of(context).copyWith(
+                                //   // cardColor: colors.buttonColor,
+                                //   cursorColor: colors.buttonColor,
+                                //   dividerColor: colors.buttonColor,
+                                //   // selectedRowColor: colors.buttonColor,
+                                // ),
+                                child: PaginatedDataTable(
+                                  header: Container(
+                                    color: colors.backgroundColor,
+                                  ),
+                                  dataRowHeight:
+                                      MediaQuery.of(context).size.height *
+                                          0.7 /
+                                          _rowsPerPage,
+                                  rowsPerPage: _rowsPerPage,
+                                  availableRowsPerPage: <int>[5, 10, 20],
+                                  onRowsPerPageChanged: (int value) {
+                                    setState(() {
+                                      _rowsPerPage = value;
+                                    });
+                                  },
+                                  columns: kTableColumns,
+                                  source: _ds,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return LoadingWidget();
+                          }
+                        }),
                 ]),
               ),
             ),
@@ -149,11 +161,7 @@ class _NominateItemsState extends State<NominateItemsState> {
 
     // _rowsPerPage = _rowsPerPage > _ds.nominateItems.length
     //     ? _ds.nominateItems.length
-    //     : _rowsPerPage;
-  }
-
-  void _showToast(BuildContext context, var _message) {
-    MyWidgets.showToast(context, _message);
+    //     : _rowsPerPage
   }
 
   Future<bool> _nominateSelectedItems(context) async {
@@ -166,7 +174,7 @@ class _NominateItemsState extends State<NominateItemsState> {
         _itemsSelected.add(_ds.nominateItems[i].itemID);
       }
     }
-    if (_itemsSelected.length > 0) {
+    if (_itemsSelected.length >= 0) {
       bool result =
           await _foodMenuUIController.addNominatedItems(_itemsSelected);
       setState(() {
