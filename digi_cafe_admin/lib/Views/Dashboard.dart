@@ -2,6 +2,7 @@ import 'package:digi_cafe_admin/Views/ComplaintSuggestionScreen.dart';
 import 'package:digi_cafe_admin/Views/ViewEmployees.dart';
 import 'package:digi_cafe_admin/Views/ViewFoodMenu.dart';
 import 'package:digi_cafe_admin/Views/ViewSales.dart';
+import 'package:digi_cafe_admin/Views/ViewVouchersOption.dart';
 import 'CheckReviews.dart';
 import 'package:digi_cafe_admin/Views/ViewVouchers.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
@@ -157,7 +158,7 @@ class __Dashboard extends State<_Dashboard> {
                     text: 'Manage Vouchers',
                     child: Image.asset('images/manage_voucher.png'),
                     onTap: () => MyWidgets.changeScreen(
-                        context: context, screen: new ViewVouchers())),
+                        context: context, screen: new ViewVouchersTabs())),
                 MyWidgets.getDashboardItem(
                     childWidth: 30,
                     width: MediaQuery.of(context).size.width *

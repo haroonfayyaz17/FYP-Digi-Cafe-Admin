@@ -14,24 +14,14 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'VoucherItemWidget.dart';
 
-class ViewVouchers extends StatelessWidget {
+class ViewVouchers extends StatefulWidget {
+  bool type = false;
+  ViewVouchers({this.type});
   @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: MyWidgets.getAppBar(text: 'View Vouchers'),
-      backgroundColor: colors.backgroundColor,
-      body: _ViewVouchers(),
-    );
-  }
+  State<StatefulWidget> createState() => _ViewVouchers();
 }
 
-class _ViewVouchers extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => __ViewVouchers();
-}
-
-class __ViewVouchers extends State<_ViewVouchers> {
+class _ViewVouchers extends State<ViewVouchers> {
   List<MenuItemWidget> menuItemWidget = [];
 
   FoodMenuUIController _foodMenuUIController;
@@ -45,79 +35,56 @@ class __ViewVouchers extends State<_ViewVouchers> {
   void initState() {
     super.initState();
     _foodMenuUIController = new FoodMenuUIController();
-    querySnapshot = _foodMenuUIController.getVoucherSnapshot();
+    querySnapshot = _foodMenuUIController.getVoucherSnapshot(type: widget.type);
   }
 
   @override
   Widget build(BuildContext context) {
     _buildContext = context;
     // TODO: implement build
-    return Scaffold(
-      floatingActionButton: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          animatedIconTheme: IconThemeData(size: 20),
-          backgroundColor: colors.buttonColor,
-          children: [
-            MyWidgets.getSpeedDialChild(
-                icon: Icons.fastfood,
-                text: 'Add Vouchers',
-                callback: () {
-                  MyWidgets.changeScreen(
-                      context: context, screen: AddVoucherScreen(null, null));
-                }),
-            MyWidgets.getSpeedDialChild(
-              icon: Icons.help_outline,
-              text: 'Help',
-              bgColor: colors.backgroundColor,
-              iconColor: Colors.blue[800],
-              callback: () {
-                createHelpAlert(context);
+    return Flex(
+        direction: Axis.vertical,
+        verticalDirection: VerticalDirection.down,
+        children: <Widget>[
+          Flexible(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: querySnapshot,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.active) {
+                  return !snapshot.hasData
+                      ? LoadingWidget()
+                      : ListView.builder(
+                          itemCount: snapshot.data.documents.length,
+                          itemBuilder: (context, index) {
+                            DocumentSnapshot voucher =
+                                snapshot.data.documents[index];
+
+                            // var url = null;
+                            // storageReference.getDownloadURL().then((fileURL) {
+                            //   url = fileURL;
+                            //   print(fileURL);
+                            // });
+                            // var imgURL = loadPic(voucher.documentID);
+                            // print(url);
+                            Widget widget1 = VoucherItemWidget(
+                              type: widget.type,
+                              discount: voucher.data['discount'],
+                              expiryDate: voucher.data['validity'],
+                              minimumSpend: voucher.data['minimumSpend'],
+                              voucherID: voucher.documentID,
+                              title: voucher.data['title'],
+                              context: context,
+                            );
+
+                            return widget1;
+                          },
+                        );
+                } else
+                  return LoadingWidget();
               },
             ),
-          ]),
-      body: Flex(
-          direction: Axis.vertical,
-          verticalDirection: VerticalDirection.down,
-          children: <Widget>[
-            Flexible(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: querySnapshot,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.active) {
-                    return !snapshot.hasData
-                        ? LoadingWidget()
-                        : ListView.builder(
-                            itemCount: snapshot.data.documents.length,
-                            itemBuilder: (context, index) {
-                              DocumentSnapshot voucher =
-                                  snapshot.data.documents[index];
-
-                              // var url = null;
-                              // storageReference.getDownloadURL().then((fileURL) {
-                              //   url = fileURL;
-                              //   print(fileURL);
-                              // });
-                              // var imgURL = loadPic(voucher.documentID);
-                              // print(url);
-                              Widget widget = VoucherItemWidget(
-                                discount: voucher.data['discount'],
-                                expiryDate: voucher.data['validity'],
-                                minimumSpend: voucher.data['minimumSpend'],
-                                voucherID: voucher.documentID,
-                                title: voucher.data['title'],
-                                context: context,
-                              );
-
-                              return widget;
-                            },
-                          );
-                  } else
-                    return LoadingWidget();
-                },
-              ),
-            ),
-          ]),
-    );
+          ),
+        ]);
   }
 
   void createHelpAlert(context) async {

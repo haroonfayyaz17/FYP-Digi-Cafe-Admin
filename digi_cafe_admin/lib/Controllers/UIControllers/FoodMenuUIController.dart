@@ -100,8 +100,8 @@ class FoodMenuUIController {
     return _foodMenuDBController.getCategorySnapshot();
   }
 
-  Stream<QuerySnapshot> getVoucherSnapshot() {
-    return _foodMenuDBController.getVoucherSnapshot();
+  Stream<QuerySnapshot> getVoucherSnapshot({bool type}) {
+    return _foodMenuDBController.getVoucherSnapshot(type:type);
   }
 
   Future<bool> addNominatedItems(List<String> itemsSelected) async {

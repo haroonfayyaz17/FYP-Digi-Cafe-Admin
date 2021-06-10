@@ -172,6 +172,7 @@ class FoodMenuDBController {
         "validity": voucher.validity,
         'discount': voucher.discount,
         'minimumSpend': voucher.minimumSpend,
+        'cancel': false,
       }).then((value1) async {
         var id = value1.documentID;
         QuerySnapshot value = await firestoreInstance
@@ -201,7 +202,7 @@ class FoodMenuDBController {
       await firestoreInstance
           .collection('Voucher')
           .document(voucher.getId)
-          .setData({
+          .updateData({
         "title": voucher.title,
         "validity": voucher.validity,
         'discount': voucher.discount,
@@ -321,9 +322,11 @@ class FoodMenuDBController {
     return Future.value(true);
   }
 
-  Stream<QuerySnapshot> getVoucherSnapshot() {
-    Stream<QuerySnapshot> querySnapshot =
-        firestoreInstance.collection('Voucher').snapshots();
+  Stream<QuerySnapshot> getVoucherSnapshot({bool type = false}) {
+    Stream<QuerySnapshot> querySnapshot = firestoreInstance
+        .collection('Voucher')
+        .where('cancel', isEqualTo: type)
+        .snapshots();
     return querySnapshot;
   }
 }

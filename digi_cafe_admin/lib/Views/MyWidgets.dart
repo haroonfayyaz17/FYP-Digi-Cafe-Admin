@@ -93,8 +93,12 @@ class MyWidgets {
   }
 
   static Widget getAppBar(
-      {String text = 'Digi Café Admin', VoidCallback onTap, var child = null}) {
+      {String text = 'Digi Café Admin',
+      VoidCallback onTap,
+      var child = null,
+      var bottom = null}) {
     return AppBar(
+      bottom: bottom,
       backgroundColor: colors.buttonColor,
       title: Text(
         '$text',

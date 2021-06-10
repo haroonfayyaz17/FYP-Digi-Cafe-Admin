@@ -10,6 +10,7 @@ import 'AddVoucher.dart';
 
 class VoucherItemWidget extends StatefulWidget {
   var expiryDate, title, voucherID, minimumSpend, discount;
+  bool type;
   BuildContext context;
   VoucherItemWidget(
       {@required this.voucherID,
@@ -17,7 +18,8 @@ class VoucherItemWidget extends StatefulWidget {
       @required this.title,
       @required this.minimumSpend,
       @required this.discount,
-      this.context});
+      this.context,
+      @required this.type});
 
   @override
   _VoucherItemWidgetState createState() => _VoucherItemWidgetState();
@@ -47,18 +49,19 @@ class _VoucherItemWidgetState extends State<VoucherItemWidget> {
             child: InkWell(
               onTap: () {
                 //TODO: Update Voucher
-
-                Voucher _voucher = new Voucher(
-                  id: widget.voucherID,
-                  title: widget.title,
-                  minimumSpend: widget.minimumSpend,
-                  validity: widget.expiryDate,
-                  discount: widget.discount,
-                  usedOn: null,
-                );
-                MyWidgets.changeScreen(
-                    context: context,
-                    screen: AddVoucherScreen(_voucher, "update"));
+                if (!widget.type) {
+                  Voucher _voucher = new Voucher(
+                    id: widget.voucherID,
+                    title: widget.title,
+                    minimumSpend: widget.minimumSpend,
+                    validity: widget.expiryDate,
+                    discount: widget.discount,
+                    usedOn: null,
+                  );
+                  MyWidgets.changeScreen(
+                      context: context,
+                      screen: AddVoucherScreen(_voucher, "update"));
+                }
               },
               onLongPress: () {
                 MyWidgets.showConfirmationDialog(context,
