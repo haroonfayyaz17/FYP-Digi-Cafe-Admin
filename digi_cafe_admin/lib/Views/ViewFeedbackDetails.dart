@@ -100,7 +100,6 @@ class _ViewFeedbackDetailsState extends State<ViewFeedbackDetails> {
                                   child: MyWidgets.getTextWidget(
                                       text: 'Email: ${details.email}',
                                       size: Fonts.heading2_size,
-                                      overflow: TextOverflow.ellipsis,
                                       weight: FontWeight.bold),
                                 ),
                                 //category

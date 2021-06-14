@@ -162,6 +162,15 @@ class OrderDBController {
       element = snapshot.documents.first;
       order.orderTime = element.data['dateTime'].toDate();
       order.totalAmount = element.data['amount'];
+      DocumentSnapshot personDoc = await firestoreInstance
+          .collection('Person')
+          .document(element.data['servedBy'])
+          .get();
+      print(personDoc.exists);
+      if (personDoc.exists) {
+        order.setServedBy = personDoc.data['Name'];
+      }
+
       if (detail) {
         QuerySnapshot querySnapshot = await firestoreInstance
             .collection('Orders')
@@ -176,10 +185,9 @@ class OrderDBController {
               .get();
           if (!doc.exists) return order;
           String docID = doc.documentID;
-          String name = doc['name'];
-          int price = doc['price'];
-          FoodItem foodItem =
-              new FoodItem(docID, name, "", "", price.toDouble(), 0);
+          String name = doc.data['name'];
+          double price = doc.data['price'];
+          FoodItem foodItem = new FoodItem(docID, name, "", "", price, 0);
           var orderItemQuantity = element.data['quantity'];
           list.add(new OrderItem(foodItem, orderItemQuantity));
         }

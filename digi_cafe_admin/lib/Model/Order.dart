@@ -6,13 +6,18 @@ class Order {
   double _rating;
   List<OrderItem> _orderItems;
   DateTime _orderTime;
+  String servedBy;
+
   Order(this._totalAmount, this._orderItems, this._orderTime, this._status) {
     this._totalAmount = _totalAmount;
     this._orderItems = _orderItems;
     this._orderTime = _orderTime;
     this._status = _status;
+    this.servedBy = '';
   }
+  String get getServedBy => this.servedBy;
 
+  set setServedBy(String servedBy) => this.servedBy = servedBy;
   DateTime get orderTime {
     return _orderTime;
   }

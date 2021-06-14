@@ -8,7 +8,7 @@ import 'package:digi_cafe_admin/Model/Order.dart';
 import 'package:digi_cafe_admin/style/colors.dart';
 import 'package:digi_cafe_admin/Views/MyWidgets.dart';
 import 'package:digi_cafe_admin/style/fonts_style.dart';
-
+import 'package:intl/intl.dart';
 import 'NoIternetScreen.dart';
 
 class ViewOrderDetails extends StatefulWidget {
@@ -81,14 +81,22 @@ class _ViewOrderDetailsState extends State<ViewOrderDetails> {
                                             top: 15.0, bottom: 25.0),
                                         child: MyWidgets.getTextWidget(
                                             text: 'Time: ' +
-                                                order.orderTime.hour
-                                                    .toString() +
-                                                ':' +
-                                                order.orderTime.minute
-                                                    .toString(),
+                                                DateFormat.jm()
+                                                    .format(order.orderTime),
                                             size: Fonts.heading2_size + 1,
                                             weight: FontWeight.bold),
                                       ),
+                                      if (order.getServedBy != '' ||
+                                          order.getServedBy == null)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 0.0, bottom: 15.0),
+                                          child: MyWidgets.getTextWidget(
+                                              text: 'Served By: ' +
+                                                  order.servedBy,
+                                              size: Fonts.heading2_size + 1,
+                                              weight: FontWeight.bold),
+                                        ),
                                       SizedBox(
                                         height: 20,
                                       ),
