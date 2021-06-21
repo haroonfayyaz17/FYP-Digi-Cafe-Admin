@@ -396,7 +396,9 @@ class _AddEmployeeScreen3State extends State<AddEmployeeScreenFul> {
     } else if (controller.page == phoneNo) {
       if (_phoneNo.toString().trim() == '') {
         _showToast(context, 'Enter Phone Number');
-      } else {
+      } else if (!RegExp(r'^(03)[0-9]{9}$').hasMatch(_phoneNo))
+        _showToast(context, 'Invalid Phone Number');
+      else {
         if (actionType == 'update') {
           updateEmployeeRecord();
         }
@@ -540,7 +542,8 @@ class _AddEmployeeScreen3State extends State<AddEmployeeScreenFul> {
                 autofocus: true,
                 onChanged: _valueChanged,
                 inputFormatters: [
-                  LengthLimitingTextInputFormatter(10),
+                  LengthLimitingTextInputFormatter(11),
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                 ],
                 controller: edtPhoneController,
                 keyboardType: TextInputType.number,
@@ -582,57 +585,6 @@ class _AddEmployeeScreen3State extends State<AddEmployeeScreenFul> {
                 ),
               ),
             ),
-            // Container(
-            //   margin: EdgeInsets.only(top: 20),
-            //   decoration: BoxDecoration(
-            //     borderRadius: BorderRadius.all(Radius.circular(10)),
-            //     color: colors.buttonColor,
-            //   ),
-            //   child: FlatButton(
-            //     onPressed: () async {
-            //       if (code == "") {
-            //         _showToast(context, "Select Country code");
-            //         return;
-            //       }
-            //       print(code + edtControllerPhoneNo.text);
-            //       FirebaseAuth auth = FirebaseAuth.instance;
-            //       await auth.verifyPhoneNumber(
-            //         phoneNumber: code + edtControllerPhoneNo.text,
-            //         timeout: Duration(seconds: 120),
-            //         verificationCompleted: (message) {
-            //           print(message.providerId);
-            //         },
-            //         verificationFailed: (e) {
-            //           print(e.message);
-            //         },
-            //         // codeSent: (String verificationId,
-            //         //     int resendToken) async {
-            //         //   // Update the UI - wait for the user to enter the SMS code
-            //         //   String smsCode = 'xxxx';
-
-            //         //   PhoneAuthCredential phoneAuthCredential =
-            //         //       PhoneAuthProvider.credential(
-            //         //           verificationId: verificationId,
-            //         //           smsCode: smsCode);
-
-            //         //   // Sign the user in (or link) with the credential
-            //         //   await auth
-            //         //       .signInWithCredential(phoneAuthCredential);
-            //         // },
-            //         codeAutoRetrievalTimeout:
-            //             (String verificationId) {},
-            //       );
-            //     },
-            //     child: Text(
-            //       'Verify Number',
-            //       style: TextStyle(
-            //         fontSize: 18,
-            //         fontFamily: Fonts.default_font,
-            //         color: colors.backgroundColor,
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),
