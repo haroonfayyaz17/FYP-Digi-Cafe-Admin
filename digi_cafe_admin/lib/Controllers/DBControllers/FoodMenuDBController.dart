@@ -39,6 +39,7 @@ class FoodMenuDBController {
         "deleted": false,
         "lastUpdated": dt,
         "autoRestock": autoRestock,
+        "defaultStock": _foodItem.stockLeft,
         "votes": 0,
         "isNominated": false,
         "stockLeft": _foodItem.stockLeft,
@@ -77,6 +78,7 @@ class FoodMenuDBController {
         "description": _foodItem.description,
         "price": _foodItem.price,
         "stockLeft": _foodItem.stockLeft,
+        "defaultStock": _foodItem.stockLeft,
         "autoRestock": autoRestock,
       }).then((value) async {
         if (_foodItem.imgURL != null) {
