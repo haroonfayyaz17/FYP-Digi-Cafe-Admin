@@ -20,7 +20,8 @@ class FoodMenuDBController {
   FoodMenuDBController() {
     firestoreInstance = Firestore.instance;
   }
-  Future<bool> addFoodMenu(FoodMenu foodMenu, File image) async {
+  Future<bool> addFoodMenu(
+      FoodMenu foodMenu, File image, bool autoRestock) async {
     var done = false;
     try {
       DateTime dateTime = DateTime.now();
@@ -37,6 +38,7 @@ class FoodMenuDBController {
         "totalRatings": 0,
         "deleted": false,
         "lastUpdated": dt,
+        "autoRestock": autoRestock,
         "votes": 0,
         "isNominated": false,
         "stockLeft": _foodItem.stockLeft,
@@ -62,7 +64,7 @@ class FoodMenuDBController {
     return done;
   }
 
-  Future<bool> updateFoodMenu(FoodMenu foodMenu) async {
+  Future<bool> updateFoodMenu(FoodMenu foodMenu, bool autoRestock) async {
     bool done;
     try {
       FoodItem _foodItem = foodMenu.foodList.first;
@@ -74,6 +76,8 @@ class FoodMenuDBController {
         "name": _foodItem.name,
         "description": _foodItem.description,
         "price": _foodItem.price,
+        "stockLeft": _foodItem.stockLeft,
+        "autoRestock": autoRestock,
       }).then((value) async {
         if (_foodItem.imgURL != null) {
           StorageReference firebaseStorageRef =

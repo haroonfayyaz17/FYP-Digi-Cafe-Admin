@@ -16,6 +16,7 @@ class MenuItemWidget extends StatefulWidget {
   var foodImg, price, description, name, foodID;
   var category;
   var quantity;
+  bool autoRestock;
   BuildContext context;
 
   MenuItemWidget(
@@ -24,6 +25,7 @@ class MenuItemWidget extends StatefulWidget {
       @required this.description,
       @required this.name,
       @required this.price,
+      @required this.autoRestock,
       this.category,
       this.quantity,
       this.context});
@@ -63,14 +65,16 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                     widget.description,
                     widget.foodImg,
                     double.parse(widget.price),
-                    0);
+                    widget.quantity);
                 List<FoodItem> list = new List();
                 list.add(foodItem);
                 FoodMenu menu = new FoodMenu(widget.category, list);
                 MyWidgets.changeScreen(
                     context: context,
                     screen: AddFoodMenuScreen(
-                        foodItem: menu, actionType: "update"));
+                        foodItem: menu,
+                        autoRestock: widget.autoRestock,
+                        actionType: "update"));
               },
               onDoubleTap: () {
                 //TODO: UpdateQuantity
@@ -201,7 +205,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
             Padding(
                 padding: EdgeInsets.all(0),
                 child: TextFormField(
-                  inputFormatters: [DecimalTextInputFormatter(decimalRange: 0)],
+                  inputFormatters: [DecimalTextInputFormatter(decimalRange: 1)],
                   keyboardType: TextInputType.number,
                   controller: quantityController,
                   textCapitalization: TextCapitalization.words,
@@ -270,64 +274,5 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
 
   void _showToast(BuildContext context, var _message) {
     MyWidgets.showToast(context, _message);
-  }
-}
-
-class DecimalTextInputFormatter extends TextInputFormatter {
-  DecimalTextInputFormatter({this.decimalRange})
-      : assert(decimalRange == null || decimalRange == 0);
-
-  final int decimalRange;
-  bool isNumeric(String s) {
-    if (s == null) {
-      return false;
-    }
-    return double.parse(s, (e) => null) != null;
-  }
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue, // unused.
-    TextEditingValue newValue,
-  ) {
-    TextSelection newSelection = newValue.selection;
-    String truncated = newValue.text;
-
-    if (decimalRange != null) {
-      String value = newValue.text;
-      if (isNumeric(value)) {
-        if (value.contains(".")) {
-          // if (value.substring(value.indexOf(".") + 1).contains(".")) {
-          //   truncated = oldValue.text;
-          //   newSelection = oldValue.selection;
-          // }
-          truncated = oldValue.text;
-          newSelection = oldValue.selection;
-        }
-        if (value.contains(".") &&
-            value.substring(value.indexOf(".") + 1).length > decimalRange) {
-          truncated = oldValue.text;
-          newSelection = oldValue.selection;
-        } else if (value == ".") {
-          truncated = "0.";
-
-          newSelection = newValue.selection.copyWith(
-            baseOffset: math.min(truncated.length, truncated.length + 1),
-            extentOffset: math.min(truncated.length, truncated.length + 1),
-          );
-        }
-      } else {
-        if (value != '') {
-          truncated = oldValue.text;
-          newSelection = oldValue.selection;
-        }
-      }
-      return TextEditingValue(
-        text: truncated,
-        selection: newSelection,
-        composing: TextRange.empty,
-      );
-    }
-    return newValue;
   }
 }

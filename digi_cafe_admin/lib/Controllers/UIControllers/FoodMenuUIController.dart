@@ -12,27 +12,40 @@ class FoodMenuUIController {
   FoodMenuUIController() {
     _foodMenuDBController = new FoodMenuDBController();
   }
-  Future<bool> addFoodMenu(String itemName, String description,
-      String chosencategory, String price, File image) async {
+  Future<bool> addFoodMenu(
+      String itemName,
+      String description,
+      String chosencategory,
+      String price,
+      File image,
+      String qty,
+      bool autoRestock) async {
     FoodItem _foodItem = new FoodItem(
-        null, itemName, description, image.path, double.parse(price), 0);
+        null, itemName, description, image.path, double.parse(price), double.parse(qty));
     List<FoodItem> _lst = new List();
     _foodMenu = new FoodMenu(null, _lst);
     _foodMenu.category = chosencategory;
     _foodMenu.foodList.add(_foodItem);
-    bool result = await _foodMenuDBController.addFoodMenu(_foodMenu, image);
+    bool result = await _foodMenuDBController.addFoodMenu(_foodMenu, image,autoRestock);
     return result;
   }
 
-  Future<bool> updateFoodMenu(String id, String itemName, String description,
-      String chosencategory, String price, String image) async {
+  Future<bool> updateFoodMenu(
+      String id,
+      String itemName,
+      String description,
+      String chosencategory,
+      String price,
+      String image,
+      String qty,
+      bool autoRestock) async {
     FoodItem _foodItem =
-        new FoodItem(id, itemName, description, image, double.parse(price), 0);
+        new FoodItem(id, itemName, description, image, double.parse(price),double.parse(qty));
     List<FoodItem> _lst = new List();
     _foodMenu = new FoodMenu(null, _lst);
     _foodMenu.category = chosencategory;
     _foodMenu.foodList.add(_foodItem);
-    bool result = await _foodMenuDBController.updateFoodMenu(_foodMenu);
+    bool result = await _foodMenuDBController.updateFoodMenu(_foodMenu,autoRestock);
     return result;
   }
 
@@ -101,7 +114,7 @@ class FoodMenuUIController {
   }
 
   Stream<QuerySnapshot> getVoucherSnapshot({bool type}) {
-    return _foodMenuDBController.getVoucherSnapshot(type:type);
+    return _foodMenuDBController.getVoucherSnapshot(type: type);
   }
 
   Future<bool> addNominatedItems(List<String> itemsSelected) async {

@@ -119,6 +119,7 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
                                             description:
                                                 dish.data['description'],
                                             name: dish.data['name'],
+                                            autoRestock: dish.data['autoRestock'],
                                             context: buildContext,
                                           );
 

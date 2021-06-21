@@ -16,22 +16,25 @@ import '../style/colors.dart';
 import 'NoIternetScreen.dart';
 
 class AddFoodMenuScreen extends StatelessWidget {
-  AddFoodMenuScreen({this.foodItem, this.actionType});
+  AddFoodMenuScreen({this.foodItem, this.autoRestock, this.actionType});
   FoodMenu foodItem;
   String actionType;
+  bool autoRestock;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _AddFoodMenuScreen(foodItem: foodItem, actionType: actionType),
+      body: _AddFoodMenuScreen(
+          foodItem: foodItem, autoRestock: autoRestock, actionType: actionType),
     );
   }
 }
 
 class _AddFoodMenuScreen extends StatefulWidget {
-  _AddFoodMenuScreen({this.foodItem, this.actionType});
+  _AddFoodMenuScreen({this.foodItem, this.autoRestock, this.actionType});
 
   FoodMenu foodItem;
   String actionType;
+  bool autoRestock = false;
   @override
   _AddFoodMenuScreen3State createState() =>
       _AddFoodMenuScreen3State(foodItem: foodItem, actionType: actionType);
@@ -45,6 +48,8 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
   String _imageP;
 
   var _displayLoadingWidget = false;
+
+  var quantityController = new TextEditingController();
 
   _AddFoodMenuScreen3State({this.foodItem, this.actionType});
   FoodMenu foodItem;
@@ -85,10 +90,40 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
       itemID = item.id;
       edtControllerItemPrice.text = item.price.toString();
       _itemDescriptionController.text = item.description;
+      quantityController.text = item.stockLeft.toString();
       chosencategory = foodItem.category;
       _imageURL = item.imgURL;
+      if (widget.autoRestock)
+        textValue = onText;
+      else
+        textValue = offText;
+      isSwitched = widget.autoRestock;
+    } else {
+      textValue = offText;
+      isSwitched = false;
+      edtControllerItemPrice.text = "0";
+      quantityController.text = "0";
     }
     querySnapshot = _foodMenuUIController.getCategorySnapshot();
+  }
+
+  bool isSwitched;
+  var offText = 'Auto Restock is OFF';
+  var onText = 'Auto Restock is ON';
+  var textValue;
+
+  void toggleSwitch(bool value) {
+    if (isSwitched == false) {
+      setState(() {
+        isSwitched = true;
+        textValue = onText;
+      });
+    } else {
+      setState(() {
+        isSwitched = false;
+        textValue = offText;
+      });
+    }
   }
 
   onChangedFunction(int index) {
@@ -316,7 +351,8 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                                     padding: EdgeInsets.only(
                                                         left: 20),
                                                     child: MyWidgets.getTextWidget(
-                                                        text: 'Set Price',
+                                                        text:
+                                                            'Set Price and Stock',
                                                         size: Fonts
                                                             .heading_SampleText_size),
                                                   ),
@@ -351,6 +387,56 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                                             icon: Icons.money),
                                                   ),
                                                 ),
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      20, 50, 20, 5),
+                                                  child: TextFormField(
+                                                    autofocus: true,
+                                                    inputFormatters: [
+                                                      DecimalTextInputFormatter(
+                                                          decimalRange: 1)
+                                                    ],
+                                                    keyboardType:
+                                                        TextInputType.number,
+                                                    textInputAction:
+                                                        TextInputAction.next,
+                                                    onFieldSubmitted: (_) =>
+                                                        FocusScope.of(context)
+                                                            .nextFocus(),
+                                                    controller:
+                                                        quantityController,
+                                                    textCapitalization:
+                                                        TextCapitalization
+                                                            .words,
+                                                    decoration: MyWidgets
+                                                        .getTextFormDecoration(
+                                                            title: 'Quantity',
+                                                            icon: Icons
+                                                                .format_list_numbered),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      60, 10, 20, 5),
+                                                  child: Row(
+                                                    children: [
+                                                      MyWidgets.getTextWidget(
+                                                          text: textValue),
+                                                      Switch(
+                                                        onChanged: toggleSwitch,
+                                                        value: isSwitched,
+                                                        activeColor:
+                                                            Colors.blue,
+                                                        activeTrackColor:
+                                                            Colors.yellow,
+                                                        inactiveThumbColor:
+                                                            Colors.redAccent,
+                                                        inactiveTrackColor:
+                                                            Colors.orange,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
                                               ],
                                             ),
                                           ),
@@ -460,7 +546,7 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
                                           width: 10,
                                         ),
                                         MyWidgets.getIndicator(
-                                            positionIndex: 3,
+                                            positionIndex: 2,
                                             currentIndex: currentIndex),
                                       ],
                                     ),
@@ -529,6 +615,10 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
       }
     } else if (controller.page == price) {
       if (edtControllerItemPrice.text == '') {
+        {
+          _showToast(context, 'Enter Item Price');
+        }
+      } else if (quantityController.text == '') {
         {
           _showToast(context, 'Enter Item Price');
         }
@@ -672,8 +762,8 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
     String description = _itemDescriptionController.text;
     String price = edtControllerItemPrice.text;
 
-    await _foodMenuUIController.addFoodMenu(
-        itemName, description, chosencategory, price, _image);
+    await _foodMenuUIController.addFoodMenu(itemName, description,
+        chosencategory, price, _image, quantityController.text, isSwitched);
     setState(() {
       _displayLoadingWidget = false;
     });
@@ -691,10 +781,24 @@ class _AddFoodMenuScreen3State extends State<_AddFoodMenuScreen> {
     bool result;
     if (_imageURL != null) {
       result = await _foodMenuUIController.updateFoodMenu(
-          itemID, itemName, description, chosencategory, price, null);
+          itemID,
+          itemName,
+          description,
+          chosencategory,
+          price,
+          null,
+          quantityController.text,
+          isSwitched);
     } else {
       result = await _foodMenuUIController.updateFoodMenu(
-          itemID, itemName, description, chosencategory, price, _imageP);
+          itemID,
+          itemName,
+          description,
+          chosencategory,
+          price,
+          _imageP,
+          quantityController.text,
+          isSwitched);
     }
     setState(() {
       _displayLoadingWidget = false;
