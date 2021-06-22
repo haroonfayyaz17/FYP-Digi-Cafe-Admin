@@ -121,6 +121,17 @@ class MyWidgets {
     );
   }
 
+  static toastWithKey(GlobalKey<ScaffoldState> _scaffoldKey, _message) {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: colors.buttonColor,
+      content: MyWidgets.getTextWidget(
+          text: _message,
+          color: colors.textColor,
+          size: Fonts.appBarTitle_size),
+      duration: Duration(seconds: 3),
+    ));
+  }
+
   static InputDecoration getTextFormDecoration(
       {String title = 'Name',
       IconData icon = Icons.person,

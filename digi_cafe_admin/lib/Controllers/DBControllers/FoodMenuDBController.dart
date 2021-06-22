@@ -338,6 +338,8 @@ class FoodMenuDBController {
   }
 
   Future<bool> autoRestockAll() async {
+    bool done = false;
+
     await firestoreInstance
         .collection('Food Menu')
         .where('autoRestock', isEqualTo: true)
@@ -350,6 +352,11 @@ class FoodMenuDBController {
             .document(doc.documentID)
             .updateData({"stockLeft": stock});
       }
+      done = true;
+    }).catchError((e) {
+      done = false;
     });
+
+    return Future.value(done);
   }
 }

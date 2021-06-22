@@ -276,13 +276,6 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
   }
 
   void _showToast(BuildContext context, var _message) {
-    widget.scaffoldKey.currentState.showSnackBar(SnackBar(
-      backgroundColor: colors.buttonColor,
-      content: MyWidgets.getTextWidget(
-          text: _message,
-          color: colors.textColor,
-          size: Fonts.appBarTitle_size),
-      duration: Duration(seconds: 3),
-    ));
+    MyWidgets.toastWithKey(widget.scaffoldKey, _message);
   }
 }

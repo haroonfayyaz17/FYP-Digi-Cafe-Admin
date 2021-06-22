@@ -56,9 +56,14 @@ class _ViewFoodMenu extends State<ViewFoodMenu> {
                       setState(() {
                         _isLoading = true;
                       });
-                      await _foodMenuUIController.autoRestockAll();
-                      setState(() {
-                        _isLoading = false;
+                      await _foodMenuUIController
+                          .autoRestockAll()
+                          .then((value) {
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        MyWidgets.toastWithKey(
+                            _scaffoldKey, 'Food Items Restocked');
                       });
                     }),
                 backgroundColor: colors.backgroundColor,
