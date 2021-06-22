@@ -68,7 +68,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                     widget.description,
                     widget.foodImg,
                     double.parse(widget.price),
-                    widget.quantity);
+                    widget.quantity.toDouble());
                 List<FoodItem> list = new List();
                 list.add(foodItem);
                 FoodMenu menu = new FoodMenu(widget.category, list);
