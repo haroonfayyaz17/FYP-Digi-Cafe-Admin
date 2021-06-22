@@ -20,13 +20,14 @@ class FoodMenuUIController {
       File image,
       String qty,
       bool autoRestock) async {
-    FoodItem _foodItem = new FoodItem(
-        null, itemName, description, image.path, double.parse(price), double.parse(qty));
+    FoodItem _foodItem = new FoodItem(null, itemName, description, image.path,
+        double.parse(price), double.parse(qty));
     List<FoodItem> _lst = new List();
     _foodMenu = new FoodMenu(null, _lst);
     _foodMenu.category = chosencategory;
     _foodMenu.foodList.add(_foodItem);
-    bool result = await _foodMenuDBController.addFoodMenu(_foodMenu, image,autoRestock);
+    bool result =
+        await _foodMenuDBController.addFoodMenu(_foodMenu, image, autoRestock);
     return result;
   }
 
@@ -39,13 +40,14 @@ class FoodMenuUIController {
       String image,
       String qty,
       bool autoRestock) async {
-    FoodItem _foodItem =
-        new FoodItem(id, itemName, description, image, double.parse(price),double.parse(qty));
+    FoodItem _foodItem = new FoodItem(id, itemName, description, image,
+        double.parse(price), double.parse(qty));
     List<FoodItem> _lst = new List();
     _foodMenu = new FoodMenu(null, _lst);
     _foodMenu.category = chosencategory;
     _foodMenu.foodList.add(_foodItem);
-    bool result = await _foodMenuDBController.updateFoodMenu(_foodMenu,autoRestock);
+    bool result =
+        await _foodMenuDBController.updateFoodMenu(_foodMenu, autoRestock);
     return result;
   }
 
@@ -119,6 +121,11 @@ class FoodMenuUIController {
 
   Future<bool> addNominatedItems(List<String> itemsSelected) async {
     bool result = await _foodMenuDBController.addNominatedItems(itemsSelected);
+    return Future.value(result);
+  }
+
+  Future<bool> autoRestockAll() async {
+    bool result = await _foodMenuDBController.autoRestockAll();
     return Future.value(result);
   }
 }

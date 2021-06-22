@@ -112,6 +112,7 @@ class FoodMenuDBController {
         .updateData({
       "deleted": true,
       "isNominated": false,
+      "stockLeft": 0
     }).then((value) async {
       return true;
     });
@@ -334,5 +335,21 @@ class FoodMenuDBController {
         .where('cancel', isEqualTo: type)
         .snapshots();
     return querySnapshot;
+  }
+
+  Future<bool> autoRestockAll() async {
+    await firestoreInstance
+        .collection('Food Menu')
+        .where('autoRestock', isEqualTo: true)
+        .getDocuments()
+        .then((snapshot) async {
+      for (DocumentSnapshot doc in snapshot.documents) {
+        var stock = doc.data['defaultStock'];
+        await firestoreInstance
+            .collection('Food Menu')
+            .document(doc.documentID)
+            .updateData({"stockLeft": stock});
+      }
+    });
   }
 }

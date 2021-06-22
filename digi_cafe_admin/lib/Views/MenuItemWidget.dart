@@ -17,6 +17,8 @@ class MenuItemWidget extends StatefulWidget {
   var category;
   var quantity;
   bool autoRestock;
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
   BuildContext context;
 
   MenuItemWidget(
@@ -26,6 +28,7 @@ class MenuItemWidget extends StatefulWidget {
       @required this.name,
       @required this.price,
       @required this.autoRestock,
+      @required this.scaffoldKey,
       this.category,
       this.quantity,
       this.context});
@@ -81,7 +84,7 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
                 createAlert(context);
               },
               onLongPress: () {
-                MyWidgets.showConfirmationDialog(context,
+                MyWidgets.showConfirmationDialog(_buildContext,
                     text: 'Do you want to remove Food Item?',
                     callback: () async {
                   //TODO: Delete Food
@@ -273,6 +276,13 @@ class _MenuItemWidgetState extends State<MenuItemWidget> {
   }
 
   void _showToast(BuildContext context, var _message) {
-    MyWidgets.showToast(context, _message);
+    widget.scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: colors.buttonColor,
+      content: MyWidgets.getTextWidget(
+          text: _message,
+          color: colors.textColor,
+          size: Fonts.appBarTitle_size),
+      duration: Duration(seconds: 3),
+    ));
   }
 }

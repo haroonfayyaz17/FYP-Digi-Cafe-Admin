@@ -173,8 +173,8 @@ class MyWidgets {
                 width: 60,
                 radius: 10,
                 onTap: () {
-                  callback();
                   Navigator.pop(context);
+                  callback();
                 }),
           ]),
     );

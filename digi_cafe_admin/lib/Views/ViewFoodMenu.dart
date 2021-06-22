@@ -16,26 +16,12 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'NoIternetScreen.dart';
 
-// ViewFoodMenu todaysMenu;
-
-class ViewFoodMenu extends StatelessWidget {
+class ViewFoodMenu extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-      appBar: MyWidgets.getAppBar(text: 'View Food Menu'),
-      backgroundColor: colors.backgroundColor,
-      body: _ViewFoodMenu(),
-    );
-  }
+  State<StatefulWidget> createState() => _ViewFoodMenu();
 }
 
-class _ViewFoodMenu extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => __ViewFoodMenu();
-}
-
-class __ViewFoodMenu extends State<_ViewFoodMenu> {
+class _ViewFoodMenu extends State<ViewFoodMenu> {
   List<MenuItemWidget> menuItemWidget = [];
 
   FoodMenuUIController _foodMenuUIController;
@@ -44,13 +30,15 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
   Stream<QuerySnapshot> querySnapshot;
 
   BuildContext buildContext;
-
+  bool _isLoading = false;
   @override
   void initState() {
     super.initState();
     _foodMenuUIController = new FoodMenuUIController();
     querySnapshot = _foodMenuUIController.getFoodMenuSnapshot();
   }
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +48,20 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
         builder: (context, isOnline) => !isOnline
             ? NoInternetScreen(screen: ViewFoodMenu())
             : Scaffold(
+                key: _scaffoldKey,
+                appBar: MyWidgets.getFilterAppBar(
+                    text: 'View Food Menu',
+                    child: Icons.refresh,
+                    onTap: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      await _foodMenuUIController.autoRestockAll();
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    }),
+                backgroundColor: colors.backgroundColor,
                 floatingActionButton: SpeedDial(
                     animatedIcon: AnimatedIcons.menu_close,
                     animatedIconTheme: IconThemeData(size: 20),
@@ -91,66 +93,77 @@ class __ViewFoodMenu extends State<_ViewFoodMenu> {
                         },
                       ),
                     ]),
-                body: Flex(
-                    direction: Axis.vertical,
-                    verticalDirection: VerticalDirection.down,
-                    children: <Widget>[
-                      Flexible(
-                        child: StreamBuilder<QuerySnapshot>(
-                            stream: querySnapshot,
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.active) {
-                                return !snapshot.hasData
-                                    ? LoadingWidget()
-                                    : ListView.builder(
-                                        itemCount:
-                                            snapshot.data.documents.length,
-                                        itemBuilder: (context, index) {
-                                          DocumentSnapshot dish =
-                                              snapshot.data.documents[index];
-                                          Widget widget = MenuItemWidget(
-                                            quantity: dish.data['stockLeft'],
-                                            foodImg: dish.data['imgURL'],
-                                            category: dish.data['category'],
-                                            foodID: dish.documentID,
-                                            price:
-                                                dish.data['price'].toString(),
-                                            description:
-                                                dish.data['description'],
-                                            name: dish.data['name'],
-                                            autoRestock: dish.data['autoRestock'],
-                                            context: buildContext,
-                                          );
+                body: _isLoading
+                    ? LoadingWidget()
+                    : Flex(
+                        direction: Axis.vertical,
+                        verticalDirection: VerticalDirection.down,
+                        children: <Widget>[
+                            Flexible(
+                              child: StreamBuilder<QuerySnapshot>(
+                                  stream: querySnapshot,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.active) {
+                                      return !snapshot.hasData
+                                          ? LoadingWidget()
+                                          : ListView.builder(
+                                              itemCount: snapshot
+                                                  .data.documents.length,
+                                              itemBuilder: (context, index) {
+                                                DocumentSnapshot dish = snapshot
+                                                    .data.documents[index];
+                                                Widget widget = MenuItemWidget(
+                                                  quantity:
+                                                      dish.data['stockLeft'],
+                                                  foodImg: dish.data['imgURL'],
+                                                  category:
+                                                      dish.data['category'],
+                                                  foodID: dish.documentID,
+                                                  price: dish.data['price']
+                                                      .toString(),
+                                                  description:
+                                                      dish.data['description'],
+                                                  name: dish.data['name'],
+                                                  autoRestock:
+                                                      dish.data['autoRestock'],
+                                                  context: buildContext,
+                                                  scaffoldKey: _scaffoldKey,
+                                                );
 
-                                          Widget x = Column(
-                                            children: [
-                                              index > 0
-                                                  ? snapshot
-                                                                  .data
-                                                                  .documents[
-                                                                      index - 1]
-                                                                  .data[
-                                                              'category'] !=
-                                                          dish.data['category']
-                                                      ? getTextWidget(
-                                                          capitalize(dish.data[
-                                                              'category']))
-                                                      : Container()
-                                                  : getTextWidget(capitalize(
-                                                      dish.data['category'])),
-                                              widget,
-                                            ],
-                                          );
+                                                Widget x = Column(
+                                                  children: [
+                                                    index > 0
+                                                        ? snapshot
+                                                                        .data
+                                                                        .documents[
+                                                                            index -
+                                                                                1]
+                                                                        .data[
+                                                                    'category'] !=
+                                                                dish.data[
+                                                                    'category']
+                                                            ? getTextWidget(
+                                                                capitalize(dish
+                                                                        .data[
+                                                                    'category']))
+                                                            : Container()
+                                                        : getTextWidget(
+                                                            capitalize(dish
+                                                                    .data[
+                                                                'category'])),
+                                                    widget,
+                                                  ],
+                                                );
 
-                                          return x;
-                                        },
-                                      );
-                              } else
-                                return LoadingWidget();
-                            }),
-                      ),
-                    ]),
+                                                return x;
+                                              },
+                                            );
+                                    } else
+                                      return LoadingWidget();
+                                  }),
+                            ),
+                          ]),
               ));
   }
 
