@@ -48,6 +48,13 @@ class MyWidgets {
         context, MaterialPageRoute(builder: (BuildContext context) => screen));
   }
 
+  static String formatTimeOfDay(TimeOfDay tod) {
+    final now = new DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+    final format = DateFormat.jm(); //"6:00 AM"
+    return format.format(dt);
+  }
+
   static Function timePicker({BuildContext context, Function(String) onTap}) {
     DateTime now = DateTime.now();
     showTimePicker(

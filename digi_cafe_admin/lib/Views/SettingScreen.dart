@@ -167,7 +167,8 @@ class __SettingScreen extends State<_SettingScreen> {
                                     if (value != null)
                                       setState(() {
                                         opening = value;
-                                        openingTime = value.format(context);
+                                        openingTime =
+                                            MyWidgets.formatTimeOfDay(value);
                                       });
                                   });
                                 }),
@@ -190,7 +191,7 @@ class __SettingScreen extends State<_SettingScreen> {
                                           MyWidgets.compareTime(value, opening);
                                       if (result >= 0) {
                                         setState(() {
-                                          closingTime = value.format(context);
+                                          closingTime =  MyWidgets.formatTimeOfDay(value);
                                         });
                                       } else {
                                         MyWidgets.showToast(_buildContext,
