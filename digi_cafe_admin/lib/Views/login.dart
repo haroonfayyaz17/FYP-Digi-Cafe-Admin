@@ -59,18 +59,25 @@ class _LoginScreenState extends State<_LoginScreen> {
     edtTextControllerPassword = new TextEditingController();
     dbController = new LoginDBController();
 
-    dbController.CheckSignIn(adminEmail, adminPassword).then((value) {
-      if (value == 'wrong email') {
-        dbController.CreateNewUser(adminEmail, adminPassword);
-        _employeeDBController.addAdmin(adminEmail);
-      }
-    });
     // if (dbController.CheckSignIn(adminEmail, adminPassword) == null) {
     // }
   }
 
+  Future<void> createUser() async {
+    await dbController.CheckSignIn(adminEmail, adminPassword)
+        .then((value) async {
+      if (value == 'wrong email') {
+        await dbController.CreateNewUser(adminEmail, adminPassword);
+        await _employeeDBController.addAdmin(adminEmail);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await createUser();
+    });
     return ConnectivityWidget(
       builder: (context, isOnline) => !isOnline
           ? NoInternetScreen(screen: LoginScreen())
